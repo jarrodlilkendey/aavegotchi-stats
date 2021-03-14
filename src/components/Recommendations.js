@@ -171,7 +171,7 @@ class Recommendations extends Component {
         const score = _this.state.wearableItemScores[key];
         const slot = wearablePositionLabel(wearable);
         const comparisonWearable = wearableBySlot(_this.state.wearableItemTypes, aavegotchi, slot);
-        const wearableListings = _.orderBy(_.filter(_this.state.wearableListings, ['erc1155TypeId', key]), 'priceInWei', 'desc');
+        const wearableListings = _.orderBy(_.filter(_this.state.wearableListings, ['erc1155TypeId', key]), 'priceInWei', 'asc');
 
         let comparisonWearableScore = 0;
         let comparisonWearableName = 'Empty';
