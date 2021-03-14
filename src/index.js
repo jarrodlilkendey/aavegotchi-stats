@@ -1,12 +1,36 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+
+import Recommendations from './components/Recommendations';
+import Credits from './components/Credits';
+import NavBar from './components/NavBar';
+
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
+
+const pages = [
+  { path: '/', name: 'Home' },
+];
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <div className="container">
+        <NavBar pages={pages} />
+
+        <Switch>
+           <Route path="/">
+             <Recommendations />
+           </Route>
+         </Switch>
+
+         <Credits />
+      </div>
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );
