@@ -125,6 +125,7 @@ class Recommendations extends Component {
     }
   }
 
+  // throttle getERC1155Listings and getItemType
   retrieveWearables(aavegotchiContract) {
     const _this = this;
 
@@ -159,6 +160,7 @@ class Recommendations extends Component {
     });
   }
 
+  // radio button to include/exclude wearable rarity in calculation
   renderRecommendations() {
     const _this = this;
     if (this.state.selectedAavegotchiId && this.state.wearableItemTypes && this.state.wearableListings.length === this.state.wearableListingsPagination) {
@@ -213,8 +215,8 @@ class Recommendations extends Component {
 
         {
           field: 'cheapestListing',
-          headerName: 'Cheapest Price',
-          width: 160,
+          headerName: 'Cheapest',
+          width: 120,
           renderCell: (params: GridCellParams) => (
             <a href={(params.value.link)} target="_blank" rel="noreferrer">
               {(params.value.text)}
@@ -223,13 +225,13 @@ class Recommendations extends Component {
         },
 
         { field: 'slot', headerName: 'Slot', width: 90 },
-        { field: 'totalScore', headerName: 'Score Impact', width: 180 },
+        { field: 'totalScore', headerName: 'Score', width: 120 },
         { field: 'comparisonItem', headerName: 'Comparison Wearable', width: 190 },
-        { field: 'rarityScore', headerName: 'Rarity', width: 120 },
-        { field: 'nrgScore', headerName: 'NRG', width: 120 },
-        { field: 'aggScore', headerName: 'AGG', width: 120 },
-        { field: 'spkScore', headerName: 'SPK', width: 120 },
-        { field: 'brnScore', headerName: 'BRN', width: 120 },
+        { field: 'rarityScore', headerName: 'Rarity', width: 100 },
+        { field: 'nrgScore', headerName: 'NRG', width: 100 },
+        { field: 'aggScore', headerName: 'AGG', width: 100 },
+        { field: 'spkScore', headerName: 'SPK', width: 100 },
+        { field: 'brnScore', headerName: 'BRN', width: 100 },
       ];
 
       return (
@@ -251,7 +253,7 @@ class Recommendations extends Component {
             }
           </div>
           <h3>Results</h3>
-          <p>The highest recommended wearables for <i>{aavegotchi.name}</i> are based on the <b>Score Impact</b> value which is determined by the wearable's impact on the traits of <i>{aavegotchi.name}</i>, the rarity of the wearable and any existing wearables <i>{aavegotchi.name}</i> has equipped in the relevant slot.</p>
+          <p>The highest recommended wearables for <i>{aavegotchi.name}</i> are based on the <b>Score</b> value which is determined by the wearable's impact on the traits of <i>{aavegotchi.name}</i>, the rarity of the wearable and any existing wearables <i>{aavegotchi.name}</i> has equipped in the relevant slot.</p>
           <p>Wearable prices are shown in GHST out of the {this.state.wearableListings.length} most recent wearable listings.</p>
           <div style={{ height: '600px', width: '100%' }}>
             <DataGrid rows={rows} columns={columns} pageSize={50} density="compact" />
@@ -262,6 +264,7 @@ class Recommendations extends Component {
     }
   }
 
+  // todo fix a visual bug when switching aavegotchies old equipped wearables persist
   renderEquippedWearables() {
     const _this = this;
     const aavegotchi = _.find(this.state.myAavegotchis, ['tokenId', this.state.selectedAavegotchiId]);
