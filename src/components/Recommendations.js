@@ -8,6 +8,8 @@ import contract from '../config/aavegotchiContract.json';
 import { connectToMatic } from '../util/MaticClient';
 import { scoreWearable, wearablePositionLabel, wearableTraitModifiers, wearableBRSModifierLabel, wearableBySlot } from '../util/AavegotchiMath';
 
+import wearableItemTypes from '../data/wearables/wearables.json';
+
 const _ = require('lodash');
 
 // enter your aavegotchi number
@@ -30,8 +32,8 @@ class Recommendations extends Component {
     this.state = {
       address: '',
       myAavegotchis: [], mySvgObjects: {},
-      wearableListings: [], wearableListingsPagination: 90,
-      wearableItemTypes: {}, wearableItemScores: {},
+      wearableListings: [], wearableListingsPagination: 1500,
+      wearableItemTypes: wearableItemTypes, wearableItemScores: {},
 
       slots: {
         'Body': false,
@@ -46,8 +48,7 @@ class Recommendations extends Component {
     };
 
     this.retrieveAavegotchis = this.retrieveAavegotchis.bind(this);
-    this.retrieveWearables = this.retrieveWearables.bind(this);
-    this.retrieveWearableDetails = this.retrieveWearableDetails.bind(this);
+    this.retrieveWearableListings = this.retrieveWearableListings.bind(this);
 
     this.selectAavegotchi = this.selectAavegotchi.bind(this);
 
@@ -68,7 +69,6 @@ class Recommendations extends Component {
     currentSlots[slot] = true;
 
     this.setState({ slots: currentSlots });
-    // console.log(currentSlots);
   }
 
   componentDidMount() {
@@ -78,18 +78,13 @@ class Recommendations extends Component {
 
     this.setState({ aavegotchiContract: aavegotchiContract });
 
-    // this.retrieveAavegotchis(aavegotchiContract);
-
-    setTimeout(()=> this.retrieveWearables(this.state.aavegotchiContract), 500);
+    this.retrieveWearableListings(aavegotchiContract);
   }
 
   retrieveAavegotchis(event) {
     event.preventDefault();
 
     const _this = this;
-
-    // console.log('retrieveAavegotchis');
-
     this.state.aavegotchiContract.methods.allAavegotchisOfOwner(this.state.address).call().then(function (myAavegotchis) {
       _this.setState({ myAavegotchis: myAavegotchis });
 
@@ -101,43 +96,18 @@ class Recommendations extends Component {
         }).catch(function (error) {
           console.log(error);
         });
-
-        for (let e = 0; e < myAavegotchis[a].equippedWearables.length; e++) {
-          let wearableId = myAavegotchis[a].equippedWearables[e];
-          if (wearableId != "0") {
-            _this.retrieveWearableDetails(_this.state.aavegotchiContract, wearableId);
-          }
-        }
       }
     });
   }
 
-  retrieveWearableDetails(aavegotchiContract, wearableId) {
-    const _this = this;
-    if (!(wearableId in _this.state.wearableItemTypes)) {
-      aavegotchiContract.methods.getItemType(wearableId).call().then(function (itemType) {
-        let wearableItemTypes = _this.state.wearableItemTypes;
-        wearableItemTypes[wearableId] = itemType;
-        _this.setState({ wearableItemTypes: wearableItemTypes });
-      }).catch(function (e) {
-        console.log(e);
-      });
-    }
-  }
-
-  // throttle getERC1155Listings and getItemType
-  retrieveWearables(aavegotchiContract) {
+  retrieveWearableListings(aavegotchiContract) {
     const _this = this;
 
     aavegotchiContract.methods.getERC1155Listings(0, "listed", this.state.wearableListingsPagination).call().then(function (listings) {
-      _this.setState({ wearableListings: listings });
-
+      const wearableListings = _.filter(listings, { 'cancelled': false, 'sold': false });
       // console.log(listings);
-
-      for (let l = 0; l < listings.length; l++) {
-        let itemId = listings[l].erc1155TypeId;
-        _this.retrieveWearableDetails(aavegotchiContract, itemId);
-      }
+      _this.setState({ wearableListings: wearableListings });
+      // console.log(listings);
     }).catch(function (error) {
       console.log(error);
     });
@@ -173,7 +143,7 @@ class Recommendations extends Component {
         const score = _this.state.wearableItemScores[key];
         const slot = wearablePositionLabel(wearable);
         const comparisonWearable = wearableBySlot(_this.state.wearableItemTypes, aavegotchi, slot);
-        const wearableListings = _.orderBy(_.filter(_this.state.wearableListings, ['erc1155TypeId', key]), 'priceInWei', 'asc');
+        const wearableListings = _.orderBy(_.filter(_this.state.wearableListings, { 'erc1155TypeId': key, 'cancelled': false, 'sold': false }), 'priceInWei', 'asc');
 
         let comparisonWearableScore = 0;
         let comparisonWearableName = 'Empty';
@@ -264,7 +234,6 @@ class Recommendations extends Component {
     }
   }
 
-  // todo fix a visual bug when switching aavegotchies old equipped wearables persist
   renderEquippedWearables() {
     const _this = this;
     const aavegotchi = _.find(this.state.myAavegotchis, ['tokenId', this.state.selectedAavegotchiId]);
@@ -274,7 +243,7 @@ class Recommendations extends Component {
       if (aavegotchi.equippedWearables[index] !== "0") {
         const wearable = _this.state.wearableItemTypes[aavegotchi.equippedWearables[index]];
         return(
-          <li key={wearable.name}>{value}: {wearable.name} ({wearableTraitModifiers(wearable.traitModifiers)} {wearableBRSModifierLabel(wearable.maxQuantity)})</li>
+          <li key={`cmp${wearable.name}${index}`}>{value}: {wearable.name} ({wearableTraitModifiers(wearable.traitModifiers)} {wearableBRSModifierLabel(wearable.maxQuantity)})</li>
         );
       }
     }, this);
