@@ -104,8 +104,13 @@ class Recommendations extends Component {
     const _this = this;
 
     aavegotchiContract.methods.getERC1155Listings(0, "listed", this.state.wearableListingsPagination).call().then(function (listings) {
-      const wearableListings = _.filter(listings, { 'cancelled': false, 'sold': false });
-      // console.log(listings);
+      let wearableListings = _.filter(listings, { 'cancelled': false, 'sold': false });
+      wearableListings = [...wearableListings];
+      wearableListings.map(function(wearable, index){
+        const price = (parseFloat(wearable.priceInWei) / 1000000000000000000).toFixed();
+        wearableListings[index] = {...wearable, price: parseFloat(price) };
+      });
+
       _this.setState({ wearableListings: wearableListings });
       // console.log(listings);
     }).catch(function (error) {
@@ -143,7 +148,7 @@ class Recommendations extends Component {
         const score = _this.state.wearableItemScores[key];
         const slot = wearablePositionLabel(wearable);
         const comparisonWearable = wearableBySlot(_this.state.wearableItemTypes, aavegotchi, slot);
-        const wearableListings = _.orderBy(_.filter(_this.state.wearableListings, { 'erc1155TypeId': key, 'cancelled': false, 'sold': false }), 'priceInWei', 'asc');
+        let wearableListings = _.orderBy(_.filter(_this.state.wearableListings, { 'erc1155TypeId': key, 'cancelled': false, 'sold': false }), 'price', 'asc');
 
         let comparisonWearableScore = 0;
         let comparisonWearableName = 'Empty';
@@ -155,7 +160,7 @@ class Recommendations extends Component {
 
         if (wearableListings.length > 0) {
           cheapestListing = {
-            text: (wearableListings[0].priceInWei / 1000000000000000000).toFixed(),
+            text: `${wearableListings[0].price} (${wearableListings.length})`,
             link: `https://aavegotchi.com/baazaar/erc1155/${wearableListings[0].listingId}`
           }
         }
