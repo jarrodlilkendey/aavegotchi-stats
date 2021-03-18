@@ -231,7 +231,7 @@ class Recommendations extends Component {
           <p>The highest recommended wearables for <i>{aavegotchi.name}</i> are based on the <b>Score</b> value which is determined by the wearable's impact on the traits of <i>{aavegotchi.name}</i>, the rarity of the wearable and any existing wearables <i>{aavegotchi.name}</i> has equipped in the relevant slot.</p>
           <p>Wearable prices are shown in GHST out of the {this.state.wearableListings.length} most recent wearable listings.</p>
           <div style={{ height: '600px', width: '100%' }}>
-            <DataGrid rows={rows} columns={columns} pageSize={50} density="compact" />
+            <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" />
           </div>
           <p>Note: boosts from <a href='https://wiki.aavegotchi.com/en/sets'>Wearable Sets</a> have not yet been implemented into this tool.</p>
         </div>
@@ -302,8 +302,8 @@ class Recommendations extends Component {
         let aavegotchi =_.find(this.state.myAavegotchis, ['tokenId', key]);
         let svgElement = {__html: this.state.mySvgObjects[key]};
         return (
-          <div className="col-2" key={`svgcard${key}`}>
-            <div className="card" style={ { width: '12rem'} }>
+          <div className="col d-flex align-items-stretch" key={`svgcard${key}`}>
+            <div className="card" style={ { width: '12rem', margin: '10px'} }>
               <div className="card-img-top" dangerouslySetInnerHTML={svgElement}>
               </div>
               <div className="card-body">
@@ -333,18 +333,18 @@ class Recommendations extends Component {
   render() {
     return(
       <div>
-        <h1>Recommendations</h1>
-        <h2>Enter an Aavegotchi Account</h2>
-        <p>Load the Aavegotchis from your account to discover recommended wearables from the Aavegotchi Baazaar.</p>
-        <form className="row g-3" onSubmit={this.retrieveAavegotchis}>
-          <div className="col-12">
+        <h1>Aavegotchi Wearable Recommendations Engine</h1>
+        <p>Enter an account to retrieve the Aavegotchis from to discover recommended wearables out of the {Object.keys(this.state.wearableItemTypes).length} available wearables.</p>
+        <form onSubmit={this.retrieveAavegotchis}>
+          <div class="mb-3">
             <label htmlFor="account" className="form-label"><b>Account</b></label>
-            <input type="text" className="form-control" id="account" placeholder="Account" value={this.state.address} onChange={this.onAddressChange} />
+            <input type="text" className="form-control" id="account" placeholder="Enter an Account" value={this.state.address} onChange={this.onAddressChange} />
           </div>
-          <div className="col-12">
+          <div class="mb-3">
             <button type="submit" className="btn btn-primary">Retrieve Aavegotchis</button>
           </div>
         </form>
+
         {this.renderAavegotchiSvgs()}
         {this.renderSelectedAavegotchi()}
         {this.renderRecommendations()}

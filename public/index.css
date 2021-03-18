@@ -2,9 +2,63 @@ body {
   min-height: 100vh;
   position: relative;
   padding-bottom: 58px;
+  background-color: #2f3136 !important;
+}
+
+h1, h2, h3, h4, h5, p, li, b, footer a, p a, .nav-link, div .card, p .text-muted, label {
+  font-family: monospace, monospace;
+  background-color: #2f3136 !important;
+  color: #ffffff !important;
+}
+
+div .card {
+  font-family: monospace, monospace;
+  background-color: #2f3136;
+  color: #ffffff;
+  border-color: #000;
+  border-width: medium;
+}
+
+input[type="text"],
+select.form-control,
+input[type="text"]:focus,
+select.form-control:focus {
+  background-color: #242529;
+  border-color: #000000;
+  color: #ffffff;
+  padding: 10px;
 }
 
 footer {
   position: absolute;
   bottom: 0;
+}
+
+.MuiDataGrid-columnsContainer, .MuiDataGrid-mainGridContainer, .MuiDataGrid-dataContainer, .MuiDataGrid-colCellWrapper	{
+  background-color: black;
+  color: white;
+}
+
+.Mui-even .MuiDataGrid-cell, .Mui-even .MuiDataGrid-cell a {
+  background-color: #F2F4F4;
+  color: black;
+}
+
+.Mui-odd .MuiDataGrid-cell, .Mui-odd .MuiDataGrid-cell a {
+  background-color: #EAECEE;
+  color: black;
+}
+
+.MuiDataGrid-sortIcon {
+  color: white;
+}
+
+.MuiSelect-nativeInput {
+  background-color: green;
+  color: purple;
+}
+
+.MuiDataGrid-footer, .MuiDataGrid-footer p, .MuiSelect-select, .MuiIconButton-root {
+  background-color: black !important;
+  color: white !important;
 }
