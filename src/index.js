@@ -5,6 +5,7 @@ import reportWebVitals from './reportWebVitals';
 import Recommendations from './components/Recommendations';
 import Credits from './components/Credits';
 import NavBar from './components/NavBar';
+import Leaderboards from './components/Leaderboards';
 
 import {
   BrowserRouter as Router,
@@ -13,7 +14,8 @@ import {
 } from "react-router-dom";
 
 const pages = [
-  { path: '/', name: 'Home' },
+  { path: '/', name: 'Recommendations' },
+  { path: '/leaderboards', name: 'Leaderboards' },
 ];
 
 ReactDOM.render(
@@ -23,6 +25,10 @@ ReactDOM.render(
         <NavBar pages={pages} />
 
         <Switch>
+           <Route path="/leaderboards">
+             <Leaderboards />
+           </Route>
+
            <Route path="/">
              <Recommendations />
            </Route>
