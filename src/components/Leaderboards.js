@@ -51,7 +51,7 @@ class Leaderboards extends Component {
       {
         query: `
         {
-          aavegotchis(first: 100, orderBy: baseRarityScore, orderDirection: desc) {
+          aavegotchis(first: 100, orderBy: modifiedRarityScore, orderDirection: desc) {
             id
             owner {
               id
@@ -63,6 +63,7 @@ class Leaderboards extends Component {
             kinship
             name
             baseRarityScore
+            modifiedRarityScore
             numericTraits
             experience
           }
@@ -91,6 +92,7 @@ class Leaderboards extends Component {
             kinship
             name
             baseRarityScore
+            modifiedRarityScore
             numericTraits
             experience
           }
@@ -119,6 +121,7 @@ class Leaderboards extends Component {
             kinship
             name
             baseRarityScore
+            modifiedRarityScore
             numericTraits
             experience
           }
@@ -148,7 +151,8 @@ class Leaderboards extends Component {
           { field: 'eyeColor', headerName: 'EC', width: 90 },
           { field: 'kinship', headerName: 'Kinship', width: 100 },
           { field: 'experience', headerName: 'EXP', width: 90 },
-          { field: 'brs', headerName: 'Base Rarity Score', width: 170 }
+          { field: 'brs', headerName: 'BRS', width: 90 },
+          { field: 'modifiedRarityScore', headerName: 'MRS', width: 90 },
         ];
         break;
       case 1:
@@ -165,6 +169,7 @@ class Leaderboards extends Component {
           { field: 'eyeColor', headerName: 'EC', width: 90 },
           { field: 'experience', headerName: 'EXP', width: 90 },
           { field: 'brs', headerName: 'BRS', width: 90 },
+          { field: 'modifiedRarityScore', headerName: 'MRS', width: 90 },
           { field: 'kinship', headerName: 'Kinship', width: 170 },
         ];
         break;
@@ -182,6 +187,7 @@ class Leaderboards extends Component {
           { field: 'eyeColor', headerName: 'EC', width: 90 },
           { field: 'kinship', headerName: 'Kinship', width: 100 },
           { field: 'brs', headerName: 'BRS', width: 90 },
+          { field: 'modifiedRarityScore', headerName: 'MRS', width: 90 },
           { field: 'experience', headerName: 'Experience', width: 170 },
         ];
         break;
@@ -207,6 +213,7 @@ class Leaderboards extends Component {
           kinship: aavegotchi.kinship,
           experience: aavegotchi.experience,
           brs: aavegotchi.baseRarityScore,
+          modifiedRarityScore: aavegotchi.modifiedRarityScore,
         });
       });
 
