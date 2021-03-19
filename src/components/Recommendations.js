@@ -193,7 +193,7 @@ class Recommendations extends Component {
           headerName: 'Cheapest',
           width: 120,
           renderCell: (params: GridCellParams) => (
-            <a href={(params.value.link)} target="_blank" rel="noreferrer">
+            <a href={(params.value.link)} target="_blank">
               {(params.value.text)}
             </a>
           )
