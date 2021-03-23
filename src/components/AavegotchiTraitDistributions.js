@@ -211,7 +211,22 @@ class AavegotchiTraitDistributions extends Component {
               }
             }
           }
-        }
+        },
+        xAxis: {
+          title: {
+            text: 'Base Trait Value'
+          }
+        },
+        yAxis: {
+          title: {
+            text: 'Gotchi Count'
+          }
+        },
+        tooltip: {
+          pointFormat: '{series.name} Trait of {point.x}: <b>{point.y}</b><br/>',
+          valueSuffix: ' Gotchis',
+          shared: true
+        },
       }
 
       return (
