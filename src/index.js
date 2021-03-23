@@ -6,6 +6,7 @@ import Recommendations from './components/Recommendations';
 import Credits from './components/Credits';
 import NavBar from './components/NavBar';
 import Leaderboards from './components/Leaderboards';
+import AavegotchiTraitDistributions from './components/AavegotchiTraitDistributions';
 
 import {
   BrowserRouter as Router,
@@ -16,6 +17,7 @@ import {
 const pages = [
   { path: '/', name: 'Recommendations' },
   { path: '/leaderboards', name: 'Leaderboards' },
+  { path: '/traits', name: 'Traits Distribution' },
 ];
 
 ReactDOM.render(
@@ -25,16 +27,21 @@ ReactDOM.render(
         <NavBar pages={pages} />
 
         <Switch>
-           <Route path="/leaderboards">
-             <Leaderboards />
-           </Route>
+          <Route path="/leaderboards">
+            <Leaderboards />
+          </Route>
 
-           <Route path="/">
-             <Recommendations />
-           </Route>
-         </Switch>
+          <Route path="/traits">
+            <AavegotchiTraitDistributions />
+          </Route>
 
-         <Credits />
+         <Route expath="/">
+           <Recommendations />
+         </Route>
+
+        </Switch>
+
+       <Credits />
       </div>
     </Router>
   </React.StrictMode>,
