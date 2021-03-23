@@ -8,6 +8,7 @@ import contract from '../config/aavegotchiContract.json';
 import { connectToMatic } from '../util/MaticClient';
 
 const axios = require('axios');
+const _ = require('lodash');
 
 class Leaderboards extends Component {
   constructor(props) {
@@ -15,7 +16,8 @@ class Leaderboards extends Component {
 
     this.state = {
       modes: ['Rarity', 'Kinship', 'Experience' ], selectedMode: 0,
-      rarityLeaders: [], kinshipLeaders: [], xpLeaders: []
+      rarityLeaders: [], kinshipLeaders: [], xpLeaders: [],
+      kinshipOwnersPotions: {}
     };
 
     this.handleLeaderboardSelect = this.handleLeaderboardSelect.bind(this);
@@ -75,6 +77,8 @@ class Leaderboards extends Component {
   }
 
   async retrieveKinshipLeaders() {
+    const _this = this;
+
     const kinshipLeaders = await axios.post(
       'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
       {
@@ -100,7 +104,42 @@ class Leaderboards extends Component {
       }
     );
 
-    this.setState({ kinshipLeaders: kinshipLeaders.data.data.aavegotchis });
+    console.log(kinshipLeaders);
+
+    const maticPOSClient = await connectToMatic();
+    const aavegotchiContract = new maticPOSClient.web3Client.web3.eth.Contract(aavegotchiContractAbi, contract.address);
+
+    let ownerIds = [];
+    let smallPotionTokenIds = [];
+    let largePotionTokenIds = [];
+
+    kinshipLeaders.data.data.aavegotchis.map(function(aavegotchi, index){
+      if (!_.includes(ownerIds, aavegotchi.owner.id)) {
+        ownerIds.push(aavegotchi.owner.id);
+        smallPotionTokenIds.push('126');
+        largePotionTokenIds.push('127');
+      }
+    });
+
+    let kinshipOwnersPotions = {...this.state.kinshipOwnersPotions};
+
+    aavegotchiContract.methods.balanceOfBatch(ownerIds, smallPotionTokenIds).call().then(function (items) {
+      ownerIds.map(function(ownerId, index) {
+        kinshipOwnersPotions[ownerId] = {...kinshipOwnersPotions[ownerId], small: parseInt(items[index])}
+      });
+    });
+
+    aavegotchiContract.methods.balanceOfBatch(ownerIds, largePotionTokenIds).call().then(function (items) {
+      ownerIds.map(function(ownerId, index) {
+        kinshipOwnersPotions[ownerId] = {...kinshipOwnersPotions[ownerId], large: parseInt(items[index])}
+      });
+    });
+
+
+    this.setState({
+      kinshipLeaders: kinshipLeaders.data.data.aavegotchis,
+      kinshipOwnersPotions: kinshipOwnersPotions
+    });
   }
 
   async retrieveXPLeaders() {
@@ -133,6 +172,8 @@ class Leaderboards extends Component {
   }
 
   renderLeaderboard() {
+    const _this = this;
+
     let leaders = [];
     let columns = [];
 
@@ -170,7 +211,11 @@ class Leaderboards extends Component {
           { field: 'experience', headerName: 'EXP', width: 90 },
           { field: 'brs', headerName: 'BRS', width: 90 },
           { field: 'modifiedRarityScore', headerName: 'MRS', width: 90 },
-          { field: 'kinship', headerName: 'Kinship', width: 170 },
+          { field: 'kinship', headerName: 'Kinship', width: 130 },
+          { field: 'owner', headerName: 'Owner', width: 240 },
+          { field: 'ownerSmallKinshipPotion', headerName: 'Small Potions', width: 90 },
+          { field: 'ownerLargeKinshipPotion', headerName: 'Large Potions', width: 90 },
+          { field: 'ownerSpendableKinshipPoints', headerName: 'Total Potion Points', width: 90 },
         ];
         break;
       case 2:
@@ -200,7 +245,7 @@ class Leaderboards extends Component {
     if (leaders.length > 0) {
       let rows = [];
       leaders.map(function(aavegotchi, index){
-        rows.push({
+        let row = {
           rank: index + 1,
           id: aavegotchi.id,
           name: aavegotchi.name,
@@ -214,7 +259,16 @@ class Leaderboards extends Component {
           experience: aavegotchi.experience,
           brs: aavegotchi.baseRarityScore,
           modifiedRarityScore: aavegotchi.modifiedRarityScore,
-        });
+          owner: aavegotchi.owner.id,
+        };
+
+        if (_this.state.selectedMode == 1) {
+          row['ownerSmallKinshipPotion'] = _this.state.kinshipOwnersPotions[aavegotchi.owner.id].small;
+          row['ownerLargeKinshipPotion'] = _this.state.kinshipOwnersPotions[aavegotchi.owner.id].large;
+          row['ownerSpendableKinshipPoints'] = (_this.state.kinshipOwnersPotions[aavegotchi.owner.id].small * 2) + (_this.state.kinshipOwnersPotions[aavegotchi.owner.id].large * 10);
+        }
+
+        rows.push(row);
       });
 
       return (
@@ -226,6 +280,7 @@ class Leaderboards extends Component {
   }
 
   render() {
+    console.log('kinshipOwnersPotions', this.state.kinshipOwnersPotions);
     return(
       <div>
         <h1>Aavegotchi {this.state.modes[this.state.selectedMode]} Leaderboard</h1>
@@ -239,3 +294,18 @@ class Leaderboards extends Component {
 }
 
 export default Leaderboards;
+
+// https://www.lpga.com/tournaments/lpga-drive-on-championship-ocala/results
+// select an aavegotchi name and expand to see svg
+// button to make an offer
+// offer will persist on website, user with address holding aavegotchi can search for offers using their address
+// shows offers to all their listings
+// erc721/ERC1155 escrow contract for trades
+
+// winner for rarity farming
+// winner for Kinship
+// show kinship potions for sale
+// show high kinship gotchis for sale
+// show high rarity gotchies for sale
+// show xp potions for sale
+// show high xp gotchies for sale
