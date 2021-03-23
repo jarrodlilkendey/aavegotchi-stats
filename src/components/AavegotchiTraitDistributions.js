@@ -225,7 +225,7 @@ class AavegotchiTraitDistributions extends Component {
         tooltip: {
           pointFormat: '{series.name} Trait of {point.x}: <b>{point.y}</b><br/>',
           valueSuffix: ' Gotchis',
-          shared: true
+          shared: false
         },
       }
 
