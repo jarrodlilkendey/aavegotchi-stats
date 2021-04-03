@@ -20,8 +20,10 @@ div .card {
 }
 
 input[type="text"],
+input[type="number"],
 select.form-control,
 input[type="text"]:focus,
+input[type="number"]:focus,
 select.form-control:focus {
   background-color: #242529;
   border-color: #000000;

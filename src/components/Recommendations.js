@@ -11,6 +11,7 @@ import { scoreWearable, wearablePositionLabel, wearableTraitModifiers, wearableB
 import wearableItemTypes from '../data/wearables/wearables.json';
 
 const _ = require('lodash');
+const axios = require('axios');
 
 // enter your aavegotchi number
 
@@ -32,7 +33,7 @@ class Recommendations extends Component {
     this.state = {
       address: '',
       myAavegotchis: [], mySvgObjects: {},
-      wearableListings: [], wearableListingsPagination: 1500,
+      wearableListings: [], wearableListingsPagination: 1000, wearableListingPages: 6,
       wearableItemTypes: wearableItemTypes, wearableItemScores: {},
 
       slots: {
@@ -44,7 +45,9 @@ class Recommendations extends Component {
         'Pet': false,
         'Background': false,
         'Any': true,
-      }
+      },
+
+      maxPrice: '',
     };
 
     this.retrieveAavegotchis = this.retrieveAavegotchis.bind(this);
@@ -54,11 +57,17 @@ class Recommendations extends Component {
 
     this.handleSlotChange = this.handleSlotChange.bind(this);
     this.onAddressChange = this.onAddressChange.bind(this);
+    this.onMaxPriceChange = this.onMaxPriceChange.bind(this);
   }
 
   onAddressChange(event) {
     event.preventDefault();
     this.setState({ address: event.target.value });
+  }
+
+  onMaxPriceChange(event) {
+    event.preventDefault();
+    this.setState({ maxPrice: event.target.value });
   }
 
   handleSlotChange(slot) {
@@ -78,7 +87,7 @@ class Recommendations extends Component {
 
     this.setState({ aavegotchiContract: aavegotchiContract });
 
-    this.retrieveWearableListings(aavegotchiContract);
+    this.retrieveGraphWearableListings();
   }
 
   retrieveAavegotchis(event) {
@@ -100,22 +109,51 @@ class Recommendations extends Component {
     });
   }
 
-  retrieveWearableListings(aavegotchiContract) {
+  wearablesListingsGraphQuery(skip) {
+    let query = `{
+      erc1155Listings(
+        first: 1000,
+        skip: 0,
+        where: {
+         category: 0,
+         sold: false,
+         cancelled: false
+        },
+        orderBy:timeCreated,
+        orderDirection:desc
+      ) {
+        id
+        priceInWei
+        erc1155TypeId
+        timeCreated
+      }
+    }`;
+
+    return query;
+  }
+
+  async retrieveGraphWearableListings() {
     const _this = this;
 
-    aavegotchiContract.methods.getERC1155Listings(0, "listed", this.state.wearableListingsPagination).call().then(function (listings) {
-      let wearableListings = _.filter(listings, { 'cancelled': false, 'sold': false });
-      wearableListings = [...wearableListings];
-      wearableListings.map(function(wearable, index){
-        const price = (parseFloat(wearable.priceInWei) / 1000000000000000000).toFixed();
-        wearableListings[index] = {...wearable, price: parseFloat(price) };
-      });
+    let listings = [...this.state.wearableListings];
 
-      _this.setState({ wearableListings: wearableListings });
-      // console.log(listings);
-    }).catch(function (error) {
-      console.log(error);
+    for (let i = 0; i < this.state.wearableListingPages; i++) {
+      const wearableListings = await axios.post(
+        'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+        {
+          query: this.wearablesListingsGraphQuery(i * _this.state.wearableListingsPagination)
+        }
+      );
+
+      listings.push(...wearableListings.data.data.erc1155Listings);
+    }
+
+    listings.map(function(wearable, index){
+      const price = (parseFloat(wearable.priceInWei) / 1000000000000000000).toFixed();
+      listings[index] = {...wearable, price: parseFloat(price) };
     });
+
+     _this.setState({ wearableListings: listings });
   }
 
   selectAavegotchi(aavegotchiId) {
@@ -135,10 +173,27 @@ class Recommendations extends Component {
     });
   }
 
+  withinPriceFilter(wearableListings) {
+    if (this.state.maxPrice == '') {
+      return true;
+    }
+
+    if (wearableListings.length == 0) {
+      return false;
+    }
+
+    let cheapest = wearableListings[0].price;
+    if (cheapest <= this.state.maxPrice) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   // radio button to include/exclude wearable rarity in calculation
   renderRecommendations() {
     const _this = this;
-    if (this.state.selectedAavegotchiId && this.state.wearableItemTypes && this.state.wearableListings.length === this.state.wearableListingsPagination) {
+    if (this.state.selectedAavegotchiId && this.state.wearableItemTypes && this.state.wearableListings.length > 0) {
       const aavegotchi = _.find(_this.state.myAavegotchis, ['tokenId', _this.state.selectedAavegotchiId]);
 
       let rows = [];
@@ -148,7 +203,7 @@ class Recommendations extends Component {
         const score = _this.state.wearableItemScores[key];
         const slot = wearablePositionLabel(wearable);
         const comparisonWearable = wearableBySlot(_this.state.wearableItemTypes, aavegotchi, slot);
-        let wearableListings = _.orderBy(_.filter(_this.state.wearableListings, { 'erc1155TypeId': key, 'cancelled': false, 'sold': false }), 'price', 'asc');
+        let wearableListings = _.orderBy(_.filter(_this.state.wearableListings, { 'erc1155TypeId': key }), 'price', 'asc');
 
         let comparisonWearableScore = 0;
         let comparisonWearableName = 'Empty';
@@ -161,11 +216,11 @@ class Recommendations extends Component {
         if (wearableListings.length > 0) {
           cheapestListing = {
             text: `${wearableListings[0].price} (${wearableListings.length})`,
-            link: `https://aavegotchi.com/baazaar/erc1155/${wearableListings[0].listingId}`
+            link: `https://aavegotchi.com/baazaar/erc1155/${wearableListings[0].id}`
           }
         }
 
-        if (_this.state.slots.Any || _this.state.slots[slot]) {
+        if ((_this.state.slots.Any || _this.state.slots[slot]) && _this.withinPriceFilter(wearableListings)) {
           rows.push({
             id: key,
             name: wearable.name,
@@ -226,6 +281,13 @@ class Recommendations extends Component {
                 );
               }, this)
             }
+          </div>
+          <div>
+            <p><b>Price Filter</b></p>
+            <div className="form-group">
+              <label htmlFor="maxPrice">Max. Price (GHST)</label>
+              <input type="number" id="maxPrice" className="form-control" value={_this.state.maxPrice} onChange={_this.onMaxPriceChange} />
+            </div>
           </div>
           <h3>Results</h3>
           <p>The highest recommended wearables for <i>{aavegotchi.name}</i> are based on the <b>Score</b> value which is determined by the wearable's impact on the traits of <i>{aavegotchi.name}</i>, the rarity of the wearable and any existing wearables <i>{aavegotchi.name}</i> has equipped in the relevant slot.</p>
@@ -336,11 +398,11 @@ class Recommendations extends Component {
         <h1>Aavegotchi Wearable Recommendations Engine</h1>
         <p>Enter an account to retrieve the Aavegotchis from to discover recommended wearables out of the {Object.keys(this.state.wearableItemTypes).length} available wearables.</p>
         <form onSubmit={this.retrieveAavegotchis}>
-          <div class="mb-3">
+          <div className="mb-3">
             <label htmlFor="account" className="form-label"><b>Account</b></label>
             <input type="text" className="form-control" id="account" placeholder="Enter an Account" value={this.state.address} onChange={this.onAddressChange} />
           </div>
-          <div class="mb-3">
+          <div className="mb-3">
             <button type="submit" className="btn btn-primary">Retrieve Aavegotchis</button>
           </div>
         </form>
