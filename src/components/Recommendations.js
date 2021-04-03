@@ -8,6 +8,8 @@ import contract from '../config/aavegotchiContract.json';
 import { connectToMatic } from '../util/MaticClient';
 import { scoreWearable, wearablePositionLabel, wearableTraitModifiers, wearableBRSModifierLabel, wearableBySlot } from '../util/AavegotchiMath';
 
+import Loading from './Loading';
+
 import wearableItemTypes from '../data/wearables/wearables.json';
 
 const _ = require('lodash');
@@ -35,6 +37,7 @@ class Recommendations extends Component {
       myAavegotchis: [], mySvgObjects: {},
       wearableListings: [], wearableListingsPagination: 1000, wearableListingPages: 6,
       wearableItemTypes: wearableItemTypes, wearableItemScores: {},
+      loading: false,
 
       slots: {
         'Body': false,
@@ -93,6 +96,9 @@ class Recommendations extends Component {
     event.preventDefault();
 
     const _this = this;
+
+    _this.setState({ loading: true });
+
     this.state.aavegotchiContract.methods.allAavegotchisOfOwner(this.state.address).call().then(function (myAavegotchis) {
       _this.setState({ myAavegotchis: myAavegotchis });
 
@@ -105,6 +111,8 @@ class Recommendations extends Component {
           console.log(error);
         });
       }
+
+      _this.setState({ loading: false });
     });
   }
 
@@ -405,7 +413,9 @@ class Recommendations extends Component {
             <button type="submit" className="btn btn-primary">Retrieve Aavegotchis</button>
           </div>
         </form>
-
+        {this.state.loading &&
+          <Loading message="Loading Aavegotchis from Matic RPC..." />
+        }
         {this.renderAavegotchiSvgs()}
         {this.renderSelectedAavegotchi()}
         {this.renderRecommendations()}

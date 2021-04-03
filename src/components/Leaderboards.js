@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 
 import { DataGrid } from '@material-ui/data-grid';
 
-import aavegotchiContractAbi from '../abi/diamond.json';
-import contract from '../config/aavegotchiContract.json';
+import { retrieveAllGotchis } from '../util/Graph';
+import { calculateSeason1Reward } from '../util/AavegotchiMath';
 
-import { connectToMatic } from '../util/MaticClient';
+import Loading from './Loading';
 
 const axios = require('axios');
 const _ = require('lodash');
@@ -17,224 +17,231 @@ class Leaderboards extends Component {
     this.state = {
       modes: ['Rarity', 'Kinship', 'Experience' ], selectedMode: 0,
       rarityLeaders: [], kinshipLeaders: [], xpLeaders: [],
-      kinshipOwnersPotions: {}
+      loading: true,
+      filter: ''
     };
 
     this.handleLeaderboardSelect = this.handleLeaderboardSelect.bind(this);
-
-    this.retrieveLeaders = this.retrieveLeaders.bind(this);
-
-    this.retrieveRarityLeaders = this.retrieveRarityLeaders.bind(this);
-    this.retrieveKinshipLeaders = this.retrieveKinshipLeaders.bind(this);
-    this.retrieveXPLeaders = this.retrieveXPLeaders.bind(this);
+    this.onFilterChange = this.onFilterChange.bind(this);
 
     this.renderLeaderboard = this.renderLeaderboard.bind(this);
   }
 
   async componentDidMount() {
-    const maticPOSClient = await connectToMatic();
-    this.setState({ maticPOSClient: maticPOSClient});
-    this.retrieveLeaders();
+    retrieveAllGotchis()
+      .then((gotchis) => {
+        for (var g = 0; g < gotchis.length; g++) {
+          gotchis[g].brs = parseInt(gotchis[g].baseRarityScore);
+          gotchis[g].mrs = parseInt(gotchis[g].modifiedRarityScore);
+          gotchis[g].kins = parseInt(gotchis[g].kinship);
+          gotchis[g].xp = parseInt(gotchis[g].experience);
+        }
+
+        this.setState({ gotchis, loading: false });
+        this.calculateLeaders();
+        this.calculateTopGotchisAndOwners();
+      });
   }
 
   handleLeaderboardSelect(mode) {
     this.setState({ selectedMode: mode });
   }
 
-  retrieveLeaders() {
-    this.retrieveRarityLeaders();
-    this.retrieveKinshipLeaders();
-    this.retrieveXPLeaders();
+  onFilterChange(event) {
+    event.preventDefault();
+    this.setState({ filter: event.target.value });
   }
 
-  async retrieveRarityLeaders() {
-    const rarityLeaders = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
-      {
-        query: `
-        {
-          aavegotchis(first: 100, orderBy: modifiedRarityScore, orderDirection: desc) {
-            id
-            owner {
-              id
-            }
-            portal {
-              id
-            }
-            hauntId
-            kinship
-            name
-            baseRarityScore
-            modifiedRarityScore
-            numericTraits
-            experience
-          }
-        }`
+  calculateLeaders() {
+    let rarityLeaders = [..._.orderBy(this.state.gotchis, ['mrs'], ['desc'])];
+    let kinshipLeaders = [..._.orderBy(this.state.gotchis, ['kins'], ['desc'])];
+    let experienceLeaders = [..._.orderBy(this.state.gotchis, ['xp'], ['desc'])];
+
+    console.log('rarity', rarityLeaders);
+    console.log('kinship', kinshipLeaders);
+    console.log('experience', experienceLeaders);
+
+    this.setState({ rarityLeaders, kinshipLeaders, experienceLeaders });
+  }
+
+  filterGotchi(aavegotchi) {
+    let filter = this.state.filter.toLowerCase();
+
+    // ignore blank filter
+    if (filter.length == 0) {
+      return true;
+    }
+
+    // owner address filter
+    if (filter.startsWith('0x')) {
+      if (aavegotchi.owner.id.toLowerCase().startsWith(filter)) {
+        return true;
+      } else {
+        return false;
       }
-    );
+    }
 
-    this.setState({ rarityLeaders: rarityLeaders.data.data.aavegotchis });
+    // id filter
+    if (!isNaN(filter)) {
+      if (aavegotchi.id == filter) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    // name filter
+    if (aavegotchi.name.toLowerCase().startsWith(filter)) {
+      return true;
+    }
+
+    return false;
   }
 
-  async retrieveKinshipLeaders() {
+  calculateTopGotchisAndOwners() {
     const _this = this;
+    let topGotchis = [];
 
-    const kinshipLeaders = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
-      {
-        query: `
-        {
-          aavegotchis(first: 100, orderBy: kinship, orderDirection: desc) {
-            id
-            owner {
-              id
-            }
-            portal {
-              id
-            }
-            hauntId
-            kinship
-            name
-            baseRarityScore
-            modifiedRarityScore
-            numericTraits
-            experience
-          }
-        }`
-      }
-    );
+    this.state.gotchis.map(function(gotchi, index){
+      let rarityReward = parseFloat(
+        calculateSeason1Reward(
+          0, _.findIndex(_this.state.rarityLeaders, ['id', gotchi.id]) + 1
+        ).toFixed(2)
+      );
 
-    console.log(kinshipLeaders);
+      let kinshipReward = parseFloat(
+        calculateSeason1Reward(
+          1, _.findIndex(_this.state.kinshipLeaders, ['id', gotchi.id]) + 1
+        ).toFixed(2)
+      );
 
-    const maticPOSClient = await connectToMatic();
-    const aavegotchiContract = new maticPOSClient.web3Client.web3.eth.Contract(aavegotchiContractAbi, contract.address);
+      let experienceReward = parseFloat(
+        calculateSeason1Reward(
+          2, _.findIndex(_this.state.experienceLeaders, ['id', gotchi.id]) + 1
+        ).toFixed(2)
+      );
 
-    let ownerIds = [];
-    let smallPotionTokenIds = [];
-    let largePotionTokenIds = [];
-
-    kinshipLeaders.data.data.aavegotchis.map(function(aavegotchi, index){
-      if (!_.includes(ownerIds, aavegotchi.owner.id)) {
-        ownerIds.push(aavegotchi.owner.id);
-        smallPotionTokenIds.push('126');
-        largePotionTokenIds.push('127');
-      }
-    });
-
-    let kinshipOwnersPotions = {...this.state.kinshipOwnersPotions};
-
-    aavegotchiContract.methods.balanceOfBatch(ownerIds, smallPotionTokenIds).call().then(function (items) {
-      ownerIds.map(function(ownerId, index) {
-        kinshipOwnersPotions[ownerId] = {...kinshipOwnersPotions[ownerId], small: parseInt(items[index])}
+      topGotchis.push({
+        id: gotchi.id,
+        name: gotchi.name,
+        rarityReward: rarityReward,
+        kinshipReward: kinshipReward,
+        experienceReward: experienceReward,
+        totalReward: parseFloat((rarityReward+kinshipReward+experienceReward).toFixed(2)),
+        owner: gotchi.owner.id
       });
     });
 
-    aavegotchiContract.methods.balanceOfBatch(ownerIds, largePotionTokenIds).call().then(function (items) {
-      ownerIds.map(function(ownerId, index) {
-        kinshipOwnersPotions[ownerId] = {...kinshipOwnersPotions[ownerId], large: parseInt(items[index])}
-      });
+    topGotchis = _.orderBy(topGotchis, ['totalReward'], ['desc']);
+    this.setState({ topGotchis });
+
+    let topOwners = {};
+    this.state.topGotchis.map(function(gotchi, index) {
+      if (!topOwners.hasOwnProperty(gotchi.owner)) {
+        topOwners[gotchi.owner] = {
+          gotchiCount: 1,
+          totalReward: parseFloat(gotchi.totalReward.toFixed(2)),
+          id: gotchi.owner,
+        };
+      } else {
+        topOwners[gotchi.owner].gotchiCount++;
+        topOwners[gotchi.owner].totalReward = parseFloat((topOwners[gotchi.owner].totalReward + gotchi.totalReward).toFixed(2));
+      }
     });
 
+    let topOwnersList = [];
+    Object.keys(topOwners).map(function(key, index) {
+      topOwnersList.push(topOwners[key]);
+    })
+    topOwnersList = _.orderBy(topOwnersList, ['totalReward'], ['desc']);
 
-    this.setState({
-      kinshipLeaders: kinshipLeaders.data.data.aavegotchis,
-      kinshipOwnersPotions: kinshipOwnersPotions
-    });
+    console.log(topGotchis);
+    console.log(topOwnersList);
+
+    this.setState({ topOwners: topOwnersList });
   }
 
-  async retrieveXPLeaders() {
-    const xpLeaders = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
-      {
-        query: `
-        {
-          aavegotchis(first: 100, orderBy: experience, orderDirection: desc) {
-            id
-            owner {
-              id
-            }
-            portal {
-              id
-            }
-            hauntId
-            kinship
-            name
-            baseRarityScore
-            modifiedRarityScore
-            numericTraits
-            experience
-          }
-        }`
-      }
-    );
+  renderTopGotchis() {
+    if (this.state.topGotchis && this.state.topGotchis.length > 0) {
+      let columns = [
+        { field: 'rank', headerName: 'Rank', width: 90 },
+        { field: 'id', headerName: 'Gotchi ID', width: 120 },
+        { field: 'name', headerName: 'Name', width: 240 },
+        { field: 'rarityReward', headerName: 'SZN 1 Rarity Reward', width: 220 },
+        { field: 'kinshipReward', headerName: 'SZN 1 Kinship Reward', width: 220 },
+        { field: 'experienceReward', headerName: 'SZN 1 Experience Reward', width: 220 },
+        { field: 'totalReward', headerName: 'SZN 1 Total Rewards', width: 220 },
+      ];
 
-    this.setState({ xpLeaders: xpLeaders.data.data.aavegotchis });
+      let rows = [];
+      this.state.topGotchis.map(function(gotchi, index){
+        let row = gotchi;
+        row.rank = index + 1;
+        rows.push(row);
+      });
+
+      return (
+        <div>
+          <h2>Top Gotchis By Total Projected Rewards</h2>
+          <div style={{ height: '1080px', width: '100%' }}>
+            <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" />
+          </div>
+        </div>
+      );
+    }
+  }
+
+  renderTopOwners() {
+    if (this.state.topOwners && this.state.topGotchis.length > 0) {
+      let columns = [
+        { field: 'rank', headerName: 'Rank', width: 90 },
+        { field: 'id', headerName: 'Owner', width: 420 },
+        { field: 'gotchiCount', headerName: 'Aavegotchi Count', width: 180 },
+        { field: 'totalReward', headerName: 'SZN 1 Total Rewards', width: 220 },
+      ];
+
+      let rows = [];
+      this.state.topOwners.map(function(owner, index){
+        let row = owner;
+        row.rank = index + 1;
+        rows.push(owner);
+      });
+
+      return (
+        <div>
+          <h2>Top Owners By Total Projected Rewards</h2>
+          <div style={{ height: '1080px', width: '100%' }}>
+            <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" />
+          </div>
+        </div>
+      );
+    }
   }
 
   renderLeaderboard() {
     const _this = this;
 
     let leaders = [];
-    let columns = [];
+    let columns = [
+      { field: 'rank', headerName: 'Rank', width: 90 },
+      { field: 'reward', headerName: 'SZN 1 Reward', width: 150 },
+      { field: 'id', headerName: 'Gotchi ID', width: 120 },
+      { field: 'name', headerName: 'Name', width: 240 },
+      { field: 'brs', headerName: 'Base Rarity Score', width: 200 },
+      { field: 'modifiedRarityScore', headerName: 'Modified Rarity Score', width: 200 },
+      { field: 'kinship', headerName: 'Kinship', width: 160 },
+      { field: 'experience', headerName: 'Experience', width: 160 },
+    ];
 
     switch (this.state.selectedMode) {
       case 0:
         leaders = this.state.rarityLeaders;
-        columns = [
-          { field: 'rank', headerName: 'Rank', width: 90 },
-          { field: 'id', headerName: 'Gotchi ID', width: 120 },
-          { field: 'name', headerName: 'Name', width: 220 },
-          { field: 'nrg', headerName: 'NRG', width: 90 },
-          { field: 'agg', headerName: 'AGG', width: 90 },
-          { field: 'spk', headerName: 'SPK', width: 90 },
-          { field: 'brn', headerName: 'BRN', width: 90 },
-          { field: 'eyeShape', headerName: 'ES', width: 90 },
-          { field: 'eyeColor', headerName: 'EC', width: 90 },
-          { field: 'kinship', headerName: 'Kinship', width: 100 },
-          { field: 'experience', headerName: 'EXP', width: 90 },
-          { field: 'brs', headerName: 'BRS', width: 90 },
-          { field: 'modifiedRarityScore', headerName: 'MRS', width: 90 },
-        ];
         break;
       case 1:
         leaders = this.state.kinshipLeaders;
-        columns = [
-          { field: 'rank', headerName: 'Rank', width: 90 },
-          { field: 'id', headerName: 'Gotchi ID', width: 120 },
-          { field: 'name', headerName: 'Name', width: 220 },
-          { field: 'nrg', headerName: 'NRG', width: 90 },
-          { field: 'agg', headerName: 'AGG', width: 90 },
-          { field: 'spk', headerName: 'SPK', width: 90 },
-          { field: 'brn', headerName: 'BRN', width: 90 },
-          { field: 'eyeShape', headerName: 'ES', width: 90 },
-          { field: 'eyeColor', headerName: 'EC', width: 90 },
-          { field: 'experience', headerName: 'EXP', width: 90 },
-          { field: 'brs', headerName: 'BRS', width: 90 },
-          { field: 'modifiedRarityScore', headerName: 'MRS', width: 90 },
-          { field: 'kinship', headerName: 'Kinship', width: 130 },
-          { field: 'owner', headerName: 'Owner', width: 240 },
-          { field: 'ownerSmallKinshipPotion', headerName: 'Small Potions', width: 90 },
-          { field: 'ownerLargeKinshipPotion', headerName: 'Large Potions', width: 90 },
-          { field: 'ownerSpendableKinshipPoints', headerName: 'Total Potion Points', width: 90 },
-        ];
         break;
       case 2:
-        leaders = this.state.xpLeaders;
-        columns = [
-          { field: 'rank', headerName: 'Rank', width: 90 },
-          { field: 'id', headerName: 'Gotchi ID', width: 120 },
-          { field: 'name', headerName: 'Name', width: 220 },
-          { field: 'nrg', headerName: 'NRG', width: 90 },
-          { field: 'agg', headerName: 'AGG', width: 90 },
-          { field: 'spk', headerName: 'SPK', width: 90 },
-          { field: 'brn', headerName: 'BRN', width: 90 },
-          { field: 'eyeShape', headerName: 'ES', width: 90 },
-          { field: 'eyeColor', headerName: 'EC', width: 90 },
-          { field: 'kinship', headerName: 'Kinship', width: 100 },
-          { field: 'brs', headerName: 'BRS', width: 90 },
-          { field: 'modifiedRarityScore', headerName: 'MRS', width: 90 },
-          { field: 'experience', headerName: 'Experience', width: 170 },
-        ];
+        leaders = this.state.experienceLeaders;
         break;
       default:
         break;
@@ -245,30 +252,27 @@ class Leaderboards extends Component {
     if (leaders.length > 0) {
       let rows = [];
       leaders.map(function(aavegotchi, index){
-        let row = {
-          rank: index + 1,
-          id: aavegotchi.id,
-          name: aavegotchi.name,
-          nrg: aavegotchi.numericTraits[0],
-          agg: aavegotchi.numericTraits[1],
-          spk: aavegotchi.numericTraits[2],
-          brn: aavegotchi.numericTraits[3],
-          eyeShape: aavegotchi.numericTraits[4],
-          eyeColor: aavegotchi.numericTraits[5],
-          kinship: aavegotchi.kinship,
-          experience: aavegotchi.experience,
-          brs: aavegotchi.baseRarityScore,
-          modifiedRarityScore: aavegotchi.modifiedRarityScore,
-          owner: aavegotchi.owner.id,
-        };
+        if (_this.filterGotchi(aavegotchi)) {
+          let row = {
+            rank: index + 1,
+            id: aavegotchi.id,
+            reward: parseFloat(calculateSeason1Reward(_this.state.selectedMode, index + 1).toFixed(2)),
+            name: aavegotchi.name,
+            nrg: aavegotchi.numericTraits[0],
+            agg: aavegotchi.numericTraits[1],
+            spk: aavegotchi.numericTraits[2],
+            brn: aavegotchi.numericTraits[3],
+            eyeShape: aavegotchi.numericTraits[4],
+            eyeColor: aavegotchi.numericTraits[5],
+            kinship: aavegotchi.kinship,
+            experience: aavegotchi.experience,
+            brs: aavegotchi.baseRarityScore,
+            modifiedRarityScore: aavegotchi.modifiedRarityScore,
+            owner: aavegotchi.owner.id,
+          };
 
-        if (_this.state.selectedMode == 1) {
-          row['ownerSmallKinshipPotion'] = _this.state.kinshipOwnersPotions[aavegotchi.owner.id].small;
-          row['ownerLargeKinshipPotion'] = _this.state.kinshipOwnersPotions[aavegotchi.owner.id].large;
-          row['ownerSpendableKinshipPoints'] = (_this.state.kinshipOwnersPotions[aavegotchi.owner.id].small * 2) + (_this.state.kinshipOwnersPotions[aavegotchi.owner.id].large * 10);
+          rows.push(row);
         }
-
-        rows.push(row);
       });
 
       return (
@@ -280,14 +284,25 @@ class Leaderboards extends Component {
   }
 
   render() {
-    console.log('kinshipOwnersPotions', this.state.kinshipOwnersPotions);
     return(
       <div>
-        <h1>Aavegotchi {this.state.modes[this.state.selectedMode]} Leaderboard</h1>
+        <h1>Aavegotchi Leaderboards</h1>
+        <h2>{this.state.modes[this.state.selectedMode]} Leaderboard</h2>
         <div style={{margin: "10px"}}>
           <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(0)}>Rarity Leaderboard</button> <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(1)}>Kinship Leaderboard</button> <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(2)}>Experience Leaderboard</button>
         </div>
+        <div>
+          <p><b>Filter Aavegotchis in Leaderboard</b></p>
+          <div className="form-group">
+            <input type="text" id="filter" className="form-control" value={this.state.filter} onChange={this.onFilterChange} placeholder="Filter by Owner, Name or Gotchi Id" /><br />
+          </div>
+        </div>
+        {this.state.loading &&
+          <Loading message="Loading Aavegotchis from TheGraph..." />
+        }
         {this.renderLeaderboard()}
+        {this.renderTopGotchis()}
+        {this.renderTopOwners()}
       </div>
     );
   }

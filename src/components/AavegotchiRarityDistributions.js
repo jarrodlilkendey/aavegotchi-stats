@@ -12,16 +12,18 @@ import Loading from './Loading';
 const _ = require('lodash');
 const axios = require('axios');
 
-class AavegotchiTraitDistributions extends Component {
+class AavegotchiRarityDistributions extends Component {
   constructor(props) {
     super(props);
 
-    this.renderTraitsDistribution = this.renderTraitsDistribution.bind(this);
+    this.renderRarityDistribution = this.renderRarityDistribution.bind(this);
+
+    document.title = this.props.title;
 
     this.state = {
-      gotchisByTraitValue: [],
-      traits: ['Energy', 'Aggression', 'Spookiness', 'Brain Size', 'Eye Shape', 'Eye Color'],
+      gotchisByBRS: [],
       aavegotchis: {},
+      minBrs: 0, maxBrs: 0,
       loading: true,
     };
   }
@@ -32,21 +34,40 @@ class AavegotchiTraitDistributions extends Component {
         console.log(gotchis);
 
         let aavegotchis = {};
+        let minBrs = 0;
+        let maxBrs = 0;
+
         for (var a = 0; a < gotchis.length; a++) {
+          let brs = parseInt(gotchis[a].baseRarityScore)
+
           aavegotchis[gotchis[a].id] = gotchis[a];
+          aavegotchis[gotchis[a].id].brs = brs;
         }
 
-        this.setState({ aavegotchis: aavegotchis, summonedGotchis: Object.keys(aavegotchis).length, loading: false });
+        Object.keys(aavegotchis).map(function(id, index) {
+          let aavegotchi = aavegotchis[id];
+
+          if (index == 0) {
+            minBrs = aavegotchi.brs;
+            maxBrs = aavegotchi.brs;
+          } else if (aavegotchi.brs < minBrs) {
+            minBrs = aavegotchi.brs;
+          } else if (aavegotchi.brs > maxBrs) {
+            maxBrs = aavegotchi.brs;
+          }
+        });
+
+        this.setState({ aavegotchis: aavegotchis, summonedGotchis: Object.keys(aavegotchis).length, minBrs, maxBrs, loading: false });
       });
   }
 
-  calculateData(trait) {
+  calculateData() {
     let data = [];
-    for (let tv = 0; tv < 101; tv++) {
-      let filteredAavegotchis = _.filter(this.state.aavegotchis, [`numericTraits[${trait}]`, tv]);
-      let countTv = filteredAavegotchis.length;
-      // console.log(tv, filteredAavegotchis, countTv);
-      data.push([tv, countTv]);
+    for (let brs = this.state.minBrs; brs < this.state.maxBrs+1; brs++) {
+      let filteredAavegotchis = _.filter(this.state.aavegotchis, ['brs', brs]);
+      let countBrs = filteredAavegotchis.length;
+      // console.log(this.state.aavegotchis, brs, filteredAavegotchis, countBrs);
+      data.push([brs, countBrs]);
     }
     return data;
   }
@@ -80,14 +101,14 @@ class AavegotchiTraitDistributions extends Component {
     console.log(listings.data.data.erc721Listings);
   }
 
-  async retrieveGotchis(trait, traitValue) {
-    console.log('trait', trait, 'value', traitValue);
-    const gotchisByTraitValue = _.filter(this.state.aavegotchis, [`numericTraits[${trait}]`, traitValue]);
-    console.log(gotchisByTraitValue);
-    this.setState({ gotchisByTraitValue: gotchisByTraitValue, trait: trait, traitValue: traitValue });
+  async retrieveGotchis(brsValue) {
+    console.log('retrieveGotchis', 'brsValue', brsValue);
+    const gotchisByBRS = _.filter(this.state.aavegotchis, ['baseRarityScore', brsValue.toString()]);
+    console.log(gotchisByBRS);
+    this.setState({ gotchisByBRS: gotchisByBRS, brsValue: brsValue });
 
     let tokenIds = [];
-    gotchisByTraitValue.map(function(a, index) {
+    gotchisByBRS.map(function(a, index) {
       tokenIds.push(a.id);
     });
     this.retrieveListings(tokenIds);
@@ -95,7 +116,7 @@ class AavegotchiTraitDistributions extends Component {
 
   renderGotchis() {
     const _this = this;
-    if (this.state.gotchisByTraitValue.length > 0) {
+    if (this.state.gotchisByBRS.length > 0) {
       const columns = [
         { field: 'id', headerName: 'ID', width: 80 },
         { field: 'name', headerName: 'Name', width: 220 },
@@ -122,7 +143,7 @@ class AavegotchiTraitDistributions extends Component {
       ];
 
       let rows = [];
-      this.state.gotchisByTraitValue.map(function(a, index) {
+      _this.state.gotchisByBRS.map(function(a, index) {
         let row = {
           id: a.id,
           name: a.name,
@@ -155,7 +176,7 @@ class AavegotchiTraitDistributions extends Component {
 
       return (
         <div>
-          <h2>Aavegotchis with {this.state.traits[this.state.trait]} of {this.state.traitValue}</h2>
+          <h2>Aavegotchis with a Base Rarity Score of {this.state.brsValue}</h2>
           <p>Count: {rows.length}</p>
           <div style={{ height: '1080px', width: '100%' }}>
             <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" />
@@ -165,24 +186,19 @@ class AavegotchiTraitDistributions extends Component {
     }
   }
 
-  renderTraitsDistribution() {
+  renderRarityDistribution() {
     const _this = this;
 
     if (Object.keys(this.state.aavegotchis).length > 0) {
       const options = {
         title: {
-          text: 'Summoned Aavegotchis Base Traits Distribution',
+          text: 'Summoned Aavegotchis Base Rarity Score Distribution',
         },
         subtitle: {
           text: `${this.state.summonedGotchis} Summoned Gotchis`
         },
         series: [
-          { data: this.calculateData(0), name: 'Energy' },
-          { data: this.calculateData(1), name: 'Aggression' },
-          { data: this.calculateData(2), name: 'Spookiness' },
-          { data: this.calculateData(3), name: 'Brain Size' },
-          { data: this.calculateData(4), name: 'Eye Shape' },
-          { data: this.calculateData(5), name: 'Eye Color' },
+          { data: this.calculateData(), name: 'BRS' },
         ],
         plotOptions: {
           series: {
@@ -190,7 +206,7 @@ class AavegotchiTraitDistributions extends Component {
             point: {
               events: {
                 click: function () {
-                  _this.retrieveGotchis(this.series.index, this.x);
+                  _this.retrieveGotchis(this.x);
                 }
               }
             }
@@ -207,14 +223,14 @@ class AavegotchiTraitDistributions extends Component {
           }
         },
         tooltip: {
-          pointFormat: '{series.name} Trait of {point.x}: <b>{point.y}</b><br/>',
+          pointFormat: 'BRS of {point.x}: <b>{point.y}</b><br/>',
           valueSuffix: ' Gotchis',
           shared: false
         },
         credits: {
           enabled: true,
-          href: 'https://aavegotchistats.com/traits',
-          text: 'aavegotchistats.com/traits'
+          href: 'https://aavegotchistats.com/rarity',
+          text: 'aavegotchistats.com/rarity'
         }
       }
 
@@ -230,15 +246,15 @@ class AavegotchiTraitDistributions extends Component {
   render() {
     return (
       <div>
-        <h1>Aavegotchi Traits Distribution</h1>
+        <h1>Aavegotchi Rarity Distribution</h1>
         {this.state.loading &&
           <Loading message="Loading Aavegotchis from TheGraph..." />
         }
-        {this.renderTraitsDistribution()}
+        {this.renderRarityDistribution()}
         {this.renderGotchis()}
       </div>
     );
   }
 }
 
-export default AavegotchiTraitDistributions;
+export default AavegotchiRarityDistributions;

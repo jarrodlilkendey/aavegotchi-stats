@@ -212,3 +212,32 @@ export const wearableBySlot = (wearables, aavegotchi, slot) => {
   }
   return null;
 }
+
+export const calculateSeason1Reward = (mode, modeRank) => {
+  const totalGHST = 1400000;
+  let modeGHSTAward = 0;
+  let weight = 0;
+  let reward = 0;
+
+  if (modeRank > 5000) {
+    return 0;
+  }
+
+  if (mode == 0) {
+    modeGHSTAward = 1400000 * 0.7;
+    weight = Math.pow(1 / modeRank, 0.97);
+    reward = weight * 95338.67;
+  } else if (mode == 1) {
+    modeGHSTAward = 1400000 * 0.2;
+    weight = Math.pow(1 / modeRank, 0.76);
+    reward = weight * 9800.93;
+  } else if (mode == 2) {
+    modeGHSTAward = 1400000 * 0.1;
+    weight = Math.pow(1 / modeRank, 0.65);
+    reward = weight * 2592.58;
+  } else {
+    return 0;
+  }
+
+  return reward;
+}
