@@ -51,7 +51,6 @@ class Recommendations extends Component {
     };
 
     this.retrieveAavegotchis = this.retrieveAavegotchis.bind(this);
-    this.retrieveWearableListings = this.retrieveWearableListings.bind(this);
 
     this.selectAavegotchi = this.selectAavegotchi.bind(this);
 
