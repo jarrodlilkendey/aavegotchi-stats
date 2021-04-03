@@ -2,26 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import reportWebVitals from './reportWebVitals';
 
-import AavegotchiNetworth from './components/AavegotchiNetworth';
-import OpenPortalListings from './components/OpenPortalListings';
-import AavegotchiListings from './components/AavegotchiListings';
-import WearableListings from './components/WearableListings';
-import AavegotchiSupply from './components/AavegotchiSupply';
-import Recommendations from './components/Recommendations';
 import Credits from './components/Credits';
 import NavBar from './components/NavBar';
-import ClosedPortalListings from './components/ClosedPortalListings';
-import Leaderboards from './components/Leaderboards';
-import Consumables from './components/Consumables';
-import Raffles from './components/Raffles';
-import PetAll from './components/PetAll';
-import AavegotchiTraitDistributions from './components/AavegotchiTraitDistributions';
-import GotchiDonkeyKong from './components/GotchiDonkeyKong';
-import Voting from './components/Voting';
-import AavegotchiRarityDistributions from './components/AavegotchiRarityDistributions';
-import WhaleWatch from './components/WhaleWatch';
-import Timeline from './components/Timeline';
+
 import Home from './components/Home';
+import Recommendations from './components/Recommendations';
+import Leaderboards from './components/Leaderboards';
+import AavegotchiTraitDistributions from './components/AavegotchiTraitDistributions';
+import AavegotchiRarityDistributions from './components/AavegotchiRarityDistributions';
 import PortalStats from './components/PortalStats';
 
 import {
@@ -55,11 +43,11 @@ ReactDOM.render(
           </Route>
 
           <Route path="/portals">
-            <PortalStats />
+            <PortalStats title="Aavegotchi Portal Statistics" />
           </Route>
 
           <Route path="/traits">
-            <AavegotchiTraitDistributions />
+            <AavegotchiTraitDistributions title="Distribution of Traits in Aavegotchi" />
           </Route>
 
           <Route path="/rarity">
@@ -67,7 +55,7 @@ ReactDOM.render(
           </Route>
 
            <Route path="/">
-             <Home />
+             <Home title="What is AavegotchiStats?" />
            </Route>
          </Switch>
 

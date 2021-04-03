@@ -18,6 +18,8 @@ class AavegotchiTraitDistributions extends Component {
 
     this.renderTraitsDistribution = this.renderTraitsDistribution.bind(this);
 
+    document.title = this.props.title;
+
     this.state = {
       gotchisByTraitValue: [],
       traits: ['Energy', 'Aggression', 'Spookiness', 'Brain Size', 'Eye Shape', 'Eye Color'],

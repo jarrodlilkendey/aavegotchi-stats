@@ -32,6 +32,8 @@ class Recommendations extends Component {
   constructor(props) {
     super(props);
 
+    document.title = this.props.title;
+
     this.state = {
       address: '',
       myAavegotchis: [], mySvgObjects: {},

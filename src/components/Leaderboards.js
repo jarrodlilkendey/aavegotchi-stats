@@ -14,6 +14,8 @@ class Leaderboards extends Component {
   constructor(props) {
     super(props);
 
+    document.title = this.props.title;
+
     this.state = {
       modes: ['Rarity', 'Kinship', 'Experience' ], selectedMode: 0,
       rarityLeaders: [], kinshipLeaders: [], xpLeaders: [],

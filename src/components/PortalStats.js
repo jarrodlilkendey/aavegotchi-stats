@@ -14,6 +14,8 @@ class PortalStats extends Component {
   constructor(props) {
     super(props);
 
+    document.title = this.props.title;
+
     this.state = {
       portals: [],
       loading: true,
