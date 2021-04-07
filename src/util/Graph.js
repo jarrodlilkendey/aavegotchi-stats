@@ -206,3 +206,31 @@ export const retrieveGraphWearableListings = async () => {
 
   return listings;
 };
+
+const erc721ListingsByTokenIdsGraphQuery = (tokenIds) => {
+  let tokenIdString = "";
+  tokenIds.map(function(value, index) {
+    tokenIdString += "\"" + value + "\","
+  });
+
+  let query = `{
+    erc721Listings(first: 1000, where: { tokenId_in: [${tokenIdString}], cancelled: false, timePurchased: "0" }) {
+      id
+      tokenId
+      priceInWei
+    }
+  }`;
+
+  return query;
+}
+
+export const retrieveErc721ListingsByTokenIds = async (tokenIds) => {
+  const listings = await axios.post(
+    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    {
+      query: erc721ListingsByTokenIdsGraphQuery(tokenIds)
+    }
+  );
+
+  return listings.data.data.erc721Listings;
+};

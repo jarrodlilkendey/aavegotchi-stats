@@ -5,7 +5,8 @@ import HighchartsReact from 'highcharts-react-official';
 
 import { DataGrid } from '@material-ui/data-grid';
 
-import { retrieveAllGotchis } from '../util/Graph';
+import { retrieveAllGotchis, retrieveErc721ListingsByTokenIds } from '../util/Graph';
+import { formatGhst } from '../util/AavegotchiMath';
 
 import Loading from './Loading';
 
@@ -72,35 +73,6 @@ class AavegotchiRarityDistributions extends Component {
     return data;
   }
 
-  async retrieveListings(tokenIds) {
-    console.log('retrieveListings', tokenIds);
-
-    let tokenIdString = "";
-    tokenIds.map(function(value, index) {
-      tokenIdString += "\"" + value + "\","
-    });
-
-    const query = `{
-      erc721Listings(first: 1000, where: { tokenId_in: [${tokenIdString}], cancelled: false, timePurchased: "0" }) {
-        id
-        tokenId
-        priceInWei
-      }
-    }`;
-
-    console.log('query', query);
-
-    const listings = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
-      {
-        query: query
-      }
-    );
-
-    this.setState({erc721Listings: listings.data.data.erc721Listings});
-    console.log(listings.data.data.erc721Listings);
-  }
-
   async retrieveGotchis(brsValue) {
     console.log('retrieveGotchis', 'brsValue', brsValue);
     const gotchisByBRS = _.filter(this.state.aavegotchis, ['baseRarityScore', brsValue.toString()]);
@@ -111,7 +83,12 @@ class AavegotchiRarityDistributions extends Component {
     gotchisByBRS.map(function(a, index) {
       tokenIds.push(a.id);
     });
-    this.retrieveListings(tokenIds);
+
+    retrieveErc721ListingsByTokenIds(tokenIds)
+      .then((listings) => {
+        console.log(listings);
+        this.setState({erc721Listings: listings});
+      });
   }
 
   renderGotchis() {
@@ -162,7 +139,7 @@ class AavegotchiRarityDistributions extends Component {
         if (listing.length > 0) {
           row.listing = {
             link: `https://aavegotchi.com/baazaar/erc721/${listing[0].id}`,
-            text: `${Math.round(listing[0].priceInWei / 1000000000000000000)}`,
+            text: `${formatGhst(listing[0].priceInWei)}`,
           };
         } else {
           row.listing = {
