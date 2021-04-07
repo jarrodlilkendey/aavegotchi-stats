@@ -214,7 +214,7 @@ class AavegotchiRarityDistributions extends Component {
         },
         xAxis: {
           title: {
-            text: 'Base Trait Value'
+            text: 'Base Rarity Score Value'
           }
         },
         yAxis: {
