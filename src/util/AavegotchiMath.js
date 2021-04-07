@@ -75,6 +75,34 @@ export const wearableBRSModifierLabel = (itemMaxQty) => {
   }
 };
 
+export const wearableRarityLabel = (item) => {
+  let itemMaxQty = parseInt(item.maxQuantity);
+
+  if (itemMaxQty >= 1000) {
+    return 'Common';
+  }
+
+  if (itemMaxQty >= 500) {
+    return 'Uncommon';
+  }
+
+  if (itemMaxQty >= 250) {
+    return 'Rare';
+  }
+
+  if (itemMaxQty >= 100) {
+    return 'Legendary';
+  }
+
+  if (itemMaxQty >= 10) {
+    return 'Mythical';
+  }
+
+  if (itemMaxQty >= 1) {
+    return 'Godlike';
+  }
+};
+
 export const wearableBRSModifier = (itemMaxQty) => {
   if (itemMaxQty >= 1000) {
     return 1;
@@ -240,4 +268,9 @@ export const calculateSeason1Reward = (mode, modeRank) => {
   }
 
   return reward;
+}
+
+export const formatGhst = (ghstInWeiUnits) => {
+  let ghstInEtherUnits = parseInt(ghstInWeiUnits) / 1000000000000000000;
+  return parseFloat(ghstInEtherUnits.toFixed(1));
 }

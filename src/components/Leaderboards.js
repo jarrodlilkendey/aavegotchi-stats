@@ -20,10 +20,12 @@ class Leaderboards extends Component {
       modes: ['Rarity', 'Kinship', 'Experience' ], selectedMode: 0,
       rarityLeaders: [], kinshipLeaders: [], xpLeaders: [],
       loading: true,
-      filter: ''
+      filter: '',
+      round: 1, roundTraits: ['nrg', 'agg', 'spk', 'brn'],
     };
 
     this.handleLeaderboardSelect = this.handleLeaderboardSelect.bind(this);
+    this.handleRoundToggle = this.handleRoundToggle.bind(this);
     this.onFilterChange = this.onFilterChange.bind(this);
 
     this.renderLeaderboard = this.renderLeaderboard.bind(this);
@@ -37,6 +39,10 @@ class Leaderboards extends Component {
           gotchis[g].mrs = parseInt(gotchis[g].modifiedRarityScore);
           gotchis[g].kins = parseInt(gotchis[g].kinship);
           gotchis[g].xp = parseInt(gotchis[g].experience);
+          gotchis[g].nrg = parseInt(gotchis[g].numericTraits[0]);
+          gotchis[g].agg = parseInt(gotchis[g].numericTraits[1]);
+          gotchis[g].spk = parseInt(gotchis[g].numericTraits[2]);
+          gotchis[g].brn = parseInt(gotchis[g].numericTraits[3]);
         }
 
         this.setState({ gotchis, loading: false });
@@ -49,15 +55,26 @@ class Leaderboards extends Component {
     this.setState({ selectedMode: mode });
   }
 
+  handleRoundToggle() {
+    let newRound = this.state.round + 1;
+    if (newRound == 5) {
+      newRound = 1;
+    }
+    this.setState({ round: newRound });
+
+    this.calculateLeaders();
+  }
+
   onFilterChange(event) {
     event.preventDefault();
     this.setState({ filter: event.target.value });
   }
 
   calculateLeaders() {
-    let rarityLeaders = [..._.orderBy(this.state.gotchis, ['mrs'], ['desc'])];
-    let kinshipLeaders = [..._.orderBy(this.state.gotchis, ['kins'], ['desc'])];
-    let experienceLeaders = [..._.orderBy(this.state.gotchis, ['xp'], ['desc'])];
+    let rarityLeaders = _.orderBy(this.state.gotchis, ['mrs', 'kins', 'xp'], ['desc', 'desc', 'desc']);
+    let kinshipLeaders = _.orderBy(this.state.gotchis, ['kins', 'xp'], ['desc']);
+    let roundTrait = this.state.roundTraits[this.state.round - 1];
+    let experienceLeaders = _.orderBy(this.state.gotchis, ['xp', roundTrait], ['desc', 'desc']);
 
     console.log('rarity', rarityLeaders);
     console.log('kinship', kinshipLeaders);
@@ -291,7 +308,7 @@ class Leaderboards extends Component {
         <h1>Aavegotchi Leaderboards</h1>
         <h2>{this.state.modes[this.state.selectedMode]} Leaderboard</h2>
         <div style={{margin: "10px"}}>
-          <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(0)}>Rarity Leaderboard</button> <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(1)}>Kinship Leaderboard</button> <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(2)}>Experience Leaderboard</button>
+          <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(0)}>Rarity Leaderboard</button> <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(1)}>Kinship Leaderboard</button> <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(2)}>Experience Leaderboard</button> <button className="btn btn-primary btn-sm" onClick={() => this.handleRoundToggle()}>Tie Breaker Trait: Round {this.state.round} {this.state.roundTraits[this.state.round-1].toUpperCase()}</button>
         </div>
         <div>
           <p><b>Filter Aavegotchis in Leaderboard</b></p>

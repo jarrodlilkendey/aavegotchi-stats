@@ -6,7 +6,8 @@ import aavegotchiContractAbi from '../abi/diamond.json';
 import contract from '../config/aavegotchiContract.json';
 
 import { connectToMatic } from '../util/MaticClient';
-import { scoreWearable, wearablePositionLabel, wearableTraitModifiers, wearableBRSModifierLabel, wearableBySlot } from '../util/AavegotchiMath';
+import { scoreWearable, wearablePositionLabel, wearableTraitModifiers, wearableBRSModifierLabel, wearableBySlot, formatGhst } from '../util/AavegotchiMath';
+import { retrieveGraphWearableListings } from '../util/Graph';
 
 import Loading from './Loading';
 
@@ -37,7 +38,7 @@ class Recommendations extends Component {
     this.state = {
       address: '',
       myAavegotchis: [], mySvgObjects: {},
-      wearableListings: [], wearableListingsPagination: 1000, wearableListingPages: 6,
+      wearableListings: [],
       wearableItemTypes: wearableItemTypes, wearableItemScores: {},
       loading: false,
 
@@ -91,7 +92,15 @@ class Recommendations extends Component {
 
     this.setState({ aavegotchiContract: aavegotchiContract });
 
-    this.retrieveGraphWearableListings();
+    const _this = this;
+    retrieveGraphWearableListings()
+      .then((listings) => {
+        listings.map(function(wearable, index){
+          listings[index] = {...wearable, price: formatGhst(wearable.priceInWei) };
+        });
+
+         _this.setState({ wearableListings: listings });
+      });
   }
 
   retrieveAavegotchis(event) {
@@ -116,53 +125,6 @@ class Recommendations extends Component {
 
       _this.setState({ loading: false });
     });
-  }
-
-  wearablesListingsGraphQuery(skip) {
-    let query = `{
-      erc1155Listings(
-        first: 1000,
-        skip: 0,
-        where: {
-         category: 0,
-         sold: false,
-         cancelled: false
-        },
-        orderBy:timeCreated,
-        orderDirection:desc
-      ) {
-        id
-        priceInWei
-        erc1155TypeId
-        timeCreated
-      }
-    }`;
-
-    return query;
-  }
-
-  async retrieveGraphWearableListings() {
-    const _this = this;
-
-    let listings = [...this.state.wearableListings];
-
-    for (let i = 0; i < this.state.wearableListingPages; i++) {
-      const wearableListings = await axios.post(
-        'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
-        {
-          query: this.wearablesListingsGraphQuery(i * _this.state.wearableListingsPagination)
-        }
-      );
-
-      listings.push(...wearableListings.data.data.erc1155Listings);
-    }
-
-    listings.map(function(wearable, index){
-      const price = (parseFloat(wearable.priceInWei) / 1000000000000000000).toFixed();
-      listings[index] = {...wearable, price: parseFloat(price) };
-    });
-
-     _this.setState({ wearableListings: listings });
   }
 
   selectAavegotchi(aavegotchiId) {

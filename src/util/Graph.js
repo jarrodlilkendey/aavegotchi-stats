@@ -116,3 +116,93 @@ export const retrieveAllPortals = async () => {
 
   return portals;
 };
+
+const openPortalGraphQuery = (skip) => {
+  let query = `{
+    portals(
+      first: 1000,
+      skip: ${skip},
+      where: { status: Opened }
+    ) {
+      id
+      hauntId
+      status,
+      options {
+        id
+        baseRarityScore
+        numericTraits
+        minimumStake
+        collateralType
+      }
+    }
+  }`;
+
+  return query;
+}
+
+export const retrieveOpenPortals = async () => {
+  let portals = [];
+  let morePortals = true;
+
+  for (let i = 0; i < 5 && morePortals; i++) {
+    const p = await axios.post(
+      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      {
+        query: openPortalGraphQuery(i * 1000)
+      }
+    );
+
+    if (p.data.data.portals.length > 0) {
+      portals.push(...p.data.data.portals);
+    } else {
+      morePortals = false;
+    }
+  }
+
+  return portals;
+};
+
+const wearablesListingsGraphQuery = (skip) => {
+  let query = `{
+    erc1155Listings(
+      first: 1000,
+      skip: ${skip},
+      where: {
+       category: 0,
+       sold: false,
+       cancelled: false
+      },
+      orderBy:timeCreated,
+      orderDirection:desc
+    ) {
+      id
+      priceInWei
+      erc1155TypeId
+      timeCreated
+    }
+  }`;
+
+  return query;
+}
+
+export const retrieveGraphWearableListings = async () => {
+  let listings = [];
+  let moreListings = true;
+
+  for (let i = 0; i < 5 && moreListings; i++) {
+    const w = await axios.post(
+      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      {
+        query: wearablesListingsGraphQuery(i * 1000)
+      }
+    );
+
+    if (w.data.data.erc1155Listings.length > 0) {
+      listings.push(...w.data.data.erc1155Listings);
+    } else {
+      moreListings = false;
+    }
+  }
+
+  return listings;
+};
