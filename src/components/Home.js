@@ -6,7 +6,7 @@ class Home extends Component {
 
     document.title = this.props.title;
   }
-  
+
   render() {
     return(
       <div>
@@ -20,6 +20,7 @@ class Home extends Component {
           <li><a href="./traits">Aavegotchi Traits Distribution</a></li>
           <li><a href="./rarity">Aavegotchi Rarity Distribution</a></li>
           <li><a href="./portals">Aavegotchi Portal Opening and Claiming Statistics</a></li>
+          <li><a href="./wearablesales">Aavegotchi Wearable Sales Visualisations</a></li>
         </ul>
         <h2>Aavegotchi Basics</h2>
         <p>I have created a series of videos on YouTube that will help you get started with the Aavegotchi game by covering the core game mechanics. Check out the YouTube playlist embedded below.</p>

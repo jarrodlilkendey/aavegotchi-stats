@@ -11,6 +11,7 @@ import Leaderboards from './components/Leaderboards';
 import AavegotchiTraitDistributions from './components/AavegotchiTraitDistributions';
 import AavegotchiRarityDistributions from './components/AavegotchiRarityDistributions';
 import PortalStats from './components/PortalStats';
+import WearableSales from './components/WearableSales';
 
 import {
   BrowserRouter as Router,
@@ -25,6 +26,7 @@ const pages = [
   { path: '/traits', name: 'Traits Distribution' },
   { path: '/rarity', name: 'Rarity Distribution' },
   { path: '/portals', name: 'Portal Stats' },
+  { path: '/wearablesales', name: 'Wearable Sales' },
 ];
 
 ReactDOM.render(
@@ -54,9 +56,13 @@ ReactDOM.render(
             <AavegotchiRarityDistributions title="Distribution of Rarity Scores in Aavegotchi" />
           </Route>
 
-           <Route path="/">
-             <Home title="What is AavegotchiStats?" />
-           </Route>
+          <Route path="/wearablesales">
+            <WearableSales title="Aavegotchi Wearable Sales" />
+          </Route>
+
+          <Route path="/">
+            <Home title="What is AavegotchiStats?" />
+          </Route>
          </Switch>
 
          <Credits />

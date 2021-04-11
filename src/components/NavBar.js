@@ -20,7 +20,7 @@ class NavBar extends Component {
             <img src='./boo-removebg.png' width='120px' height='120px' />
             <img src='./aavegotchi-stats-logo.png' height='120px' />
           </div>
-          <div className="col" style={{ 'margin-top': '25px'}}>
+          <div className="col" style={{ 'marginTop': '25px'}}>
             <p>Keep in touch with AavegotchiStats on popular social networks</p>
             <a href="https://discord.gg/yShc8P4wX9" rel="noopener noreferrer" target="_blank" style={{ padding: '5px' }}>
               <FontAwesomeIcon icon={faDiscord} size="2x" color="#E259FD" />

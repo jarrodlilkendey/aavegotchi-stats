@@ -234,3 +234,134 @@ export const retrieveErc721ListingsByTokenIds = async (tokenIds) => {
 
   return listings.data.data.erc721Listings;
 };
+
+export const retrieveSacrificedGotchis = async () => {
+  let query = `{
+    aavegotchis(
+      first: 1000,
+      where: {
+        owner: "0x0000000000000000000000000000000000000000"
+      }
+    ) {
+      id
+    }
+  }`;
+
+  const gotchis = await axios.post(
+    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    {
+      query: query
+    }
+  );
+
+  return gotchis.data.data.aavegotchis;
+};
+
+const soldGotchisListingsGraphQuery = (skip) => {
+  let query = `{
+    erc721Listings(
+      first: 1000,
+      skip: ${skip},
+      where: {
+        category:3,
+        cancelled:false,
+        buyer_not: null
+      },
+      orderBy: timePurchased,
+      orderDirection: desc
+    ) {
+      id
+      priceInWei
+      timePurchased
+      seller
+      buyer
+      gotchi {
+        id
+        name
+        baseRarityScore
+        modifiedRarityScore
+        kinship
+        experience
+        collateral
+        stakedAmount
+        equippedWearables
+        numericTraits
+      }
+    }
+  }`;
+
+  return query;
+}
+
+export const retrieveSoldGotchisListings = async () => {
+  let listings = [];
+  let moreListings = true;
+
+  for (let i = 0; i < 5 && moreListings; i++) {
+    const gotchis = await axios.post(
+      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      {
+        query: soldGotchisListingsGraphQuery(i * 1000)
+      }
+    );
+
+    if (gotchis.data.data.erc721Listings.length > 0) {
+      listings.push(...gotchis.data.data.erc721Listings);
+    } else {
+      moreListings = false;
+    }
+  }
+
+  return listings;
+};
+
+
+const soldWearablesListingsGraphQuery = (skip) => {
+  let query = `{
+    erc1155Purchases(
+      first: 1000,
+      skip: ${skip},
+      where: {
+       category: 0,
+       sold: true,
+       cancelled: false
+      },
+      orderBy:timeCreated,
+      orderDirection:desc
+    ) {
+      id
+      priceInWei
+      erc1155TypeId
+      timeCreated
+      timeLastPurchased
+      quantity
+      seller
+      buyer
+      listingID
+    }
+  }`;
+
+  return query;
+}
+
+export const retrieveSoldWearableListings = async () => {
+  let listings = [];
+  let moreListings = true;
+
+  for (let i = 0; i < 5 && moreListings; i++) {
+    const wearables = await axios.post(
+      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      {
+        query: soldWearablesListingsGraphQuery(i * 1000)
+      }
+    );
+
+    if (wearables.data.data.erc1155Purchases.length > 0) {
+      listings.push(...wearables.data.data.erc1155Purchases);
+    } else {
+      moreListings = false;
+    }
+  }
+
+  return listings;
+};

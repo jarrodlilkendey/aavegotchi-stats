@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const { ethers } = require('ethers');
 
 export const calculatePortalBRS = (portalAavegotchis) => {
   let topBRS = 0;
@@ -271,6 +272,6 @@ export const calculateSeason1Reward = (mode, modeRank) => {
 }
 
 export const formatGhst = (ghstInWeiUnits) => {
-  let ghstInEtherUnits = parseInt(ghstInWeiUnits) / 1000000000000000000;
-  return parseFloat(ghstInEtherUnits.toFixed(1));
+  let ghstInEtherUnits = ethers.utils.formatEther(ghstInWeiUnits);
+  return parseFloat(ghstInEtherUnits);
 }
