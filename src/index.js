@@ -12,7 +12,6 @@ import AavegotchiTraitDistributions from './components/AavegotchiTraitDistributi
 import AavegotchiRarityDistributions from './components/AavegotchiRarityDistributions';
 import PortalStats from './components/PortalStats';
 import WearableSales from './components/WearableSales';
-import PetAll from './components/PetAll';
 
 import {
   BrowserRouter as Router,
@@ -28,7 +27,6 @@ const pages = [
   { path: '/rarity', name: 'Rarity Distribution' },
   { path: '/portals', name: 'Portal Stats' },
   { path: '/wearablesales', name: 'Wearable Sales' },
-  { path: '/petall', name: 'Pet All' },
 ];
 
 ReactDOM.render(
