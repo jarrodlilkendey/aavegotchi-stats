@@ -5,7 +5,6 @@ import HighchartsReact from 'highcharts-react-official';
 import { DataGrid } from '@material-ui/data-grid';
 
 import DatePicker from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
 
 import Loading from './Loading';
 
