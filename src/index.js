@@ -60,10 +60,6 @@ ReactDOM.render(
             <WearableSales title="Aavegotchi Wearable Sales" />
           </Route>
 
-          <Route path="/petall">
-            <PetAll title="Pet All Aavegotchis" />
-          </Route>
-
           <Route path="/">
             <Home title="What is AavegotchiStats?" />
           </Route>
