@@ -72,7 +72,7 @@ class Leaderboards extends Component {
 
   calculateLeaders() {
     let rarityLeaders = _.orderBy(this.state.gotchis, ['mrs', 'kins', 'xp'], ['desc', 'desc', 'desc']);
-    let kinshipLeaders = _.orderBy(this.state.gotchis, ['kins', 'xp'], ['desc']);
+    let kinshipLeaders = _.orderBy(this.state.gotchis, ['kins', 'xp'], ['desc', 'desc']);
     let roundTrait = this.state.roundTraits[this.state.round - 1];
     let experienceLeaders = _.orderBy(this.state.gotchis, ['xp', roundTrait], ['desc', 'desc']);
 
