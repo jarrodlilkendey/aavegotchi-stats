@@ -95,7 +95,6 @@ class WearableSales extends Component {
         this.setState({ wearableSales: listings, sellers, buyers, wearableIds, dateFrom, dateTo, loading: false });
 
         this.applyFilters();
-        this.refreshVisualisations();
       });
   }
 
