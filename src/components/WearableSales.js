@@ -141,12 +141,12 @@ class WearableSales extends Component {
     }
 
     // apply rarity filters
-    if (this.state.rarity && this.state.rarity != '' && this.state.rarity != 'All') {
+    if (this.state.rarity && this.state.rarity != '' && this.state.rarity != 'Any') {
       filteredWearableSales = _.filter(filteredWearableSales, function(w) { return w.rarity == _this.state.rarity; });
     }
 
     // apply slot filters
-    if (this.state.slot && this.state.slot != '' && this.state.slot != 'All') {
+    if (this.state.slot && this.state.slot != '' && this.state.slot != 'Any') {
       filteredWearableSales = _.filter(filteredWearableSales, function(w) { return w.slot == _this.state.slot; });
     }
 
@@ -565,7 +565,7 @@ class WearableSales extends Component {
           <div class="col-3">
             <label for="rarity" class="form-label">Wearable Rarity</label>
             <select id="rarity" class="form-select" onChange={(event) => this.onInputChange(event)} value={this.state.rarity}>
-              <option>All</option>
+              <option>Any</option>
               <option>Common</option>
               <option>Uncommon</option>
               <option>Rare</option>
@@ -578,7 +578,7 @@ class WearableSales extends Component {
           <div class="col-3">
             <label for="slot" class="form-label">Wearable Slot</label>
             <select id="slot" class="form-select" onChange={(event) => this.onInputChange(event)} value={this.state.slot}>
-              <option>All</option>
+              <option>Any</option>
               <option>Body</option>
               <option>Face</option>
               <option>Eyes</option>
