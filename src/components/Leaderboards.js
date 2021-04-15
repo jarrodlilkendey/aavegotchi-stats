@@ -37,6 +37,7 @@ class Leaderboards extends Component {
         for (var g = 0; g < gotchis.length; g++) {
           gotchis[g].brs = parseInt(gotchis[g].baseRarityScore);
           gotchis[g].mrs = parseInt(gotchis[g].modifiedRarityScore);
+          gotchis[g].srs = parseInt(gotchis[g].withSetsRarityScore);
           gotchis[g].kins = parseInt(gotchis[g].kinship);
           gotchis[g].xp = parseInt(gotchis[g].experience);
           gotchis[g].nrg = parseInt(gotchis[g].numericTraits[0]);
@@ -72,6 +73,7 @@ class Leaderboards extends Component {
 
   calculateLeaders() {
     let rarityLeaders = _.orderBy(this.state.gotchis, ['mrs', 'kins', 'xp'], ['desc', 'desc', 'desc']);
+    // let rarityLeaders = _.orderBy(this.state.gotchis, ['srs', 'kins', 'xp'], ['desc', 'desc', 'desc']);
     let kinshipLeaders = _.orderBy(this.state.gotchis, ['kins', 'xp'], ['desc', 'desc']);
     let roundTrait = this.state.roundTraits[this.state.round - 1];
     let experienceLeaders = _.orderBy(this.state.gotchis, ['xp', roundTrait], ['desc', 'desc']);
@@ -184,7 +186,16 @@ class Leaderboards extends Component {
     if (this.state.topGotchis && this.state.topGotchis.length > 0) {
       let columns = [
         { field: 'rank', headerName: 'Rank', width: 90 },
-        { field: 'id', headerName: 'Gotchi ID', width: 120 },
+        {
+          field: 'id',
+          headerName: 'Gotchi ID',
+          width: 120,
+          renderCell: (params: GridCellParams) => (
+            <a href={`https://aavegotchi.com/gotchi/${params.value}`} target="_blank">
+              {params.value}
+            </a>
+          )
+        },
         { field: 'name', headerName: 'Name', width: 240 },
         { field: 'rarityReward', headerName: 'SZN 1 Rarity Reward', width: 220 },
         { field: 'kinshipReward', headerName: 'SZN 1 Kinship Reward', width: 220 },
@@ -203,7 +214,7 @@ class Leaderboards extends Component {
         <div>
           <h2>Top Gotchis By Total Projected Rewards</h2>
           <div style={{ height: '1080px', width: '100%' }}>
-            <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" />
+            <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" disableSelectionOnClick="true" />
           </div>
         </div>
       );
@@ -230,7 +241,7 @@ class Leaderboards extends Component {
         <div>
           <h2>Top Owners By Total Projected Rewards</h2>
           <div style={{ height: '1080px', width: '100%' }}>
-            <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" />
+            <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" disableSelectionOnClick="true" />
           </div>
         </div>
       );
@@ -244,10 +255,20 @@ class Leaderboards extends Component {
     let columns = [
       { field: 'rank', headerName: 'Rank', width: 90 },
       { field: 'reward', headerName: 'SZN 1 Reward', width: 150 },
-      { field: 'id', headerName: 'Gotchi ID', width: 120 },
+      {
+        field: 'id',
+        headerName: 'Gotchi ID',
+        width: 120,
+        renderCell: (params: GridCellParams) => (
+          <a href={`https://aavegotchi.com/gotchi/${params.value}`} target="_blank">
+            {params.value}
+          </a>
+        )
+      },
       { field: 'name', headerName: 'Name', width: 240 },
       { field: 'brs', headerName: 'Base Rarity Score', width: 200 },
       { field: 'modifiedRarityScore', headerName: 'Modified Rarity Score', width: 200 },
+      // { field: 'wrs', headerName: 'With Sets Rarity Score', width: 200 },
       { field: 'kinship', headerName: 'Kinship', width: 160 },
       { field: 'experience', headerName: 'Experience', width: 160 },
     ];
@@ -288,6 +309,7 @@ class Leaderboards extends Component {
             brs: aavegotchi.baseRarityScore,
             modifiedRarityScore: aavegotchi.modifiedRarityScore,
             owner: aavegotchi.owner.id,
+            // wrs: aavegotchi.withSetsRarityScore,
           };
 
           rows.push(row);
@@ -296,7 +318,7 @@ class Leaderboards extends Component {
 
       return (
         <div style={{ height: '1080px', width: '100%' }}>
-          <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" />
+          <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" disableSelectionOnClick="true" />
         </div>
       );
     }
