@@ -374,7 +374,7 @@ class PortalStats extends Component {
           <h2>Gotchis in Open Portals with a Base Rarity Score of {this.state.brsValue}</h2>
           <p>Count: {rows.length}</p>
           <div style={{ height: '1080px', width: '100%' }}>
-            <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" />
+            <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" disableSelectionOnClick="true" />
           </div>
         </div>
       );

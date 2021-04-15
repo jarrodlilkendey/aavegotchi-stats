@@ -160,7 +160,7 @@ class AavegotchiTraitDistributions extends Component {
           <h2>Aavegotchis with {this.state.traits[this.state.trait]} of {this.state.traitValue}</h2>
           <p>Count: {rows.length}</p>
           <div style={{ height: '1080px', width: '100%' }}>
-            <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" />
+            <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" disableSelectionOnClick="true" />
           </div>
         </div>
       );

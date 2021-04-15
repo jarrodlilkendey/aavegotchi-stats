@@ -264,7 +264,7 @@ class Recommendations extends Component {
           <p>The highest recommended wearables for <i>{aavegotchi.name}</i> are based on the <b>Score</b> value which is determined by the wearable's impact on the traits of <i>{aavegotchi.name}</i>, the rarity of the wearable and any existing wearables <i>{aavegotchi.name}</i> has equipped in the relevant slot.</p>
           <p>Wearable prices are shown in GHST out of the {this.state.wearableListings.length} most recent wearable listings.</p>
           <div style={{ height: '600px', width: '100%' }}>
-            <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" />
+            <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" disableSelectionOnClick="true" />
           </div>
           <p>Note: boosts from <a href='https://wiki.aavegotchi.com/en/sets'>Wearable Sets</a> have not yet been implemented into this tool.</p>
         </div>

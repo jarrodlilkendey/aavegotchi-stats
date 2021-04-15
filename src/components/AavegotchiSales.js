@@ -441,7 +441,7 @@ class AavegotchiSales extends Component {
         <div>
           <h2>Aavegotchi Sales</h2>
           <div style={{ height: '1080px', width: '100%' }}>
-            <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" />
+            <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" disableSelectionOnClick="true" />
           </div>
         </div>
       );
@@ -489,13 +489,13 @@ class AavegotchiSales extends Component {
             <div className="col">
               <h2>Top Buyers</h2>
               <div style={{ height: '450px', width: '100%' }}>
-                <DataGrid rows={_.orderBy(buyersRows, ['spend'], ['desc'])} columns={buyersColumns} pageSize={10} density="compact" />
+                <DataGrid rows={_.orderBy(buyersRows, ['spend'], ['desc'])} columns={buyersColumns} pageSize={10} density="compact" disableSelectionOnClick="true" />
               </div>
             </div>
             <div className="col">
               <h2>Top Sellers</h2>
               <div style={{ height: '450px', width: '100%' }}>
-                <DataGrid rows={_.orderBy(sellersRows, ['spend'], ['desc'])} columns={sellersColumns} pageSize={10} density="compact" />
+                <DataGrid rows={_.orderBy(sellersRows, ['spend'], ['desc'])} columns={sellersColumns} pageSize={10} density="compact" disableSelectionOnClick="true" />
               </div>
             </div>
           </div>
