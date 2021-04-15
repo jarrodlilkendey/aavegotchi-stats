@@ -18,6 +18,7 @@ const aavegotchiGraphQuery = (skip, order) => {
       modifiedRarityScore
       kinship
       experience
+      withSetsRarityScore
       owner {
         id
       }
@@ -311,6 +312,13 @@ export const retrieveSoldGotchisListings = async () => {
       moreListings = false;
     }
   }
+
+  listings = _.remove(listings, function(g) {
+    if (g.gotchi.baseRarityScore == 0) {
+      return false;
+    }
+    return true;
+  });
 
   return listings;
 };
