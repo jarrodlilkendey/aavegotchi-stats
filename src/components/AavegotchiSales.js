@@ -24,6 +24,8 @@ class AavegotchiSales extends Component {
   constructor(props) {
     super(props);
 
+    document.title = this.props.title;
+
     this.state = {
       sales: [],
       sellers: {},
