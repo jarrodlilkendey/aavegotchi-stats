@@ -14,13 +14,11 @@ class NavBar extends Component {
 
   renderSiteInfo() {
     return (
-      <div className="container">
         <div className="row">
-          <div className="col">
-            <img src='./boo-removebg.png' width='120px' height='120px' />
-            <img src='./aavegotchi-stats-logo.png' height='120px' />
+          <div className="col-md-6">
+            <img src='./aavegotchi-stats-banner.png' height='120px' class="img-fluid" />
           </div>
-          <div className="col" style={{ 'marginTop': '25px'}}>
+          <div className="col-md-6" style={{ 'marginTop': '25px'}}>
             <p>Keep in touch with AavegotchiStats on popular social networks</p>
             <a href="https://discord.gg/yShc8P4wX9" rel="noopener noreferrer" target="_blank" style={{ padding: '5px' }}>
               <FontAwesomeIcon icon={faDiscord} size="2x" color="#E259FD" />
@@ -33,7 +31,6 @@ class NavBar extends Component {
             </a>
           </div>
         </div>
-      </div>
     );
   }
 
@@ -43,13 +40,13 @@ class NavBar extends Component {
       if (page.path === _this.props.location.pathname) {
         return(
           <li className="nav-item" key={page.path}>
-            <Link className="nav-link active" aria-current="page" to={page.path}>{page.name}</Link>
+            <a className="nav-link active" aria-current="page" href={page.path}>{page.name}</a>
           </li>
         );
       } else {
         return(
           <li className="nav-item" key={page.path}>
-            <Link className="nav-link" to={page.path}>{page.name}</Link>
+            <a className="nav-link" href={page.path}>{page.name}</a>
           </li>
         );
       }
@@ -61,11 +58,21 @@ class NavBar extends Component {
       <div>
       {this.renderSiteInfo()}
 
-      <div className="container">
-        <ul className="nav nav-tabs">
-          {this.renderNavBar()}
-        </ul>
-      </div>
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+            <a class="navbar-brand" href="https://aavegotchistats.com">AavegotchiStats.com</a>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              {this.renderNavBar()}
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+
       </div>
     );
   }

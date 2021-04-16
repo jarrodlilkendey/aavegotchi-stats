@@ -8,7 +8,11 @@ class Credits extends Component {
 
   render() {
     return(
-      <footer><p><small className="text-muted">built by Jarrod from <a href='https://programmablewealth.com'>programmablewealth.com</a> | <a href="https://aavegotchistats.com">aavegothchistats.com</a> is not affiliated with <a href='https://aavegotchi.com'>aavegotchi.com</a> | <a href='https://github.com/programmablewealth/aavegotchi-stats'>source code</a> | donations: 0x708Ef16bF16Bb9f14CfE36075E9ae17bCd1C5B40</small></p></footer>
+      <nav class="navbar fixed-bottom navbar-dark" style={{'background-color': '#2f3136'}}>
+        <div class="container-fluid">
+          <p className="text-center" style={{'width': '100%'}}><small className="text-muted"><a href='https://programmablewealth.com'>programmablewealth.com</a> | <a href='https://github.com/programmablewealth/aavegotchi-stats'>source code</a> | donations: 0x708Ef16bF16Bb9f14CfE36075E9ae17bCd1C5B40</small></p>
+        </div>
+      </nav>
     );
   }
 }

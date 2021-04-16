@@ -33,11 +33,6 @@ select.form-select:focus {
   padding: 10px;
 }
 
-footer {
-  position: absolute;
-  bottom: 0;
-}
-
 .MuiDataGrid-columnsContainer, .MuiDataGrid-mainGridContainer, .MuiDataGrid-dataContainer, .MuiDataGrid-colCellWrapper	{
   background-color: black;
   color: white;
@@ -65,4 +60,18 @@ footer {
 .MuiDataGrid-footer, .MuiDataGrid-footer p, .MuiSelect-select, .MuiIconButton-root {
   background-color: black !important;
   color: white !important;
+}
+
+.iframe-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  height: 0;
+}
+.iframe-container iframe {
+  position: absolute;
+  top:0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
