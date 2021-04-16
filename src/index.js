@@ -20,10 +20,9 @@ import {
   Route
 } from "react-router-dom";
 
-const pages = [
-  { path: '/', name: 'Home' },
-  { path: '/recommendations', name: 'Recommendations' },
-  { path: '/leaderboards', name: 'Leaderboards' },
+const navBarPages = [
+  { path: '/recommendations', name: 'Wearable Recommendations' },
+  { path: '/leaderboards', name: 'Rarity Leaderboards' },
   { path: '/traits', name: 'Traits Distribution' },
   { path: '/rarity', name: 'Rarity Distribution' },
   { path: '/portals', name: 'Portal Stats' },
@@ -35,7 +34,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Router>
       <div className="container">
-        <NavBar pages={pages} />
+        <NavBar pages={navBarPages} />
 
         <Switch>
           <Route path="/recommendations">
