@@ -13,6 +13,11 @@ import AavegotchiRarityDistributions from './components/AavegotchiRarityDistribu
 import PortalStats from './components/PortalStats';
 import WearableSales from './components/WearableSales';
 import AavegotchiSales from './components/AavegotchiSales';
+// import Timeline from './components/Timeline';
+// import AavegotchiNetworth from './components/AavegotchiNetworth';
+import AavegotchiVotingPower from './components/AavegotchiVotingPower';
+// import PetAll from './components/PetAll';
+// import GotchiTowerDefence from './tdgame/GotchiTowerDefence';
 
 import {
   BrowserRouter as Router,
@@ -28,6 +33,9 @@ const navBarPages = [
   { path: '/portals', name: 'Portal Stats' },
   { path: '/wearablesales', name: 'Wearable Sales' },
   { path: '/gotchisales', name: 'Aavegotchi Sales' },
+  // { path: '/timeline', name: 'Timeline' },
+  // { path: '/networth', name: 'Networth' },
+  // { path: '/petall', name: 'Pet All' },
 ];
 
 ReactDOM.render(
@@ -63,6 +71,10 @@ ReactDOM.render(
 
           <Route path="/gotchisales">
             <AavegotchiSales title="Aavegotchi Sales" />
+          </Route>
+
+          <Route path="/voting">
+            <AavegotchiVotingPower title="Aavegotchi Voting Power" />
           </Route>
 
           <Route path="/">
