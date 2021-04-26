@@ -265,7 +265,6 @@ const soldGotchisListingsGraphQuery = (skip) => {
       skip: ${skip},
       where: {
         category:3,
-        cancelled:false,
         buyer_not: null
       },
       orderBy: timePurchased,
@@ -331,16 +330,14 @@ const soldWearablesListingsGraphQuery = (skip) => {
       skip: ${skip},
       where: {
        category: 0,
-       sold: true,
-       cancelled: false
+       quantity_gt: 0
       },
-      orderBy:timeCreated,
+      orderBy:timeLastPurchased,
       orderDirection:desc
     ) {
       id
       priceInWei
       erc1155TypeId
-      timeCreated
       timeLastPurchased
       quantity
       seller
@@ -372,4 +369,51 @@ export const retrieveSoldWearableListings = async () => {
   }
 
   return listings;
+};
+
+export const retrieveWearableSets = async () => {
+  const wearableSets = await axios.post(
+    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    {
+      query: `{
+        wearableSets(first: 1000) {
+          id
+          name
+          allowedCollaterals
+          wearableIds
+          traitBonuses
+        }
+      }`
+    }
+  );
+
+  return wearableSets.data.data.wearableSets;
+};
+
+export const retrieveUserAssets = async (address) => {
+  const user = await axios.post(
+    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    {
+      query: `{
+        users(where: { id: "${address.toLowerCase()}" }) {
+          id
+          gotchisOwned {
+            id
+            name
+            numericTraits
+            modifiedNumericTraits
+            withSetsNumericTraits
+            equippedWearables
+            kinship
+            experience
+            collateral
+            baseRarityScore
+            modifiedRarityScore
+          }
+        }
+      }`
+    }
+  );
+
+  return user.data.data.users[0];
 };

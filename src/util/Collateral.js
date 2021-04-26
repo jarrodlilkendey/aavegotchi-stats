@@ -46,6 +46,22 @@ export const graphAddressToCollateral = (address) => {
   return collateralMapping[address];
 };
 
+export const graphAddressToCollateralSpriteKey = (address) => {
+  const collateralMapping = {
+    '0x9719d867a500ef117cc201206b8ab51e794d3f82': 'usdc',
+    '0xe0b22e0037b130a9f56bbb537684e6fa18192341': 'dai',
+    '0xf4b8888427b00d7caf21654408b7cba2ecf4ebd9': 'tusd',
+    '0xdae5f1590db13e3b40423b5b5c5fbf175515910b': 'usdt',
+    '0xe20f7d1f0ec39c4d5db01f53554f2ef54c71f613': 'yfi',
+    '0x20d3922b4a1a8560e1ac99fba4fade0c849e2142': 'weth',
+    '0x823cd4264c1b951c9209ad0deaea9988fe8429bf': 'aave',
+    '0x8c8bdbe9cee455732525086264a4bf9cf821c498': 'uni',
+    '0x98ea609569bd25119707451ef982b90e3eb719cd': 'link'
+  };
+
+  return collateralMapping[address];
+};
+
 export const collateralToCoingeckoId = (collateral) => {
   const coingeckoIdMapping = {
     'maUSDC': 'matic-aave-usdc',
