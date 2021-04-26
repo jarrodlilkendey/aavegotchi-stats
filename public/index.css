@@ -75,3 +75,7 @@ select.form-select:focus {
   width: 100%;
   height: 100%;
 }
+
+.gotchi-bg {
+  display: none;
+}
