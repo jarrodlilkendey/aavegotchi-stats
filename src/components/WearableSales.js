@@ -105,6 +105,8 @@ class WearableSales extends Component {
   }
 
   applyFilters() {
+    console.log('applyFilters');
+
     const _this = this;
 
     let filteredWearableSales = [...this.state.wearableSales];
@@ -343,8 +345,9 @@ class WearableSales extends Component {
   renderSalesTable() {
     if (this.state.filteredWearableSales.length > 0) {
       const columns = [
+        { field: 'id', hide: true },
         {
-          field: 'id',
+          field: 'listingId',
           headerName: 'Listing',
           width: 100,
           renderCell: (params: GridCellParams) => (
@@ -370,7 +373,8 @@ class WearableSales extends Component {
         let wearable = wearableItemTypes[listing.erc1155TypeId];
 
         let row = {
-          id: listing.listingID,
+          id: listing.id,
+          listingId: listing.listingID,
           wearableId: listing.erc1155TypeId,
           name: wearable.name,
           rarity: listing.rarity,
