@@ -16,7 +16,7 @@ import AavegotchiSales from './components/AavegotchiSales';
 // import Timeline from './components/Timeline';
 // import AavegotchiNetworth from './components/AavegotchiNetworth';
 import AavegotchiVotingPower from './components/AavegotchiVotingPower';
-// import PetAll from './components/PetAll';
+import PetAll from './components/PetAll';
 import GotchiTowerDefence from './tdgame/GotchiTowerDefence';
 // import SacrificedGotchis from './components/SacrificedGotchis';
 // import CheapestSets from './components/CheapestSets';
@@ -38,7 +38,7 @@ const navBarPages = [
   { path: '/td', name: 'Tower Defense' },
   // { path: '/timeline', name: 'Timeline' },
   // { path: '/networth', name: 'Networth' },
-  // { path: '/petall', name: 'Pet All' },
+  { path: '/petall', name: 'Pet All' },
 ];
 
 ReactDOM.render(
@@ -84,6 +84,10 @@ ReactDOM.render(
             <GotchiTowerDefence title="Gotchi Tower Defence" />
           </Route>
 
+                    <Route path="/petall">
+                      <PetAll title="Pet All Aavegotchis" />
+                    </Route>
+
           <Route path="/">
             <Home title="What is AavegotchiStats?" />
           </Route>
@@ -114,9 +118,7 @@ ReactDOM.render(
           //           <Route path="/networth">
           //             <AavegotchiNetworth title="Networth" />
           //           </Route>
-          //           <Route path="/petall">
-          //             <PetAll title="Pet All Aavegotchis" />
-          //           </Route>
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

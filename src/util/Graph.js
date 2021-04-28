@@ -8,7 +8,7 @@ const aavegotchiGraphQuery = (skip, order) => {
       skip: ${skip},
       orderBy: id,
       orderDirection: ${order},
-      where:{ status: 3 }
+      where:{ status: 3, owner_not: "0x0000000000000000000000000000000000000000" }
     ) {
       id
       hauntId
