@@ -79,3 +79,10 @@ select.form-select:focus {
 .gotchi-bg {
   display: none;
 }
+
+@font-face {
+  font-family: m5x7;
+  src: url('game/m5x7.ttf');
+  font-weight:400;
+  font-weight:normal;
+}

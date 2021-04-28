@@ -17,7 +17,9 @@ import AavegotchiSales from './components/AavegotchiSales';
 // import AavegotchiNetworth from './components/AavegotchiNetworth';
 import AavegotchiVotingPower from './components/AavegotchiVotingPower';
 // import PetAll from './components/PetAll';
-// import GotchiTowerDefence from './tdgame/GotchiTowerDefence';
+import GotchiTowerDefence from './tdgame/GotchiTowerDefence';
+// import SacrificedGotchis from './components/SacrificedGotchis';
+// import CheapestSets from './components/CheapestSets';
 
 import {
   BrowserRouter as Router,
@@ -33,6 +35,7 @@ const navBarPages = [
   { path: '/portals', name: 'Portal Stats' },
   { path: '/wearablesales', name: 'Wearable Sales' },
   { path: '/gotchisales', name: 'Aavegotchi Sales' },
+  { path: '/td', name: 'Tower Defense' },
   // { path: '/timeline', name: 'Timeline' },
   // { path: '/networth', name: 'Networth' },
   // { path: '/petall', name: 'Pet All' },
@@ -77,6 +80,10 @@ ReactDOM.render(
             <AavegotchiVotingPower title="Aavegotchi Voting Power" />
           </Route>
 
+          <Route path="/td">
+            <GotchiTowerDefence title="Gotchi Tower Defence" />
+          </Route>
+
           <Route path="/">
             <Home title="What is AavegotchiStats?" />
           </Route>
@@ -88,6 +95,28 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
+
+
+
+          // <Route path="/sacrificed">
+          //   <SacrificedGotchis title="SacrificedGotchis" />
+          // </Route>
+          //
+          // <Route path="/sets">
+          //   <CheapestSets title="Cheapest Sets" />
+          // </Route>
+          //
+          //
+          //           <Route path="/timeline">
+          //             <Timeline title="Timeline" />
+          //           </Route>
+          //
+          //           <Route path="/networth">
+          //             <AavegotchiNetworth title="Networth" />
+          //           </Route>
+          //           <Route path="/petall">
+          //             <PetAll title="Pet All Aavegotchis" />
+          //           </Route>
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
