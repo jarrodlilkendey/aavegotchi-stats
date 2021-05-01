@@ -72,10 +72,9 @@ class Leaderboards extends Component {
   }
 
   calculateLeaders() {
-    let rarityLeaders = _.orderBy(this.state.gotchis, ['mrs', 'kins', 'xp'], ['desc', 'desc', 'desc']);
-    // let rarityLeaders = _.orderBy(this.state.gotchis, ['srs', 'kins', 'xp'], ['desc', 'desc', 'desc']);
+    let rarityLeaders = _.orderBy(this.state.gotchis, ['srs', 'kins', 'xp'], ['desc', 'desc', 'desc']);
     let kinshipLeaders = _.orderBy(this.state.gotchis, ['kins', 'xp'], ['desc', 'desc']);
-    let roundTrait = this.state.roundTraits[this.state.round - 1];
+    let roundTrait = Math.abs(50 - this.state.roundTraits[this.state.round - 1]); // roundTrait is difference from 50
     let experienceLeaders = _.orderBy(this.state.gotchis, ['xp', roundTrait], ['desc', 'desc']);
 
     console.log('rarity', rarityLeaders);
@@ -268,7 +267,7 @@ class Leaderboards extends Component {
       { field: 'name', headerName: 'Name', width: 240 },
       { field: 'brs', headerName: 'Base Rarity Score', width: 200 },
       { field: 'modifiedRarityScore', headerName: 'Modified Rarity Score', width: 200 },
-      // { field: 'wrs', headerName: 'With Sets Rarity Score', width: 200 },
+      { field: 'wrs', headerName: 'With Sets Rarity Score', width: 200 },
       { field: 'kinship', headerName: 'Kinship', width: 160 },
       { field: 'experience', headerName: 'Experience', width: 160 },
     ];
@@ -309,7 +308,7 @@ class Leaderboards extends Component {
             brs: aavegotchi.baseRarityScore,
             modifiedRarityScore: aavegotchi.modifiedRarityScore,
             owner: aavegotchi.owner.id,
-            // wrs: aavegotchi.withSetsRarityScore,
+            wrs: aavegotchi.withSetsRarityScore,
           };
 
           rows.push(row);
