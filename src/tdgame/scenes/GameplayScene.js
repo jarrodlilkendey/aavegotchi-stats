@@ -110,57 +110,57 @@ export class GameplayScene extends Phaser.Scene {
   spawnEnemy() {
     const _this = this;
 
-    let e = this.registry.customData.myEnemies[this.spawnCount];
-    let key = e.tokenId;
+    if (this.registry.customData.myEnemies.length > (this.spawnCount + 1)) {
+      let e = this.registry.customData.myEnemies[this.spawnCount];
+      let key = e.tokenId; // to fix, remove sacrificed gotchis
 
-    let position = { x: -1 * 32, y: 2.5 * 32 };
-    let enemy = new Enemy({ scene: this, x: position.x, y: position.y, key, gotchi: e.gotchi });
+      let position = { x: -1 * 32, y: 2.5 * 32 };
+      let enemy = new Enemy({ scene: this, x: position.x, y: position.y, key, gotchi: e.gotchi });
 
-    let tweens = [];
-    let duration = 15; //50
+      let tweens = [];
+      let duration = 15; //50
 
-    let movements = [ [7.5, 0], [0, 10], [10, 0], [0, 4], [1, 0], [0, 2], [6, 0], [0, -11], [-5, 0], [0, -1], [-6, 0], [0, -2], [-1, 0], [0, -2], [1, 0], [0, -1], [20, 0] ]
+      let movements = [ [7.5, 0], [0, 10], [10, 0], [0, 4], [1, 0], [0, 2], [6, 0], [0, -11], [-5, 0], [0, -1], [-6, 0], [0, -2], [-1, 0], [0, -2], [1, 0], [0, -1], [20, 0] ]
 
-    movements.map(function(m, i) {
-      let moveBy = { x: m[0] * 32, y: m[1] * 32 };
+      movements.map(function(m, i) {
+        let moveBy = { x: m[0] * 32, y: m[1] * 32 };
 
-      let t = _this.move(position, moveBy, duration, enemy);
+        let t = _this.move(position, moveBy, duration, enemy);
 
-      if (i == movements.length - 1) {
-        t.onComplete = _this.tweenComplete;
-        t.onCompleteParams = _this;
-      }
+        if (i == movements.length - 1) {
+          t.onComplete = _this.tweenComplete;
+          t.onCompleteParams = _this;
+        }
 
-      tweens.push(t);
+        tweens.push(t);
 
-      position.x += moveBy.x;
-      position.y += moveBy.y;
-    });
+        position.x += moveBy.x;
+        position.y += moveBy.y;
+      });
 
-    this.tweens.timeline({
-      tweens: tweens
-    });
+      this.tweens.timeline({
+        tweens: tweens
+      });
 
-    this.physics.world.addCollider(this.playerBullets, enemy, function(enemy, bullet) {
-      bullet.gotchi.increaseXP();
+      this.physics.world.addCollider(this.playerBullets, enemy, function(enemy, bullet) {
+        bullet.gotchi.increaseXP();
 
-      bullet.destroy();
-      enemy.damage(bullet.damage);
+        bullet.destroy();
+        enemy.damage(bullet.damage);
 
-      if (_this.musicOn) {
-        _this.damageSound.play({ volume: 3});
-      }
-    });
+        if (_this.musicOn) {
+          _this.damageSound.play({ volume: 3});
+        }
+      });
 
-    this.enemies.push(enemy);
-    this.spawnCount++;
+      this.enemies.push(enemy);
+      this.spawnCount++;
 
-    console.log('spawn count', this.spawnCount, 'myEnemies length', this.registry.customData.myEnemies.length);
-    if (this.registry.customData.myEnemies.length - 2 == this.spawnCount) {
-      if (this.registry.customData.svgsToGet.length == 0) {
-        console.log('WON GAME');
-      } else {
-        _this.retrieveGotchiSvgs();
+      console.log('spawn count', this.spawnCount, 'myEnemies length', this.registry.customData.myEnemies.length);
+      if ((this.registry.customData.myEnemies.length - 2) == this.spawnCount) {
+        if (this.registry.customData.svgsToGet.length != 0) {
+          _this.retrieveGotchiSvgs();
+        }
       }
     }
   }
