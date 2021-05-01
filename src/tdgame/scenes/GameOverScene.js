@@ -25,7 +25,7 @@ export class GameOverScene extends Phaser.Scene {
     var button = this.add.sprite(400, 490, 'playagain').setInteractive();
     button.on('pointerdown', function (pointer) {
       console.log('pointerdown', pointer);
-      _this.scene.start(Constants.SCENES.GAMEPLAY);
+      window.location.reload(true);
     });
   }
 }
