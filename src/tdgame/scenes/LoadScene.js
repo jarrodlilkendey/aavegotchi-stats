@@ -4,6 +4,7 @@ import { Constants } from '../Constants';
 
 import terrain from '../assets/terrain_atlas.png';
 import items from '../assets/items.png';
+import uipack from '../assets/UIpackSheet_transparent.png';
 
 import aave from '../assets/collaterals/aave-aave-logo.svg';
 import link from '../assets/collaterals/chainlink-link-logo.svg';
@@ -75,10 +76,11 @@ export class LoadScene extends Phaser.Scene {
     this.load.svg('wbtc', wbtc, { width: 24, height: 24 });
     this.load.svg('yfi', yfi, { width: 24, height: 24 });
 
-
     this.load.image('terrain', terrain);
     this.load.image('items', items);
     this.load.image('playagain', '/game/playagain.png');
+
+    this.load.spritesheet('uipack', uipack, { frameWidth: 16, frameHeight: 16, spacing: 2 });
 
     this.load.image('title', '/game/title.png');
     this.load.image('play', '/game/button_play.png');

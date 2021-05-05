@@ -1,5 +1,7 @@
 import Phaser from 'phaser';
 
+import { Constants } from '../Constants';
+
 import { HealthBar } from './HealthBar';
 
 export class Enemy extends Phaser.GameObjects.Sprite {
@@ -13,8 +15,18 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     this.scene.physics.world.enableBody(this);
     this.body.setImmovable();
 
-    let modifiedRarityScore = parseInt(this.gotchi.modifiedRarityScore);
-    this.healthBar = new HealthBar(this.scene, this, modifiedRarityScore);
+    this.energy = this.gotchi.withSetsNumericTraits[0];
+    this.aggression = this.gotchi.withSetsNumericTraits[1];
+    this.spookiness = this.gotchi.withSetsNumericTraits[2];
+    this.brainSize = this.gotchi.withSetsNumericTraits[3];
+
+    this.withSetsRarityScore = parseInt(this.gotchi.withSetsRarityScore);
+    this.damageResistance = Math.abs(50 - this.aggression) * Constants.scalars.damageResistance;
+    this.speed = Math.abs(50 - this.energy);
+
+    this.healthBar = new HealthBar(this.scene, this, this.withSetsRarityScore);
+
+    console.log('Enemy', this);
   }
 
   preUpdate (time, delta) {
@@ -35,11 +47,20 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     this.healthBar.destroy();
   }
 
-  damage(amount) {
-    this.healthBar.decrease(amount);
+  damage(bullet) {
+    // let damage = 1;
+    // if (bullet.damage > this.damageResistance) {
+    //   damage = bullet.damage - this.damageResistance;
+    // }
+
+    this.healthBar.decrease(bullet.damage);
     if (this.healthBar.value <=  0) {
-      this.scene.events.emit('addScore');
-      this.destroy();
+      if (this.scene) {
+        this.scene.events.emit('addScore');
+        bullet.gotchi.increaseKills();
+        bullet.gotchi.increasePoints();
+        this.destroy();
+      }
     }
   }
 }

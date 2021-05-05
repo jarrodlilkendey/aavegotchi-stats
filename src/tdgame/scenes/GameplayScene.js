@@ -97,8 +97,24 @@ export class GameplayScene extends Phaser.Scene {
   }
 
   spawnGotchi(tokenId, x, y) {
+    const _this = this;
     let gotchi = new Gotchi({ scene: this, x: x, y: y, key: tokenId });
     this.gotchis.push(gotchi);
+
+    var ourUi = this.scene.get(Constants.SCENES.UI);
+    gotchi.on('pointerdown', function(pointer) {
+      console.log('gotchi clicked', gotchi);
+      ourUi.setGotchiPlacementVisibility(false);
+      _this.gotchis.map(function(g, i) {
+        g.hideRange();
+      });
+      ourUi.setGotchiUpgradeVisibility(true, gotchi);
+    });
+
+    this.initGotchiShooting(gotchi);
+
+    ourUi.setGotchiPlacementVisibility(false);
+    ourUi.setGotchiUpgradeVisibility(true, gotchi);
   }
 
   tweenComplete(tween, targets, custom) {
@@ -143,10 +159,10 @@ export class GameplayScene extends Phaser.Scene {
       });
 
       this.physics.world.addCollider(this.playerBullets, enemy, function(enemy, bullet) {
-        bullet.gotchi.increaseXP();
+        bullet.gotchi.increaseHits();
 
         bullet.destroy();
-        enemy.damage(bullet.damage);
+        enemy.damage(bullet);
 
         if (_this.musicOn) {
           _this.damageSound.play({ volume: 3});
@@ -167,7 +183,12 @@ export class GameplayScene extends Phaser.Scene {
 
   initShooting() {
     this.playerBullets = this.physics.add.group();
-    this.shootingTimer = this.time.addEvent({ delay: 1000, callback: this.createPlayerBullet, callbackScope: this, loop: true });
+  }
+
+  initGotchiShooting(gotchi) {
+    console.log('initGotchiShooting', gotchi);
+    gotchi.shootingTimer = this.time.addEvent({ delay: gotchi.calculateAttackDelay(), callback: this.gotchiShoot, callbackScope: this, loop: true, args: [ gotchi ] });
+    //todo reset timer with new speed on levelling
   }
 
   initSpawning() {
@@ -176,7 +197,9 @@ export class GameplayScene extends Phaser.Scene {
     this.spawning = this.time.addEvent({ delay: 3000, callback: this.spawnEnemy, callbackScope: this, loop: true });
   }
 
-  createPlayerBullet() {
+  gotchiShoot(g) {
+    console.log('gotchiShoot', g);
+
     const _this = this;
 
     let bullet = this.playerBullets.getFirstDead(false);
@@ -184,43 +207,39 @@ export class GameplayScene extends Phaser.Scene {
     if (!bullet) {
       // list of active enemies
       let activeEnemies = _.filter(this.enemies, { active: true });
+      console.log('activeEnemies', activeEnemies);
       if (activeEnemies.length > 0) {
-        // for each gotchi
-        this.gotchis.map(function(g, index) {
-          // for each enemy
-          let minDists = [];
-          activeEnemies.map(function(e, i) {
-            const dist = Phaser.Math.Distance.Between(g.x, g.y, e.x, e.y);
-            // if in range
-            if (dist <= 150) {
-              minDists.push( { dist: dist, spawnCount: g.spawnCount, gotchi: g, enemy: e });
-            }
-          });
-
-          if (minDists.length > 0) {
-            let bulletPath = _.orderBy(minDists, ['spawnCount', 'asc'])[0];
-            let g = bulletPath.gotchi;
-            let e = bulletPath.enemy;
-            let dist = bulletPath.dist;
-            // can shoot
-            // do shoot
-            let damage = parseInt(g.info.modifiedRarityScore) * (Math.pow(1.003, g.xp)); // damage increases by 3% every kill
-            console.log('damage', damage, g.xp, parseInt(g.info.modifiedRarityScore));
-            bullet = new Bullet({ scene: _this, x: g.x, y: g.y, damage: damage, collateral: g.info.collateral, gotchi: g });
-            _this.playerBullets.add(bullet);
-            _this.physics.accelerateToObject(bullet, e, 850);//300);//00);
-
-            if (_this.musicOn) {
-              _this.attackSound.play({ volume: 4});
-            }
+        // for each enemy
+        let minDists = [];
+        activeEnemies.map(function(e, i) {
+          const dist = Phaser.Math.Distance.Between(g.x, g.y, e.x, e.y);
+          // if in range
+          if (dist <= g.range) {
+            minDists.push( { dist: dist, spawnCount: g.spawnCount, gotchi: g, enemy: e });
           }
         });
 
+        if (minDists.length > 0) {
+          let bulletPath = _.orderBy(minDists, ['spawnCount', 'asc'])[0];
+          let gotchi = bulletPath.gotchi;
+          let e = bulletPath.enemy;
+          let dist = bulletPath.dist;
+          // can shoot
+          // do shoot
+          // let damage = parseInt(g.info.modifiedRarityScore) * (Math.pow(1.003, g.xp)); // damage increases by 3% every kill
+          console.log('damage', gotchi.damage, gotchi.xp, parseInt(gotchi.info.modifiedRarityScore));
+          bullet = new Bullet({ scene: _this, x: gotchi.x, y: gotchi.y, damage: gotchi.damage, collateral: gotchi.info.collateral, gotchi: gotchi });
+          _this.playerBullets.add(bullet);
+          _this.physics.accelerateToObject(bullet, e, Constants.scalars.bulletSpeed);//300);//00);
+
+          if (_this.musicOn) {
+            _this.attackSound.play({ volume: 4});
+          }
+        }
       }
     } else {
       bullet.reset(0, 0)
     }
-
   }
 
   create() {
@@ -242,12 +261,40 @@ export class GameplayScene extends Phaser.Scene {
     //  Grab a reference to the UI Scene
     var ourUi = this.scene.get(Constants.SCENES.UI);
 
+    // _this.physics.add.collider(gameObject, ourGame.floorLayer);
+    // this.floorLayer.setTileIndexCallback([366], (gameObject) => {
+    //   console.log('floor touched', gameObject);
+    //   ourUi.setGotchiPlacementVisibility(true);
+    //   ourUi.setGotchiUpgradeVisibility(false, null);
+    // });
+
+    this.input.on('pointerdown', function(pointer) {
+      // const tileXY = this.floorLayer.getTileAt(pointer.x, pointer.y)
+      const tile = _this.floorLayer.getTileAtWorldXY(pointer.x, pointer.y);
+
+      var rect = { x: pointer.x, y: pointer.y, width: 32, height: 32 };
+      var x = rect.x - (rect.width / 2);
+      var y = rect.y - (rect.height / 2);
+      var within = _this.physics.overlapRect(x, y, rect.width, rect.height);
+
+      if (within.length == 0) {
+        ourUi.setGotchiPlacementVisibility(true);
+        _this.gotchis.map(function(g, i) {
+          g.hideRange();
+        });
+        ourUi.setGotchiUpgradeVisibility(false, null);
+      }
+    });
+
+
     //  Listen for events from it
     ourUi.events.on('placeGotchi', function (gotchi) {
       _this.spawnGotchi(gotchi.gameObject.texture.key, gotchi.gameObject.x, gotchi.gameObject.y);
       if (_this.musicOn) {
         _this.placeSound.play({ volume: 5});
       }
+
+      console.log('placeGotchi', _this.gotchis);
     }, this);
 
     if (this.musicOn) {

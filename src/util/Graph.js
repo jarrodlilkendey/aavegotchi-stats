@@ -14,11 +14,14 @@ const aavegotchiGraphQuery = (skip, order) => {
       hauntId
       name
       numericTraits
+      modifiedNumericTraits
+      withSetsNumericTraits
       baseRarityScore
       modifiedRarityScore
+      withSetsRarityScore
       kinship
       experience
-      withSetsRarityScore
+      equippedWearables
       owner {
         id
       }
@@ -409,6 +412,7 @@ export const retrieveUserAssets = async (address) => {
             collateral
             baseRarityScore
             modifiedRarityScore
+            withSetsRarityScore
           }
         }
       }`
