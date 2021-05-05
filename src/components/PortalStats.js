@@ -5,7 +5,7 @@ import HighchartsReact from 'highcharts-react-official';
 
 import { DataGrid } from '@material-ui/data-grid';
 
-import { retrieveAllPortals, retrieveOpenPortals, retrieveErc721ListingsByTokenIds } from '../util/Graph';
+import { retrieveAllPortals, retrieveOpenPortals, retrieveErc721ListingsByTokenIds, retrieveSacrificedGotchis } from '../util/Graph';
 import { graphAddressToCollateral } from '../util/Collateral';
 import { formatGhst } from '../util/AavegotchiMath';
 
@@ -24,7 +24,8 @@ class PortalStats extends Component {
       portals: [],
       loading: true,
       openPortals: [],
-      gotchisByBRS: []
+      gotchisByBRS: [],
+      sacrificedGotchis: []
     };
   }
 
@@ -63,6 +64,12 @@ class PortalStats extends Component {
           });
 
         this.setState({ portals: portals, loading: false });
+      });
+
+    retrieveSacrificedGotchis()
+      .then((sacrificedGotchis) => {
+        console.log(sacrificedGotchis);
+        this.setState({ sacrificedGotchis });
       });
   }
 
@@ -172,13 +179,14 @@ class PortalStats extends Component {
   }
 
   renderSummary() {
-    if (this.state.portals.length > 0) {
+    if (this.state.portals.length > 0 && this.state.sacrificedGotchis.length > 0) {
       return (
         <div>
           <h2>Summary</h2>
           <p>Total Portals: {this.state.summaryStats.portalsCount}</p>
           <p>Total Portals Opened: {this.state.summaryStats.openedCount}, Total Unopened Portals: {this.state.summaryStats.unopenedCount}</p>
           <p>Total Portals Claimed: {this.state.summaryStats.claimedCount}, Total Portals Unclaimed: {this.state.summaryStats.unclaimedCount}</p>
+          <p>Total Gotchis Sacrificed: {this.state.sacrificedGotchis.length}</p>
         </div>
       )
     }
