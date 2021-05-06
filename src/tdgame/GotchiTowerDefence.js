@@ -7,6 +7,7 @@ import { MenuScene } from './scenes/MenuScene';
 import { GameplayScene } from './scenes/GameplayScene';
 import { GameOverScene } from './scenes/GameOverScene';
 import { UIScene } from './scenes/UIScene';
+import { PausedScene } from './scenes/PausedScene';
 
 import aavegotchiContractAbi from '../abi/diamond.json';
 import contract from '../config/aavegotchiContract.json';
@@ -118,7 +119,7 @@ class GotchiTowerDefence extends Component {
       width: 32 * 32,
       height: 32 * 20,
       type: Phaser.AUTO,
-      scene: [ LoadScene, MenuScene, GameplayScene, GameOverScene ],
+      scene: [ LoadScene, MenuScene, GameplayScene, GameOverScene, PausedScene ],
       physics: {
         default: 'arcade',
         arcade: {
@@ -150,9 +151,12 @@ class GotchiTowerDefence extends Component {
     let { initialize, game } = this.state
 
     return (
-      <div style={{ "font-family": "m5x7" }}>
+      <div>
         <h1>Gotchi Tower Defense (Beta)</h1>
-        <IonPhaser game={game} initialize={initialize} />
+        <div style={{ "font-family": "m5x7" }}>
+          <IonPhaser game={game} initialize={initialize} />
+        </div>
+        <p>Note: if you are using Brave browser, please disable shields for AavegotchiStats.com to prevent text alignment issues</p>
       </div>
     )
   }

@@ -24,7 +24,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     this.damageResistance = Math.abs(50 - this.aggression) * Constants.scalars.damageResistance;
     this.speed = Math.abs(50 - this.energy);
 
-    this.healthBar = new HealthBar(this.scene, this, this.withSetsRarityScore);
+    this.healthBar = new HealthBar(this.scene, this, this.withSetsRarityScore * Constants.scalars.enemyHealthPoints);
 
     console.log('Enemy', this);
   }

@@ -26,8 +26,8 @@ export class MenuScene extends Phaser.Scene {
     this.music.setLoop(true);
 
     this.musicOn = true;
-    this.musicSprite = this.add.sprite(50, 600, 'music_on');
-    this.musicSprite.setScale(0.3);
+    this.musicSprite = this.add.sprite(50, 600, 'audio_on');
+    this.musicSprite.setScale(0.8);
     this.musicSprite.setInteractive();
 
     this.musicSprite.on('pointerdown', function (pointer) {
@@ -58,10 +58,10 @@ export class MenuScene extends Phaser.Scene {
     this.musicOn = !this.musicOn;
 
     if (this.musicOn) {
-      this.musicSprite.setTexture('music_on');
+      this.musicSprite.setTexture('audio_on');
       this.music.play();
     } else {
-      this.musicSprite.setTexture('music_off');
+      this.musicSprite.setTexture('audio_off');
       this.music.stop();
     }
   }

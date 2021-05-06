@@ -62,27 +62,28 @@ export class UIScene extends Phaser.Scene {
     this.rangeText = this.add.text(800, 250, 'RANGE', { font: '24px m5x7', fill: '#000000' });
     this.speedText = this.add.text(800, 270, 'SPEED', { font: '24px m5x7', fill: '#000000' });
     this.xpPerKillText = this.add.text(800, 290, 'XP PER KILL', { font: '24px m5x7', fill: '#000000' });
-    this.upgradePointsText = this.add.text(800, 310, 'UPGRADE POINTS', { font: '24px m5x7', fill: '#000000' });
+    this.xpProgressText = this.add.text(800, 310, 'LEVEL PROGRESS', { font: '24px m5x7', fill: '#000000' });
+    this.upgradePointsText = this.add.text(800, 330, 'UPGRADE POINTS', { font: '24px m5x7', fill: '#000000' });
 
     let yStart = 310 + 30;
-    this.energyText = this.add.text(800, 340, 'ENERGY', { font: '24px m5x7', fill: '#000000' });
-    this.energyUp = this.add.sprite(990, 350, 'uipack', 768).setInteractive();
-    this.energyDown = this.add.sprite(970, 350, 'uipack', 769).setInteractive();
+    this.energyText = this.add.text(800, 360, 'ENERGY', { font: '24px m5x7', fill: '#000000' });
+    this.energyUp = this.add.sprite(990, 370, 'uipack', 768).setInteractive();
+    this.energyDown = this.add.sprite(970, 370, 'uipack', 769).setInteractive();
 
-    this.aggressionText = this.add.text(800, 360, 'AGGRESSION', { font: '24px m5x7', fill: '#000000' });
-    this.aggressionUp = this.add.sprite(990, 370, 'uipack', 768).setInteractive();
-    this.aggressionDown = this.add.sprite(970, 370, 'uipack', 769).setInteractive();
+    this.aggressionText = this.add.text(800, 380, 'AGGRESSION', { font: '24px m5x7', fill: '#000000' });
+    this.aggressionUp = this.add.sprite(990, 390, 'uipack', 768).setInteractive();
+    this.aggressionDown = this.add.sprite(970, 390, 'uipack', 769).setInteractive();
 
-    this.spookinessText = this.add.text(800, 380, 'SPOOKINESS', { font: '24px m5x7', fill: '#000000' });
-    this.spookinessUp = this.add.sprite(990, 390, 'uipack', 768).setInteractive();
-    this.spookinessDown = this.add.sprite(970, 390, 'uipack', 769).setInteractive();
+    this.spookinessText = this.add.text(800, 400, 'SPOOKINESS', { font: '24px m5x7', fill: '#000000' });
+    this.spookinessUp = this.add.sprite(990, 410, 'uipack', 768).setInteractive();
+    this.spookinessDown = this.add.sprite(970, 410, 'uipack', 769).setInteractive();
 
-    this.brainSizeText = this.add.text(800, 400, 'BRAIN SIZE', { font: '24px m5x7', fill: '#000000' });
-    this.brainSizeUp = this.add.sprite(990, 410, 'uipack', 768).setInteractive();
-    this.brainSizeDown = this.add.sprite(970, 410, 'uipack', 769).setInteractive();
+    this.brainSizeText = this.add.text(800, 420, 'BRAIN SIZE', { font: '24px m5x7', fill: '#000000' });
+    this.brainSizeUp = this.add.sprite(990, 430, 'uipack', 768).setInteractive();
+    this.brainSizeDown = this.add.sprite(970, 430, 'uipack', 769).setInteractive();
 
-    this.eyeShapeText = this.add.text(800, 420, 'EYE SHAPE', { font: '24px m5x7', fill: '#000000' });
-    this.eyeSizeText = this.add.text(800, 440, 'EYE SIZE', { font: '24px m5x7', fill: '#000000' });
+    this.eyeShapeText = this.add.text(800, 440, 'EYE SHAPE', { font: '24px m5x7', fill: '#000000' });
+    this.eyeSizeText = this.add.text(800, 460, 'EYE SIZE', { font: '24px m5x7', fill: '#000000' });
 
     this.upgradeGotchiText.visible = false;
     this.xpPerKillText.visible = false;
@@ -92,6 +93,7 @@ export class UIScene extends Phaser.Scene {
     this.rangeText.visible = false;
     this.speedText.visible = false;
     this.upgradePointsText.visible = false;
+    this.xpProgressText.visible = false;
     this.killsText.visible = false;
     this.energyText.visible = false;
     this.aggressionText.visible = false;
@@ -285,6 +287,7 @@ export class UIScene extends Phaser.Scene {
     this.rangeText.visible = visibility;
     this.speedText.visible = visibility;
     this.upgradePointsText.visible = visibility;
+    this.xpProgressText.visible = visibility;
     this.killsText.visible = visibility;
     this.energyText.visible = visibility;
     this.aggressionText.visible = visibility;
@@ -311,6 +314,7 @@ export class UIScene extends Phaser.Scene {
       this.speedText.setText(`ATTACK SPEED: ${gotchi.speed}`);
       this.upgradePointsText.setText(`UPGRADE POINTS: ${gotchi.upgradePoints}`);
       this.xpPerKillText.setText(`XP PER KILL: ${gotchi.xpPerKill}`);
+      this.xpProgressText.setText(`XP PROGRESS: ${gotchi.xpProgress}`);
 
       this.energyText.setText(`ENERGY: ${gotchi.energy}`);
       this.aggressionText.setText(`AGGRESSION: ${gotchi.aggression}`);
@@ -332,6 +336,7 @@ export class UIScene extends Phaser.Scene {
 
       this.upgradePointsText.setText(`UPGRADE POINTS: ${this.selectedGotchi.upgradePoints}`);
       this.xpPerKillText.setText(`XP PER KILL: ${this.selectedGotchi.xpPerKill}`);
+      this.xpProgressText.setText(`LEVEL PROGRESS: ${this.selectedGotchi.xpProgress}`);
 
       this.energyText.setText(`ENERGY: ${this.selectedGotchi.energy}`);          // attack speed
       this.aggressionText.setText(`AGGRESSION: ${this.selectedGotchi.aggression}`);  // attack damage

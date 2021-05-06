@@ -33,6 +33,7 @@ export class Gotchi extends Phaser.GameObjects.Sprite {
     this.upgradePoints = 0;
     this.spentXp = 0;
     this.xpPerPoint = Constants.scalars.baseXpPerPoint;
+    this.xpProgress = '0%';
 
     this.gotchiRange = this.scene.add.graphics();
   }
@@ -103,7 +104,6 @@ export class Gotchi extends Phaser.GameObjects.Sprite {
       this.brainSize += amount;
       this.xpPerKill = Math.abs(50 - this.brainSize);
       this.upgradePoints -= 1;
-      this.spentXp += this.xpPerPoint;
     }
   }
 
@@ -117,8 +117,14 @@ export class Gotchi extends Phaser.GameObjects.Sprite {
     let xpBalance = this.xp - this.spentXp;
     if (xpBalance >= this.xpPerPoint) {
       let pointsGained = parseInt(xpBalance / this.xpPerPoint);
-      this.upgradePoints += pointsGained;
-      this.spentXp += (pointsGained * this.xpPerPoint);
+      for (var p = 0; p < pointsGained; p++) {
+        this.upgradePoints += 1;
+        this.spentXp += this.xpPerPoint;
+        this.xpPerPoint *= Constants.scalars.xpDifficultlyIncrease;
+      }
     }
+
+    this.xpProgress = (((this.xp - this.spentXp) / this.xpPerPoint) * 100).toFixed() + '%';
+    console.log('increasePoints', this.xpProgress, this.xp, this.spentXp, this.xpPerPoint);
   }
 }

@@ -44,6 +44,9 @@ export class GameplayScene extends Phaser.Scene {
     if(this.musicOn) {
       this.music.play();
     }
+
+    this.speed = 1;
+    this.paused = false;
   }
 
   preload() {
@@ -135,7 +138,8 @@ export class GameplayScene extends Phaser.Scene {
       let enemy = new Enemy({ scene: this, x: position.x, y: position.y, key, gotchi: e.gotchi });
 
       let tweens = [];
-      let duration = 15; //50
+      let duration = Constants.scalars.enemyBasedSpeed;//15; //50
+      console.log('spawnEnemy', duration, this.speed);
 
       let movements = [ [7.5, 0], [0, 10], [10, 0], [0, 4], [1, 0], [0, 2], [6, 0], [0, -11], [-5, 0], [0, -1], [-6, 0], [0, -2], [-1, 0], [0, -2], [1, 0], [0, -1], [20, 0] ]
 
@@ -196,7 +200,10 @@ export class GameplayScene extends Phaser.Scene {
   initSpawning() {
     this.spawnCount = 0;
     this.spawnEnemy();
-    this.spawning = this.time.addEvent({ delay: 3000, callback: this.spawnEnemy, callbackScope: this, loop: true });
+    console.log('initSpawning', Constants.scalars.enemySpawnSpeeds);
+    console.log('initSpawning', this.speed);
+    console.log('initSpawning', Constants.scalars.enemySpawnSpeeds[this.speed - 1]);
+    this.spawning = this.time.addEvent({ delay: Constants.scalars.enemySpawnSpeeds[this.speed - 1], callback: this.spawnEnemy, callbackScope: this, loop: true });
   }
 
   gotchiShoot(g) {
@@ -300,13 +307,12 @@ export class GameplayScene extends Phaser.Scene {
     }, this);
 
     if (this.musicOn) {
-      this.musicSprite = this.add.sprite(50, 600, 'music_on');
+      this.musicSprite = this.add.sprite(50, 600, 'audio_on');
     } else {
-      this.musicSprite = this.add.sprite(50, 600, 'music_off');
+      this.musicSprite = this.add.sprite(50, 600, 'audio_off');
     }
-    this.musicSprite.setScale(0.3);
+    this.musicSprite.setScale(0.8);
     this.musicSprite.setInteractive();
-
     this.musicSprite.on('pointerdown', function (pointer) {
         _this.toggleMusic();
     });
@@ -315,6 +321,57 @@ export class GameplayScene extends Phaser.Scene {
     this.damageSound = this.sound.add("audio_damage");
     this.pickupSound = this.sound.add("audio_pickup");
     this.placeSound = this.sound.add("audio_place");
+
+    this.pausedSprite = this.add.sprite(88, 600, 'playing');
+    this.pausedSprite.setScale(0.8);
+    this.pausedSprite.setInteractive();
+    this.pausedSprite.on('pointerdown', function (pointer) {
+      _this.paused = !_this.paused;
+
+      if (_this.paused) {
+        _this.pausedSprite.setTexture('paused');
+        _this.scene.pause();
+        _this.scene.launch(Constants.SCENES.PAUSED);
+      }
+      // else {
+      //   _this.scene.resume(Constants.SCENES.GAMEPLAY);
+      //   // _this.pausedSprite.setTexture('paused');
+      // }
+    });
+
+    this.events.on('resume', function () {
+      console.log('Gameplay resumed');
+      _this.paused = !_this.paused;
+      _this.pausedSprite.setTexture('playing');
+    });
+
+    this.speedSprite = this.add.sprite(130, 600, 'button1');
+    this.speedSprite.setScale(0.8);
+    this.speedSprite.setInteractive();
+    this.speedSprite.on('pointerdown', function (pointer) {
+      if (_this.speed == 3) {
+        _this.speed = 1;
+      } else {
+        _this.speed += 1;
+      }
+
+      if (_this.speed == 1) {
+        _this.speedSprite.setTexture('button1');
+        _this.tweens.timeScale = 1;
+      } else if (_this.speed == 2) {
+        _this.speedSprite.setTexture('button2');
+        _this.tweens.timeScale = 3;
+      } else if (_this.speed == 3) {
+        _this.speedSprite.setTexture('button3');
+        _this.tweens.timeScale = 9;
+      }
+
+      console.log('_this.tweens', _this.tweens);
+
+
+      _this.spawning.remove();
+      _this.spawning = _this.time.addEvent({ delay: Constants.scalars.enemySpawnSpeeds[_this.speed - 1], callback: _this.spawnEnemy, callbackScope: _this, loop: true });
+    });
   }
 
   update() {
@@ -324,10 +381,10 @@ export class GameplayScene extends Phaser.Scene {
     this.musicOn = !this.musicOn;
 
     if (this.musicOn) {
-      this.musicSprite.setTexture('music_on');
+      this.musicSprite.setTexture('audio_on');
       this.music.play();
     } else {
-      this.musicSprite.setTexture('music_off');
+      this.musicSprite.setTexture('audio_off');
       this.music.stop();
     }
   }

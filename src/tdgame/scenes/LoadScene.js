@@ -85,8 +85,13 @@ export class LoadScene extends Phaser.Scene {
     this.load.image('title', '/game/title.png');
     this.load.image('play', '/game/button_play.png');
 
-    this.load.image('music_on', '/game/music_on.png');
-    this.load.image('music_off', '/game/music_off.png');
+    this.load.image('audio_off', '/game/audioOff.png');
+    this.load.image('audio_on', '/game/audioOn.png');
+    this.load.image('button1', '/game/button1.png');
+    this.load.image('button2', '/game/button2.png');
+    this.load.image('button3', '/game/button3.png');
+    this.load.image('playing', '/game/forward.png');
+    this.load.image('paused', '/game/pause.png');
 
     this.load.audio('synthwave', '/game/synthwave.wav');
     this.load.audio('audio_damage', '/game/damage-sound.wav');
