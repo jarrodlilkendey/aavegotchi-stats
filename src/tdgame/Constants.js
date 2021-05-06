@@ -9,10 +9,10 @@ export const Constants = {
 
   scalars: {
     attackDamage: 1.5, // validated
-    attackRange: 5, // validated
+    attackRange: 6, // validated
     attackSpeed: 10000, // validated
     baseXpPerPoint: 100, // to confirm
     damageResistance: 1, // want to remove this
-    bulletSpeed: 950
+    bulletSpeed: 10000
   }
 }

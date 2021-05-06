@@ -34,6 +34,7 @@ export class GameplayScene extends Phaser.Scene {
 
     this.gotchis = [];
     this.enemies = [];
+    this.activeEnemies = [];
 
     console.log('init', data);
     this.musicOn = data.musicOn;
@@ -128,7 +129,7 @@ export class GameplayScene extends Phaser.Scene {
 
     if (this.registry.customData.myEnemies.length > (this.spawnCount + 1)) {
       let e = this.registry.customData.myEnemies[this.spawnCount];
-      let key = e.tokenId; // to fix, remove sacrificed gotchis
+      let key = e.tokenId;
 
       let position = { x: -1 * 32, y: 2.5 * 32 };
       let enemy = new Enemy({ scene: this, x: position.x, y: position.y, key, gotchi: e.gotchi });
@@ -170,6 +171,7 @@ export class GameplayScene extends Phaser.Scene {
       });
 
       this.enemies.push(enemy);
+      this.activeEnemies.push(enemy);
       this.spawnCount++;
 
       console.log('spawn count', this.spawnCount, 'myEnemies length', this.registry.customData.myEnemies.length);
@@ -206,12 +208,12 @@ export class GameplayScene extends Phaser.Scene {
 
     if (!bullet) {
       // list of active enemies
-      let activeEnemies = _.filter(this.enemies, { active: true });
-      console.log('activeEnemies', activeEnemies);
-      if (activeEnemies.length > 0) {
+      this.activeEnemies = _.filter(this.activeEnemies, { active: true });
+      console.log('activeEnemies', this.activeEnemies);
+      if (this.activeEnemies.length > 0) {
         // for each enemy
         let minDists = [];
-        activeEnemies.map(function(e, i) {
+        this.activeEnemies.map(function(e, i) {
           const dist = Phaser.Math.Distance.Between(g.x, g.y, e.x, e.y);
           // if in range
           if (dist <= g.range) {

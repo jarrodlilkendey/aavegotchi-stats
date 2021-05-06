@@ -122,7 +122,8 @@ class GotchiTowerDefence extends Component {
       physics: {
         default: 'arcade',
         arcade: {
-          debug: false //true
+          debug: false, //true
+          fps: 60
         },
       },
       callbacks: {
@@ -135,7 +136,11 @@ class GotchiTowerDefence extends Component {
           game.registry.merge(_this.state);
           console.log('preBoot', game.registry);
         }
-      }
+      },
+      fps: {
+        target: 60,
+        forceSetTimeOut: true
+      },
     };
 
     this.setState({ game });

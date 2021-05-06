@@ -41,9 +41,6 @@ export class UIScene extends Phaser.Scene {
     this.gotchiRange = this.add.graphics();
     this.gotchiRange.lineStyle(0.5, 0xffffff);
 
-    // this.panel.fillStyle(0xffcc33, 1);
-    // this.panel.fillRect(790, 80, 220, 550);
-
     this.physics.world.enable(this.panel);
     this.panel.body.setSize(220, 550)
     this.panel.body.reset(790, 80);
@@ -68,24 +65,24 @@ export class UIScene extends Phaser.Scene {
     this.upgradePointsText = this.add.text(800, 310, 'UPGRADE POINTS', { font: '24px m5x7', fill: '#000000' });
 
     let yStart = 310 + 30;
-    this.energyText = this.add.text(800, yStart, 'ENERGY', { font: '24px m5x7', fill: '#000000' });
-    this.energyUp = this.add.sprite(990, yStart + 10, 'uipack', 768).setInteractive();
-    this.energyDown = this.add.sprite(970, yStart + 10, 'uipack', 769).setInteractive();
+    this.energyText = this.add.text(800, 340, 'ENERGY', { font: '24px m5x7', fill: '#000000' });
+    this.energyUp = this.add.sprite(990, 350, 'uipack', 768).setInteractive();
+    this.energyDown = this.add.sprite(970, 350, 'uipack', 769).setInteractive();
 
-    this.aggressionText = this.add.text(800, yStart + 20, 'AGGRESSION', { font: '24px m5x7', fill: '#000000' });
-    this.aggressionUp = this.add.sprite(990, yStart + 30, 'uipack', 768).setInteractive();
-    this.aggressionDown = this.add.sprite(970, yStart + 30, 'uipack', 769).setInteractive();
+    this.aggressionText = this.add.text(800, 360, 'AGGRESSION', { font: '24px m5x7', fill: '#000000' });
+    this.aggressionUp = this.add.sprite(990, 370, 'uipack', 768).setInteractive();
+    this.aggressionDown = this.add.sprite(970, 370, 'uipack', 769).setInteractive();
 
-    this.spookinessText = this.add.text(800, yStart + 40, 'SPOOKINESS', { font: '24px m5x7', fill: '#000000' });
-    this.spookinessUp = this.add.sprite(990, yStart + 50, 'uipack', 768).setInteractive();
-    this.spookinessDown = this.add.sprite(970, yStart + 50, 'uipack', 769).setInteractive();
+    this.spookinessText = this.add.text(800, 380, 'SPOOKINESS', { font: '24px m5x7', fill: '#000000' });
+    this.spookinessUp = this.add.sprite(990, 390, 'uipack', 768).setInteractive();
+    this.spookinessDown = this.add.sprite(970, 390, 'uipack', 769).setInteractive();
 
-    this.brainSizeText = this.add.text(800, yStart + 60, 'BRAIN SIZE', { font: '24px m5x7', fill: '#000000' });
-    this.brainSizeUp = this.add.sprite(990, yStart + 70, 'uipack', 768).setInteractive();
-    this.brainSizeDown = this.add.sprite(970, yStart + 70, 'uipack', 769).setInteractive();
+    this.brainSizeText = this.add.text(800, 400, 'BRAIN SIZE', { font: '24px m5x7', fill: '#000000' });
+    this.brainSizeUp = this.add.sprite(990, 410, 'uipack', 768).setInteractive();
+    this.brainSizeDown = this.add.sprite(970, 410, 'uipack', 769).setInteractive();
 
-    this.eyeShapeText = this.add.text(800, yStart + 80, 'EYE SHAPE', { font: '24px m5x7', fill: '#000000' });
-    this.eyeSizeText = this.add.text(800, yStart + 100, 'EYE SIZE', { font: '24px m5x7', fill: '#000000' });
+    this.eyeShapeText = this.add.text(800, 420, 'EYE SHAPE', { font: '24px m5x7', fill: '#000000' });
+    this.eyeSizeText = this.add.text(800, 440, 'EYE SIZE', { font: '24px m5x7', fill: '#000000' });
 
     this.upgradeGotchiText.visible = false;
     this.xpPerKillText.visible = false;
