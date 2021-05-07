@@ -20,11 +20,23 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     this.spookiness = this.gotchi.withSetsNumericTraits[2];
     this.brainSize = this.gotchi.withSetsNumericTraits[3];
 
-    this.withSetsRarityScore = parseInt(this.gotchi.withSetsRarityScore);
+    this.enemyHealthPoints = parseInt(this.gotchi.withSetsRarityScore);
+
+    let gotchiCount = this.scene.registry.customData.myGotchis.length;
+    if (gotchiCount == 1) {
+      this.enemyHealthPoints *= Constants.scalars.enemyHealthPointsByDifficulty[0];
+    } else if (gotchiCount == 2) {
+      this.enemyHealthPoints *= Constants.scalars.enemyHealthPointsByDifficulty[1];
+    } else if (gotchiCount > 2 && gotchiCount <= 5) {
+      this.enemyHealthPoints *= Constants.scalars.enemyHealthPointsByDifficulty[2];
+    } else {
+      this.enemyHealthPoints *= Constants.scalars.enemyHealthPointsByDifficulty[3];
+    }
+
     this.damageResistance = Math.abs(50 - this.aggression) * Constants.scalars.damageResistance;
     this.speed = Math.abs(50 - this.energy);
 
-    this.healthBar = new HealthBar(this.scene, this, this.withSetsRarityScore * Constants.scalars.enemyHealthPoints);
+    this.healthBar = new HealthBar(this.scene, this, this.enemyHealthPoints);
 
     console.log('Enemy', this);
   }

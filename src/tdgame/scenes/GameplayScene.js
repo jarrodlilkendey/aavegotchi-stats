@@ -207,7 +207,7 @@ export class GameplayScene extends Phaser.Scene {
   }
 
   gotchiShoot(g) {
-    console.log('gotchiShoot', g);
+    // console.log('gotchiShoot', g);
 
     const _this = this;
 
@@ -216,7 +216,7 @@ export class GameplayScene extends Phaser.Scene {
     if (!bullet) {
       // list of active enemies
       this.activeEnemies = _.filter(this.activeEnemies, { active: true });
-      console.log('activeEnemies', this.activeEnemies);
+      // console.log('activeEnemies', this.activeEnemies);
       if (this.activeEnemies.length > 0) {
         // for each enemy
         let minDists = [];
@@ -233,10 +233,7 @@ export class GameplayScene extends Phaser.Scene {
           let gotchi = bulletPath.gotchi;
           let e = bulletPath.enemy;
           let dist = bulletPath.dist;
-          // can shoot
-          // do shoot
-          // let damage = parseInt(g.info.modifiedRarityScore) * (Math.pow(1.003, g.xp)); // damage increases by 3% every kill
-          console.log('damage', gotchi.damage, gotchi.xp, parseInt(gotchi.info.modifiedRarityScore));
+          // console.log('damage', gotchi.damage, gotchi.xp, parseInt(gotchi.info.modifiedRarityScore));
           bullet = new Bullet({ scene: _this, x: gotchi.x, y: gotchi.y, damage: gotchi.damage, collateral: gotchi.info.collateral, gotchi: gotchi });
           _this.playerBullets.add(bullet);
           _this.physics.accelerateToObject(bullet, e, Constants.scalars.bulletSpeed);//300);//00);
@@ -270,15 +267,7 @@ export class GameplayScene extends Phaser.Scene {
     //  Grab a reference to the UI Scene
     var ourUi = this.scene.get(Constants.SCENES.UI);
 
-    // _this.physics.add.collider(gameObject, ourGame.floorLayer);
-    // this.floorLayer.setTileIndexCallback([366], (gameObject) => {
-    //   console.log('floor touched', gameObject);
-    //   ourUi.setGotchiPlacementVisibility(true);
-    //   ourUi.setGotchiUpgradeVisibility(false, null);
-    // });
-
     this.input.on('pointerdown', function(pointer) {
-      // const tileXY = this.floorLayer.getTileAt(pointer.x, pointer.y)
       const tile = _this.floorLayer.getTileAtWorldXY(pointer.x, pointer.y);
 
       var rect = { x: pointer.x, y: pointer.y, width: 32, height: 32 };
@@ -333,10 +322,6 @@ export class GameplayScene extends Phaser.Scene {
         _this.scene.pause();
         _this.scene.launch(Constants.SCENES.PAUSED);
       }
-      // else {
-      //   _this.scene.resume(Constants.SCENES.GAMEPLAY);
-      //   // _this.pausedSprite.setTexture('paused');
-      // }
     });
 
     this.events.on('resume', function () {

@@ -62,7 +62,7 @@ export class UIScene extends Phaser.Scene {
     this.rangeText = this.add.text(800, 250, 'RANGE', { font: '24px m5x7', fill: '#000000' });
     this.speedText = this.add.text(800, 270, 'SPEED', { font: '24px m5x7', fill: '#000000' });
     this.xpPerKillText = this.add.text(800, 290, 'XP PER KILL', { font: '24px m5x7', fill: '#000000' });
-    this.xpProgressText = this.add.text(800, 310, 'LEVEL PROGRESS', { font: '24px m5x7', fill: '#000000' });
+    this.xpProgressText = this.add.text(800, 310, 'LEVEL UP PROGRESS', { font: '24px m5x7', fill: '#000000' });
     this.upgradePointsText = this.add.text(800, 330, 'UPGRADE POINTS', { font: '24px m5x7', fill: '#000000' });
 
     let yStart = 310 + 30;
@@ -336,7 +336,7 @@ export class UIScene extends Phaser.Scene {
 
       this.upgradePointsText.setText(`UPGRADE POINTS: ${this.selectedGotchi.upgradePoints}`);
       this.xpPerKillText.setText(`XP PER KILL: ${this.selectedGotchi.xpPerKill}`);
-      this.xpProgressText.setText(`LEVEL PROGRESS: ${this.selectedGotchi.xpProgress}`);
+      this.xpProgressText.setText(`LEVEL UP PROGRESS: ${this.selectedGotchi.xpProgress}`);
 
       this.energyText.setText(`ENERGY: ${this.selectedGotchi.energy}`);          // attack speed
       this.aggressionText.setText(`AGGRESSION: ${this.selectedGotchi.aggression}`);  // attack damage

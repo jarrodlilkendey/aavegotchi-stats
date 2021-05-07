@@ -24,14 +24,16 @@ export class Gotchi extends Phaser.GameObjects.Sprite {
     this.spookiness = this.info.withSetsNumericTraits[2];
     this.brainSize = this.info.withSetsNumericTraits[3];
 
-    this.damage = Math.abs(50 - this.aggression) * Constants.scalars.attackDamage;
-    this.range = Math.abs(50 - this.spookiness) * Constants.scalars.attackRange;
-    this.speed = Math.abs(50 - this.energy);
-    this.xpPerKill = Math.abs(50 - this.brainSize);
+    this.damage = Math.max(5, Math.abs(50 - this.aggression)) * Constants.scalars.attackDamage;
+    this.range = Math.max(5, Math.abs(50 - this.spookiness)) * Constants.scalars.attackRange;
+    this.speed = Math.max(5, Math.abs(50 - this.energy));
+    this.xpPerKill = Math.max(5, Math.abs(50 - this.brainSize));
 
     this.xp = 0;
     this.upgradePoints = 0;
     this.spentXp = 0;
+    this.levelXp = 0;
+    this.level = 0;
     this.xpPerPoint = Constants.scalars.baseXpPerPoint;
     this.xpProgress = '0%';
 
@@ -66,15 +68,15 @@ export class Gotchi extends Phaser.GameObjects.Sprite {
 
   increaseHits() {
     this.hits += 1;
-    // this.damage = parseInt(this.info.withSetsRarityScore) * Math.pow(1.003, this.hits);
   }
 
   increaseEnergy(amount) {
     if (this.upgradePoints > 0) {
       this.energy += amount;
-      this.speed = Math.abs(50 - this.energy);
-      this.upgradePoints -= 1;
-      this.spentXp += this.xpPerPoint;
+      this.speed = Math.max(5, Math.abs(50 - this.energy));
+
+      this.spendPoint();
+
       this.shootingTimer.remove();
       this.shootingTimer = this.scene.time.addEvent({ delay: this.calculateAttackDelay(), callback: this.scene.gotchiShoot, callbackScope: this.scene, loop: true, args: [ this ] });
     }
@@ -83,18 +85,18 @@ export class Gotchi extends Phaser.GameObjects.Sprite {
   increaseAggression(amount) {
     if (this.upgradePoints > 0) {
       this.aggression += amount;
-      this.damage = Math.abs(50 - this.aggression) * Constants.scalars.attackDamage;
-      this.upgradePoints -= 1;
-      this.spentXp += this.xpPerPoint;
+      this.damage = Math.max(5, Math.abs(50 - this.aggression)) * Constants.scalars.attackDamage;
+
+      this.spendPoint();
     }
   }
 
   increaseSpookiness(amount) {
     if (this.upgradePoints > 0) {
       this.spookiness += amount;
-      this.range = Math.abs(50 - this.spookiness) * Constants.scalars.attackRange;
-      this.upgradePoints -= 1;
-      this.spentXp += this.xpPerPoint;
+      this.range = Math.max(5, Math.abs(50 - this.spookiness)) * Constants.scalars.attackRange;
+
+      this.spendPoint();
       this.drawRange();
     }
   }
@@ -102,9 +104,30 @@ export class Gotchi extends Phaser.GameObjects.Sprite {
   increaseBrainSize(amount) {
     if (this.upgradePoints > 0) {
       this.brainSize += amount;
-      this.xpPerKill = Math.abs(50 - this.brainSize);
-      this.upgradePoints -= 1;
+      this.xpPerKill = Math.max(5, Math.abs(50 - this.brainSize));
+
+      this.spendPoint();
     }
+  }
+
+  xpPerPointAtLevel(level) {
+    return Constants.scalars.baseXpPerPoint * Math.pow(Constants.scalars.xpDifficultlyIncrease, level);
+  }
+
+  spendPoint() {
+    console.log('xpPerPointAtLevel 0', this.xpPerPointAtLevel(0));
+    console.log('xpPerPointAtLevel 1', this.xpPerPointAtLevel(1));
+    console.log('xpPerPointAtLevel 2', this.xpPerPointAtLevel(2));
+    this.upgradePoints -= 1;
+    this.spentXp += this.xpPerPointAtLevel(this.level) //this.xpPerPoint;
+    this.levelXp -= this.xpPerPointAtLevel(this.level)
+    this.level += 1;
+
+    let xpBalance = this.xp - this.levelXp - this.spentXp;
+
+    this.xpProgress = ((xpBalance / this.xpPerPoint) * 100).toFixed() + '%';
+
+    console.log('spendPoint', this.xpProgess, 'xp:', this.xp, 'spentXp:', this.spentXp, 'levelXp:', this.levelXp, 'balance:', xpBalance, 'xpPerPoint:', this.xpPerPoint);
   }
 
   increaseKills() {
@@ -114,17 +137,17 @@ export class Gotchi extends Phaser.GameObjects.Sprite {
   increasePoints() {
     this.xp += this.xpPerKill;
 
-    let xpBalance = this.xp - this.spentXp;
+    let xpBalance = this.xp - this.spentXp - this.levelXp;
     if (xpBalance >= this.xpPerPoint) {
-      let pointsGained = parseInt(xpBalance / this.xpPerPoint);
-      for (var p = 0; p < pointsGained; p++) {
+      while (xpBalance >= this.xpPerPoint) {
         this.upgradePoints += 1;
-        this.spentXp += this.xpPerPoint;
+        this.levelXp += this.xpPerPoint;
+        xpBalance -= this.xpPerPoint;
         this.xpPerPoint *= Constants.scalars.xpDifficultlyIncrease;
       }
     }
 
-    this.xpProgress = (((this.xp - this.spentXp) / this.xpPerPoint) * 100).toFixed() + '%';
-    console.log('increasePoints', this.xpProgress, this.xp, this.spentXp, this.xpPerPoint);
+    this.xpProgress = ((xpBalance / this.xpPerPoint) * 100).toFixed() + '%';
+    console.log('increasePoints', this.xpProgress, 'xp:', this.xp, 'spentXp:', this.spentXp, 'levelxp:', this.levelXp, 'xpPerPoint:', this.xpPerPoint);
   }
 }
