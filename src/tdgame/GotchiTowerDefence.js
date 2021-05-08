@@ -16,6 +16,7 @@ import { connectToMatic } from '../util/MaticClient';
 import { retrieveUserAssets, retrieveAllGotchis } from '../util/Graph';
 
 import _ from 'lodash';
+import { RateLimit } from 'async-sema';
 
 class GotchiTowerDefence extends Component {
   constructor(props) {
@@ -86,29 +87,46 @@ class GotchiTowerDefence extends Component {
                 }
               );
 
-
-
-              user.gotchisOwned.map(function(gotchi, index) {
-                let tokenId = gotchi.id;
-                aavegotchiContract.methods.getAavegotchiSvg(tokenId).call().then(function (svg) {
-                  _this.setState(
-                    { myGotchis: [..._this.state.myGotchis, { tokenId: tokenId, svg: svg, gotchi: gotchi }]},
-                    () => {
-                      if (_this.state.myGotchis.length == user.gotchisOwned.length) {
-                        _this.loadGame();
-                      }
-                    }
-                  );
-                }).catch(function (error) {
-                  console.log(error);
-                });
-              });
+              _this.retrieveGotchiSvgs(user, aavegotchiContract);
             });
         });
 
     } else {
       alert('Select the connect button and reload the page');
     }
+  }
+
+  async retrieveGotchiSvgs(user, aavegotchiContract) {
+    const _this = this;
+
+    const limit = RateLimit(15);
+
+    for (let i = 0; i < user.gotchisOwned.length; i++) {
+      let gotchi = user.gotchisOwned[i];
+      let tokenId = gotchi.id;
+      await limit();
+      _this.fetchFromRPC(aavegotchiContract, tokenId, gotchi, user);
+    }
+  }
+
+  fetchFromRPC(aavegotchiContract, tokenId, gotchi, user) {
+    const _this = this;
+
+    const response = aavegotchiContract.methods.getAavegotchiSvg(tokenId).call()
+      .then((svg) => {
+        console.log('svg for', tokenId);
+        _this.setState(
+          { myGotchis: [..._this.state.myGotchis, { tokenId: tokenId, svg: svg, gotchi: gotchi }]},
+          () => {
+            if (_this.state.myGotchis.length == user.gotchisOwned.length) {
+              _this.loadGame();
+            }
+          }
+        );
+      })
+      .catch((error) => console.log(error));
+
+    return response;
   }
 
   loadGame() {
