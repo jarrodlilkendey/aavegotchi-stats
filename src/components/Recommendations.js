@@ -13,6 +13,9 @@ import Loading from './Loading';
 
 import wearableItemTypes from '../data/wearables/wearables.json';
 
+
+import { RateLimit } from 'async-sema';
+
 const _ = require('lodash');
 const axios = require('axios');
 
@@ -113,18 +116,37 @@ class Recommendations extends Component {
     this.state.aavegotchiContract.methods.allAavegotchisOfOwner(this.state.address).call().then(function (myAavegotchis) {
       _this.setState({ myAavegotchis: myAavegotchis });
 
-      for (let a = 0; a < myAavegotchis.length; a++) {
-        _this.state.aavegotchiContract.methods.getAavegotchiSvg(myAavegotchis[a].tokenId).call().then(function (svg) {
-          let mySvgObjects = _this.state.mySvgObjects;
-          mySvgObjects[myAavegotchis[a].tokenId] = svg;
-          _this.setState({ mySvgObjects: mySvgObjects });
-        }).catch(function (error) {
-          console.log(error);
-        });
-      }
-
-      _this.setState({ loading: false });
+      _this.retrieveGotchiSvgs(myAavegotchis);
     });
+  }
+
+  async retrieveGotchiSvgs(myAavegotchis) {
+    const _this = this;
+
+    const limit = RateLimit(15);
+
+    for (let i = 0; i < myAavegotchis.length; i++) {
+      let tokenId = myAavegotchis[i].tokenId;
+      await limit();
+      _this.fetchFromRPC(tokenId);
+    }
+
+    this.setState({ loading: false });
+  }
+
+  fetchFromRPC(tokenId) {
+    const _this = this;
+
+    const response = this.state.aavegotchiContract.methods.getAavegotchiSvg(tokenId).call()
+      .then((svg) => {
+        console.log('svg for', tokenId);
+        let mySvgObjects = _this.state.mySvgObjects;
+        mySvgObjects[tokenId] = svg;
+        _this.setState({ mySvgObjects: mySvgObjects });
+      })
+      .catch((error) => console.log(error));
+
+    return response;
   }
 
   selectAavegotchi(aavegotchiId) {
