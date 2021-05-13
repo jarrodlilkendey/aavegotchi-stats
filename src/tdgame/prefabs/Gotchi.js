@@ -150,4 +150,11 @@ export class Gotchi extends Phaser.GameObjects.Sprite {
     this.xpProgress = ((xpBalance / this.xpPerPoint) * 100).toFixed() + '%';
     console.log('increasePoints', this.xpProgress, 'xp:', this.xp, 'spentXp:', this.spentXp, 'levelxp:', this.levelXp, 'xpPerPoint:', this.xpPerPoint);
   }
+
+  hasFireball() {
+    if (_.includes(this.info.equippedWearables, 130)) {
+      return true;
+    }
+    return false;
+  }
 }

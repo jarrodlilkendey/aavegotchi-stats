@@ -39,6 +39,8 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     this.healthBar = new HealthBar(this.scene, this, this.enemyHealthPoints);
 
     console.log('Enemy', this);
+
+    this.fireParticles = this.scene.add.particles('fire');
   }
 
   preUpdate (time, delta) {
@@ -72,6 +74,69 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         bullet.gotchi.increaseKills();
         bullet.gotchi.increasePoints();
         this.destroy();
+      }
+    }
+  }
+
+  fireballDamage(fireball) {
+    console.log('fireballDamage', fireball);
+
+    this.healthBar.decrease(fireball.damage);
+    this.setAlight(fireball);
+    if (this.healthBar.value <=  0) {
+      if (this.scene) {
+        this.scene.events.emit('addScore');
+        fireball.gotchi.increaseKills();
+        fireball.gotchi.increasePoints();
+        this.fireEmitter.on = false;
+        this.destroy();
+      }
+    }
+  }
+
+
+  setAlight(fireball) {
+    console.log('setAlight', fireball);
+
+    if (this.burningTimer) {
+      this.burningTimer.remove();
+    }
+
+    this.burningTimer = this.scene.time.addEvent(
+      { delay: fireball.delay, callback: this.burnDamage, callbackScope: this, loop: false, repeat: fireball.burnTimes, args: [ fireball ] }
+    );
+
+    this.fireEmitter = this.fireParticles.createEmitter({
+        alpha: { start: 1, end: 0 },
+        scale: { start: 0.5, end: 2.5 },
+        tint: { start: 0xff945e, end: 0xff945e },
+        speed: 20,
+        accelerationY: -80,
+        angle: { min: -85, max: -95 },
+        rotate: { min: -180, max: 180 },
+        lifespan: { min: 1000, max: 1100 },
+        blendMode: 'ADD',
+        frequency: 80,
+        maxParticles: 10,
+        follow: this
+    });
+  }
+
+  burnDamage(fireball) {
+    console.log('burnDamage', fireball);
+    this.healthBar.decrease(fireball.burnDamage);
+    if (this.healthBar.value <=  0) {
+      if (this.scene) {
+        if (this.burningTimer) {
+          this.burningTimer.remove();
+        }
+
+        this.scene.events.emit('addScore');
+        fireball.gotchi.increaseKills();
+        fireball.gotchi.increasePoints();
+        this.destroy();
+
+        this.fireEmitter.on = false;
       }
     }
   }

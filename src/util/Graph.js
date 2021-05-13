@@ -31,6 +31,37 @@ const aavegotchiGraphQuery = (skip, order) => {
   return query;
 }
 
+const aavegotchiGraphQueryAtBlock = (skip, order, block) => {
+  let query = `{
+    aavegotchis(
+      block: { number: ${block} },
+      first: 1000,
+      skip: ${skip},
+      orderBy: id,
+      orderDirection: ${order},
+      where:{ status: 3, owner_not: "0x0000000000000000000000000000000000000000" }
+    ) {
+      id
+      hauntId
+      name
+      numericTraits
+      modifiedNumericTraits
+      withSetsNumericTraits
+      baseRarityScore
+      modifiedRarityScore
+      withSetsRarityScore
+      kinship
+      experience
+      equippedWearables
+      owner {
+        id
+      }
+    }
+  }`;
+
+  return query;
+}
+
 export const retrieveAllGotchis = async () => {
   let aavegotchis = [];
   let gotchiIds = [];
@@ -72,6 +103,48 @@ export const retrieveAllGotchis = async () => {
 
   return aavegotchis;
 };
+
+export const retrieveAllGotchisAtBlock = async (block) => {
+  let aavegotchis = [];
+  let gotchiIds = [];
+  let stop = false;
+
+  for (let i = 0; i < 5; i++) {
+    const g = await axios.post(
+      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      {
+        query: aavegotchiGraphQueryAtBlock(i * 1000, 'asc', block)
+      }
+    );
+
+    g.data.data.aavegotchis.map(function(gotchi, index) {
+      aavegotchis.push(gotchi);
+      gotchiIds.push(gotchi.id);
+    });
+  }
+
+  for (let i = 0; i < 5 && !stop; i++) {
+    const g = await axios.post(
+      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      {
+        query: aavegotchiGraphQueryAtBlock(i * 1000, 'desc', block)
+      }
+    );
+
+    g.data.data.aavegotchis.map(function(gotchi, index) {
+      if (!stop) {
+        if (!_.includes(gotchiIds, gotchi.id)) {
+          aavegotchis.push(gotchi);
+          gotchiIds.push(gotchi.id);
+        } else {
+          stop = true;
+        }
+      }
+    });
+  }
+
+  return aavegotchis;
+}
 
 const portalGraphQuery = (skip, order) => {
   let query = `{
@@ -420,4 +493,37 @@ export const retrieveUserAssets = async (address) => {
   );
 
   return user.data.data.users[0];
+};
+
+export const retrieveTicketListings = async () => {
+  const ticketListings = await axios.post(
+    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    {
+      query: `{
+        erc1155Listings(
+          first: 1000,
+          where: {
+            sold: false,
+            cancelled: false
+      	    category: 3,
+          },
+          orderBy: priceInWei,
+          orderDirection:asc
+        ) {
+          id
+          timeCreated
+          sold
+          priceInWei
+          rarityLevel
+          seller
+          erc1155TypeId
+          erc1155TokenAddress
+          category
+          quantity
+        }
+      }`
+    }
+  );
+
+  return ticketListings.data.data.erc1155Listings;
 };

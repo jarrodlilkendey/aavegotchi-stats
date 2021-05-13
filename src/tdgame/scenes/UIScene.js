@@ -47,7 +47,8 @@ export class UIScene extends Phaser.Scene {
     this.panel.fillRect(790, 80, 220, 550);
 
     //  Our Text object to display the Score
-    let enemiesRemaining = this.registry.customData.myEnemies.length + this.registry.customData.svgsToGet.length;
+    // let enemiesRemaining = this.registry.customData.myEnemies.length + this.registry.customData.svgsToGet.length;
+    let enemiesRemaining = this.registry.customData.levelEnemies.length; // + this.registry.customData.svgsToGet.length;
     var scoreText = this.add.text(800, 80, `Score: 0`, { font: '30px m5x7', fill: '#000000' });
     var enemiesText = this.add.text(800, 100, `Enemies: ${enemiesRemaining}`, { font: '30px m5x7', fill: '#000000' });
 
@@ -249,7 +250,8 @@ export class UIScene extends Phaser.Scene {
     ourGame.events.on('addScore', function () {
         this.score += 1;
 
-        let enemiesRemaining = this.registry.customData.myEnemies.length + this.registry.customData.svgsToGet.length - this.score;
+        // let enemiesRemaining = this.registry.customData.myEnemies.length + this.registry.customData.svgsToGet.length - this.score;
+        let enemiesRemaining = this.registry.customData.levelEnemies.length - this.score;
 
         scoreText.setText(`Score: ${this.score}`);
         enemiesText.setText(`Enemies: ${enemiesRemaining}`);

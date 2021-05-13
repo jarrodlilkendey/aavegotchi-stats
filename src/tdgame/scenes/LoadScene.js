@@ -16,8 +16,17 @@ import uni from '../assets/collaterals/uniswap-uni-logo.svg';
 import usdc from '../assets/collaterals/usd-coin-usdc-logo.svg';
 import wbtc from '../assets/collaterals/wrapped-bitcoin-wbtc-logo.svg';
 import yfi from '../assets/collaterals/yearn-finance-yfi-logo.svg';
+import fireball from '../assets/weapons/fireball.svg';
 
 import td from '../assets/td.json';
+
+import { generateGotchiUrl, retrieveGotchiSvgs } from '../../util/AavegotchiSvg';
+
+import aavegotchiContractAbi from '../../abi/diamond.json';
+import contract from '../../config/aavegotchiContract.json';
+import { connectToMatic } from '../../util/MaticClient';
+
+import _ from 'lodash';
 
 export class LoadScene extends Phaser.Scene {
   constructor() {
@@ -29,38 +38,15 @@ export class LoadScene extends Phaser.Scene {
   init() {
   }
 
-  filterSvgBackground(gotchiSvg) {
-    let from = gotchiSvg.search('<g class="gotchi-bg">');
-    let fromString = gotchiSvg.substring(from, gotchiSvg.length);
-    let to = fromString.search('</g>');
-    let newSvg = gotchiSvg.substring(0, from) + fromString.substring(to + 4, gotchiSvg.length);
-    return newSvg;
-  }
-
   preload() {
-    console.log('preload', this);
+    this.plugins.get('rexawaitloaderplugin').addToScene(this);
     const _this = this;
 
     this.registry.customData.myGotchis.map(function(gotchi, index) {
-      console.log('keys', gotchi.tokenId);
-      let gotchiSvg = gotchi.svg;
-      let newSvg = _this.filterSvgBackground(gotchiSvg);
-      let blob = new Blob([newSvg], { type: "image/svg+xml" });
-      const url = URL.createObjectURL(blob);
+      console.log('load my gotchi', gotchi.tokenId);
+      const url = generateGotchiUrl(gotchi.svg);
 
       _this.load.svg(gotchi.tokenId, url, {
-        width: 48, height: 48
-      });
-    });
-
-    this.registry.customData.myEnemies.map(function(enemy, index) {
-      console.log('keys', enemy.tokenId);
-      let gotchiSvg = enemy.svg;
-      let newSvg = _this.filterSvgBackground(gotchiSvg);
-      let blob = new Blob([newSvg], { type: "image/svg+xml" });
-      const url = URL.createObjectURL(blob);
-
-      _this.load.svg(enemy.tokenId, url, {
         width: 48, height: 48
       });
     });
@@ -76,8 +62,8 @@ export class LoadScene extends Phaser.Scene {
     this.load.svg('wbtc', wbtc, { width: 24, height: 24 });
     this.load.svg('yfi', yfi, { width: 24, height: 24 });
 
-    this.load.image('terrain', terrain);
-    this.load.image('items', items);
+    this.load.svg('fireball', fireball, { width: 24, height: 24 });
+
     this.load.image('playagain', '/game/playagain.png');
 
     this.load.spritesheet('uipack', uipack, { frameWidth: 16, frameHeight: 16, spacing: 2 });
@@ -98,12 +84,47 @@ export class LoadScene extends Phaser.Scene {
     this.load.audio('audio_attack', '/game/throw.wav');
     this.load.audio('audio_pickup', '/game/pick-up.wav');
     this.load.audio('audio_place', '/game/place-item.wav');
+    this.load.audio('audio_fireball', '/game/fireball-sound.wav');
 
+    this.load.image('fire', '/game/fire.png');
+
+    this.load.image('terrain', terrain);
+    this.load.image('items', items);
     this.load.tilemapTiledJSON('td', td);
+
+    var callback = async function(successCallback, failureCallback) {
+
+        const gotchiCount = 100; //0;
+
+        let levelEnemies = _.slice(_this.registry.customData.allEnemies, 0, gotchiCount);
+        levelEnemies = _.orderBy(levelEnemies, ['modifiedRarityScore', 'asc']);
+
+        let gotchiIds = [];
+        for (var i = 0; i < gotchiCount; i++) {
+          gotchiIds.push(levelEnemies[i].id);
+        }
+
+        console.log('loading following enemies', levelEnemies, gotchiIds);
+        _this.registry.customData.levelEnemies = levelEnemies;
+
+        const maticPOSClient = await connectToMatic();
+        const aavegotchiContract = await new maticPOSClient.web3Client.web3.eth.Contract(aavegotchiContractAbi, contract.address);
+        let myGotchiSvgs = await retrieveGotchiSvgs(aavegotchiContract, gotchiIds, 10);
+
+        Object.keys(myGotchiSvgs).map((tokenId) => {
+          const url = generateGotchiUrl(myGotchiSvgs[tokenId]);
+
+          console.log('load enemy gotchi', tokenId);
+          _this.load.svg(tokenId, url, {
+            width: 48, height: 48
+          });
+        });
+        successCallback();
+    }
+    this.load.rexAwait(callback);
   }
 
   create() {
     this.scene.start(Constants.SCENES.MENU, "Loaded");
-    // this.scene.start(Constants.SCENES.GAMEPLAY, "Loaded");
   }
 }

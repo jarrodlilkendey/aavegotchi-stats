@@ -4,6 +4,7 @@ import { Constants } from '../Constants';
 import { Bullet } from '../prefabs/Bullet';
 import { Enemy } from '../prefabs/Enemy';
 import { Gotchi } from '../prefabs/Gotchi';
+import { Fireball } from '../prefabs/Fireball';
 
 import { UIScene } from './UIScene';
 
@@ -47,47 +48,12 @@ export class GameplayScene extends Phaser.Scene {
 
     this.speed = 1;
     this.paused = false;
+
+    this.particles = this.add.particles('flares');
+    this.particles.setDepth(2);
   }
 
   preload() {
-  }
-
-  filterSvgBackground(gotchiSvg) {
-    let from = gotchiSvg.search('<g class="gotchi-bg">');
-    let fromString = gotchiSvg.substring(from, gotchiSvg.length);
-    let to = fromString.search('</g>');
-    let newSvg = gotchiSvg.substring(0, from) + fromString.substring(to + 4, gotchiSvg.length);
-    return newSvg;
-  }
-
-  retrieveGotchiSvgs() {
-    const _this = this;
-    console.log('retrieveGotchiSvgs', this.registry.customData.myEnemies, this.registry.customData.svgsToGet);
-    for (let g = 0; g < 5; g++) {
-      let enemy = _this.registry.customData.svgsToGet[g];
-
-      _this.aavegotchiContract.methods.getAavegotchiSvg(enemy.id).call().then(function (svg) {
-        _this.registry.customData.svgsToGet = _.remove(_this.registry.customData.svgsToGet, function(g) {
-          return g.id != enemy.id;
-        });
-
-        _this.registry.customData.myEnemies.push({ tokenId: enemy.id, svg: svg, gotchi: enemy });
-
-        let newSvg = _this.filterSvgBackground(svg);
-        let blob = new Blob([newSvg], { type: "image/svg+xml" });
-        const url = URL.createObjectURL(blob);
-
-        console.log('load svg', enemy.id, url);
-
-        _this.load.svg(enemy.id, url, {
-          width: 48, height: 48
-        });
-        _this.load.start();
-
-      }).catch(function (error) {
-        console.log(error);
-      });
-    }
   }
 
   move(position, moveBy, duration, target) {
@@ -130,16 +96,15 @@ export class GameplayScene extends Phaser.Scene {
   spawnEnemy() {
     const _this = this;
 
-    if (this.registry.customData.myEnemies.length > (this.spawnCount + 1)) {
-      let e = this.registry.customData.myEnemies[this.spawnCount];
-      let key = e.tokenId;
+    if (this.registry.customData.levelEnemies.length > this.spawnCount) {
+      let e = this.registry.customData.levelEnemies[this.spawnCount];
+      let key = e.id;
 
       let position = { x: -1 * 32, y: 2.5 * 32 };
-      let enemy = new Enemy({ scene: this, x: position.x, y: position.y, key, gotchi: e.gotchi });
+      let enemy = new Enemy({ scene: this, x: position.x, y: position.y, key, gotchi: e });
 
       let tweens = [];
-      let duration = Constants.scalars.enemyBasedSpeed;//15; //50
-      console.log('spawnEnemy', duration, this.speed);
+      let duration = Constants.scalars.enemyBasedSpeed;
 
       let movements = [ [7.5, 0], [0, 10], [10, 0], [0, 4], [1, 0], [0, 2], [6, 0], [0, -11], [-5, 0], [0, -1], [-6, 0], [0, -2], [-1, 0], [0, -2], [1, 0], [0, -1], [20, 0] ]
 
@@ -174,21 +139,28 @@ export class GameplayScene extends Phaser.Scene {
         }
       });
 
+      this.physics.world.addCollider(this.playerFireballs, enemy, function(enemy, fireball) {
+        fireball.gotchi.increaseHits();
+
+        fireball.destroy();
+        enemy.fireballDamage(fireball);
+
+        if (_this.musicOn) {
+          _this.damageSound.play({ volume: 3});
+        }
+      });
+
       this.enemies.push(enemy);
       this.activeEnemies.push(enemy);
       this.spawnCount++;
 
-      console.log('spawn count', this.spawnCount, 'myEnemies length', this.registry.customData.myEnemies.length);
-      if ((this.registry.customData.myEnemies.length - 2) == this.spawnCount) {
-        if (this.registry.customData.svgsToGet.length != 0) {
-          _this.retrieveGotchiSvgs();
-        }
-      }
+      console.log('spawn count', this.spawnCount, 'levelEnemies length', this.registry.customData.levelEnemies.length);
     }
   }
 
   initShooting() {
     this.playerBullets = this.physics.add.group();
+    this.playerFireballs = this.physics.add.group();
   }
 
   initGotchiShooting(gotchi) {
@@ -212,6 +184,7 @@ export class GameplayScene extends Phaser.Scene {
     const _this = this;
 
     let bullet = this.playerBullets.getFirstDead(false);
+    let fireball = this.playerFireballs.getFirstDead(false);
 
     if (!bullet) {
       // list of active enemies
@@ -233,13 +206,24 @@ export class GameplayScene extends Phaser.Scene {
           let gotchi = bulletPath.gotchi;
           let e = bulletPath.enemy;
           let dist = bulletPath.dist;
-          // console.log('damage', gotchi.damage, gotchi.xp, parseInt(gotchi.info.modifiedRarityScore));
-          bullet = new Bullet({ scene: _this, x: gotchi.x, y: gotchi.y, damage: gotchi.damage, collateral: gotchi.info.collateral, gotchi: gotchi });
-          _this.playerBullets.add(bullet);
-          _this.physics.accelerateToObject(bullet, e, Constants.scalars.bulletSpeed);//300);//00);
 
-          if (_this.musicOn) {
-            _this.attackSound.play({ volume: 4});
+          if (gotchi.hasFireball()) {
+            fireball = new Fireball({ scene: _this, x: gotchi.x, y: gotchi.y, damage: gotchi.damage, gotchi: gotchi });
+            _this.playerFireballs.add(fireball);
+            _this.physics.accelerateToObject(fireball, e, Constants.scalars.bulletSpeed);//300);//00);
+
+            if (_this.musicOn) {
+              _this.fireballSound.play({ volume: 1, rate: 4});
+            }
+          } else {
+            // console.log('damage', gotchi.damage, gotchi.xp, parseInt(gotchi.info.modifiedRarityScore));
+            bullet = new Bullet({ scene: _this, x: gotchi.x, y: gotchi.y, damage: gotchi.damage, collateral: gotchi.info.collateral, gotchi: gotchi });
+            _this.playerBullets.add(bullet);
+            _this.physics.accelerateToObject(bullet, e, Constants.scalars.bulletSpeed);//300);//00);
+
+            if (_this.musicOn) {
+              _this.attackSound.play({ volume: 4});
+            }
           }
         }
       }
@@ -284,7 +268,6 @@ export class GameplayScene extends Phaser.Scene {
       }
     });
 
-
     //  Listen for events from it
     ourUi.events.on('placeGotchi', function (gotchi) {
       _this.spawnGotchi(gotchi.gameObject.texture.key, gotchi.gameObject.x, gotchi.gameObject.y);
@@ -310,6 +293,7 @@ export class GameplayScene extends Phaser.Scene {
     this.damageSound = this.sound.add("audio_damage");
     this.pickupSound = this.sound.add("audio_pickup");
     this.placeSound = this.sound.add("audio_place");
+    this.fireballSound = this.sound.add("audio_fireball");
 
     this.pausedSprite = this.add.sprite(88, 600, 'playing');
     this.pausedSprite.setScale(0.8);
@@ -350,9 +334,6 @@ export class GameplayScene extends Phaser.Scene {
         _this.speedSprite.setTexture('button3');
         _this.tweens.timeScale = 9;
       }
-
-      console.log('_this.tweens', _this.tweens);
-
 
       _this.spawning.remove();
       _this.spawning = _this.time.addEvent({ delay: Constants.scalars.enemySpawnSpeeds[_this.speed - 1], callback: _this.spawnEnemy, callbackScope: _this, loop: true });

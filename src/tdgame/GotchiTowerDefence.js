@@ -17,6 +17,7 @@ import { retrieveUserAssets, retrieveAllGotchis } from '../util/Graph';
 
 import _ from 'lodash';
 import { RateLimit } from 'async-sema';
+import AwaitLoaderPlugin from 'phaser3-rex-plugins/plugins/awaitloader-plugin.js';
 
 class GotchiTowerDefence extends Component {
   constructor(props) {
@@ -28,8 +29,7 @@ class GotchiTowerDefence extends Component {
       address: '',
 
       myGotchis: [],
-      myEnemies: [],
-      svgsToGet: [],
+      allEnemies: [],
 
       initialize: true,
     }
@@ -52,40 +52,18 @@ class GotchiTowerDefence extends Component {
         .then((allGotchis) => {
           retrieveUserAssets(window.ethereum.selectedAddress)
             .then((user) => {
-              console.log('retrieveAllGotchis', allGotchis);
-              let myEnemies = _.reject(allGotchis, function(g) { return g.owner.id == _this.state.address.toLowerCase() });
-              myEnemies.map(function(e, i) {
-                myEnemies[i].modifiedRarityScore = parseInt(e.modifiedRarityScore);
-              })
-              myEnemies = _.orderBy(myEnemies, ['modifiedRarityScore', 'asc']);
-
-              console.log('myEnemies', myEnemies);
-
-              console.log('retrieveUserAssets', user);
-
-              _this.setState(
-                { user, svgsToGet: myEnemies },
-                () => {
-                  myEnemies.map(function(enemy, index) {
-                    if (index <= 3) { //50) {
-                      aavegotchiContract.methods.getAavegotchiSvg(enemy.id).call().then(function (svg) {
-                        let svgsToGet = [..._this.state.svgsToGet];
-                        svgsToGet = _.remove(svgsToGet, function(g) {
-                          return g.id != enemy.id;
-                        });
-                        _this.setState(
-                          {
-                            myEnemies: [..._this.state.myEnemies, { tokenId: enemy.id, svg: svg, gotchi: enemy }],
-                            svgsToGet: svgsToGet
-                          }
-                        );
-                      }).catch(function (error) {
-                        console.log(error);
-                      });
-                    }
-                  });
+              let allEnemies = _.reject(allGotchis, function(g) { return g.owner.id == _this.state.address.toLowerCase() });
+              allEnemies.map(function(e, i) {
+                allEnemies[i].modifiedRarityScore = parseInt(e.modifiedRarityScore);
+                allEnemies[i].withSetsRarityScore = parseInt(e.withSetsRarityScore);
+                if (allEnemies[i].withSetsRarityScore == 0) {
+                  allEnemies[i].withSetsRarityScore = allEnemies[i].modifiedRarityScore;
                 }
-              );
+              })
+
+              allEnemies = _.shuffle(allEnemies);
+
+              _this.setState({ allEnemies });
 
               _this.retrieveGotchiSvgs(user, aavegotchiContract);
             });
@@ -141,7 +119,7 @@ class GotchiTowerDefence extends Component {
       physics: {
         default: 'arcade',
         arcade: {
-          debug: false, //true
+          debug: true, //false
           fps: 60
         },
       },
@@ -149,8 +127,7 @@ class GotchiTowerDefence extends Component {
         preBoot: function (game) {
           game.registry.customData = { };
           game.registry.customData.myGotchis = _this.state.myGotchis;
-          game.registry.customData.myEnemies = _this.state.myEnemies;
-          game.registry.customData.svgsToGet = _this.state.svgsToGet;
+          game.registry.customData.allEnemies = _this.state.allEnemies;
 
           game.registry.merge(_this.state);
           console.log('preBoot', game.registry);
@@ -160,6 +137,15 @@ class GotchiTowerDefence extends Component {
         target: 60,
         forceSetTimeOut: true
       },
+      plugins: {
+        global: [
+          {
+            key: 'rexawaitloaderplugin',
+            plugin: AwaitLoaderPlugin,
+            start: true
+          },
+        ]
+      }
     };
 
     this.setState({ game });
