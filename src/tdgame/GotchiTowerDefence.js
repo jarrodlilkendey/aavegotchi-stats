@@ -8,6 +8,7 @@ import { GameplayScene } from './scenes/GameplayScene';
 import { GameOverScene } from './scenes/GameOverScene';
 import { UIScene } from './scenes/UIScene';
 import { PausedScene } from './scenes/PausedScene';
+import { LevelSelectScene } from './scenes/LevelSelectScene';
 
 import aavegotchiContractAbi from '../abi/diamond.json';
 import contract from '../config/aavegotchiContract.json';
@@ -92,7 +93,7 @@ class GotchiTowerDefence extends Component {
 
     const response = aavegotchiContract.methods.getAavegotchiSvg(tokenId).call()
       .then((svg) => {
-        console.log('svg for', tokenId);
+        console.log('GotchiTowerDefence svg for', tokenId);
         _this.setState(
           { myGotchis: [..._this.state.myGotchis, { tokenId: tokenId, svg: svg, gotchi: gotchi }]},
           () => {
@@ -108,14 +109,14 @@ class GotchiTowerDefence extends Component {
   }
 
   loadGame() {
-    console.log('loadGame', this.state);
+    console.log('GotchiTowerDefence loadGame', this.state);
     const _this = this;
 
     let game = {
       width: 32 * 32,
       height: 32 * 20,
       type: Phaser.AUTO,
-      scene: [ LoadScene, MenuScene, GameplayScene, GameOverScene, PausedScene ],
+      scene: [ MenuScene, LevelSelectScene, LoadScene, GameplayScene, GameOverScene, PausedScene ],
       physics: {
         default: 'arcade',
         arcade: {

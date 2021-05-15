@@ -12,6 +12,7 @@ import aavegotchiContractAbi from '../../abi/diamond.json';
 import contract from '../../config/aavegotchiContract.json';
 import { connectToMatic } from '../../util/MaticClient';
 
+import gotchisMetadata from '../assets/gotchisMetadata.json';
 
 import { Column, TextButton } from 'phaser-ui-tools';
 
@@ -38,8 +39,8 @@ export class GameplayScene extends Phaser.Scene {
     this.activeEnemies = [];
 
     console.log('init', data);
-    this.musicOn = data.musicOn;
-    this.music = this.sound.add('synthwave');
+    this.musicOn = data.musicSettings.musicOn;
+    this.music = data.musicSettings.music;
     this.music.setLoop(true);
 
     if(this.musicOn) {
@@ -90,7 +91,8 @@ export class GameplayScene extends Phaser.Scene {
   tweenComplete(tween, targets, custom) {
     var score = custom.scene.get(Constants.SCENES.UI).score;
     custom.scene.remove(Constants.SCENES.UI);
-    custom.scene.start(Constants.SCENES.GAMEOVER, { score: score });
+    custom.events.off('addScore');
+    custom.scene.start(Constants.SCENES.GAMEOVER, { score: score, musicSettings: { music: custom.music, musicOn: custom.musicOn } });
   }
 
   spawnEnemy() {
@@ -101,7 +103,13 @@ export class GameplayScene extends Phaser.Scene {
       let key = e.id;
 
       let position = { x: -1 * 32, y: 2.5 * 32 };
-      let enemy = new Enemy({ scene: this, x: position.x, y: position.y, key, gotchi: e });
+
+      let frame = 0;
+      if (gotchisMetadata.hasOwnProperty(key)) {
+        frame = gotchisMetadata[key];
+      }
+
+      let enemy = new Enemy({ scene: this, x: position.x, y: position.y, texture: 'gotchis', frame: frame, gotchi: e });
 
       let tweens = [];
       let duration = Constants.scalars.enemyBasedSpeed;
@@ -233,6 +241,8 @@ export class GameplayScene extends Phaser.Scene {
   }
 
   create() {
+    console.log('create GameplayScene');
+
     const _this = this;
 
     let tdMap = this.add.tilemap('td');

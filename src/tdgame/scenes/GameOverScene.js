@@ -12,6 +12,7 @@ export class GameOverScene extends Phaser.Scene {
   init(data) {
     console.log('GameOverScene init', data);
     this.score = data.score;
+    this.musicSettings = data.musicSettings;
   }
 
   preload() {
@@ -26,7 +27,9 @@ export class GameOverScene extends Phaser.Scene {
     var button = this.add.sprite(400, 490, 'playagain').setInteractive();
     button.on('pointerdown', function (pointer) {
       console.log('pointerdown', pointer);
-      window.location.reload(true);
+      // _this.musicSettings.music.stop();
+      // window.location.reload(true);
+      _this.scene.start(Constants.SCENES.LEVELSELECT, { musicSettings: _this.musicSettings });
     });
   }
 }

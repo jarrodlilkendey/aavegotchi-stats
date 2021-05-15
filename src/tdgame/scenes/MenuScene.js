@@ -12,6 +12,12 @@ export class MenuScene extends Phaser.Scene {
   preload() {
     window.ethereum.enable();
     console.log('MenuScene selectedAddress', window.ethereum.selectedAddress);
+
+    this.load.audio('synthwave', '/game/synthwave.wav');
+    this.load.image('title', '/game/title.png');
+    this.load.image('play', '/game/button_play.png');
+    this.load.image('audio_off', '/game/audioOff.png');
+    this.load.image('audio_on', '/game/audioOn.png');
   }
 
   create() {
@@ -48,8 +54,10 @@ export class MenuScene extends Phaser.Scene {
 
       playButton.on('pointerdown', function (pointer) {
         console.log('pointerdown', pointer);
-        _this.music.stop();
-        _this.scene.start(Constants.SCENES.GAMEPLAY, { music: this.music, musicSprite: this.musicSprite, musicOn: _this.musicOn });
+        // _this.music.stop();
+        // _this.scene.start(Constants.SCENES.GAMEPLAY, { music: this.music, musicSprite: this.musicSprite, musicOn: _this.musicOn });
+        // _this.scene.start(Constants.SCENES.LEVELSELECT, { musicSettings: { music: _this.music, musicSprite: _this.musicSprite, musicOn: _this.musicOn } });
+        _this.scene.start(Constants.SCENES.LEVELSELECT, { musicSettings: { music: _this.music, musicOn: _this.musicOn } });
       });
     }
   }

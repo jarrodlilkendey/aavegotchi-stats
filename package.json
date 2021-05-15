@@ -23,6 +23,7 @@
     "@testing-library/user-event": "^12.1.10",
     "async-sema": "^3.1.0",
     "axios": "^0.21.1",
+    "cross-blob": "^2.0.0",
     "date-fns": "^2.20.1",
     "ethers": "^5.0.32",
     "highcharts": "^9.0.1",
@@ -40,6 +41,7 @@
     "react-scripts": "4.0.3",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.3",
+    "sharp": "^0.28.2",
     "styled-components": "^5.2.3",
     "web-vitals": "^1.0.1"
   },

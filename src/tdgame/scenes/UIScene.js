@@ -11,13 +11,12 @@ export class UIScene extends Phaser.Scene {
       key: Constants.SCENES.UI
     });
 
-    this.score = 0;
-
     Phaser.Scene.call(this, { key: Constants.SCENES.UI, active: true });
   }
 
   init() {
     // this.phsyics.startSystem(Phaser.Phsyics.ARCADE);
+    this.score = 0;
   }
 
   preload() {
@@ -30,6 +29,8 @@ export class UIScene extends Phaser.Scene {
   }
 
   create() {
+    console.log('create UIScene');
+
     const _this = this;
 
     this.panel = this.add.graphics();
@@ -258,7 +259,10 @@ export class UIScene extends Phaser.Scene {
 
         if (enemiesRemaining == 0) {
           _this.scene.remove(Constants.SCENES.UI);
-          _this.scene.start(Constants.SCENES.GAMEOVER, { score: this.score });
+          console.log('ourGame', ourGame);
+          ourGame.events.off('addScore');
+          // ourGame.scene.remove(Constants.SCENES.GAMEPLAY); do i need to remove???
+          ourGame.scene.start(Constants.SCENES.GAMEOVER, { score: this.score, musicSettings: { music: ourGame.music, musicOn: ourGame.musicOn } });
         }
 
     }, this);

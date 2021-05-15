@@ -6,6 +6,7 @@ export const Constants = {
     UI: "UI",
     GAMEOVER: "GAMEOVER",
     PAUSED: "PAUSED",
+    LEVELSELECT: "LEVELSELECT",
   },
 
   scalars: {

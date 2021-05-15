@@ -6,7 +6,7 @@ import { HealthBar } from './HealthBar';
 
 export class Enemy extends Phaser.GameObjects.Sprite {
   constructor(config) {
-    super(config.scene, config.x, config.y, config.key);
+    super(config.scene, config.x, config.y, config.texture, config.frame);
     this.scene = config.scene;
     this.gotchi = config.gotchi;
 

@@ -35,7 +35,9 @@ export class LoadScene extends Phaser.Scene {
     })
   }
 
-  init() {
+  init(data) {
+    this.gotchiCount = data.gotchiCount;
+    this.musicSettings = data.musicSettings;
   }
 
   preload() {
@@ -67,19 +69,14 @@ export class LoadScene extends Phaser.Scene {
     this.load.image('playagain', '/game/playagain.png');
 
     this.load.spritesheet('uipack', uipack, { frameWidth: 16, frameHeight: 16, spacing: 2 });
+    this.load.spritesheet('gotchis', '/game/gotchis.png', { frameWidth: 48, frameHeight: 48, spacing: 0 });
 
-    this.load.image('title', '/game/title.png');
-    this.load.image('play', '/game/button_play.png');
-
-    this.load.image('audio_off', '/game/audioOff.png');
-    this.load.image('audio_on', '/game/audioOn.png');
     this.load.image('button1', '/game/button1.png');
     this.load.image('button2', '/game/button2.png');
     this.load.image('button3', '/game/button3.png');
     this.load.image('playing', '/game/forward.png');
     this.load.image('paused', '/game/pause.png');
 
-    this.load.audio('synthwave', '/game/synthwave.wav');
     this.load.audio('audio_damage', '/game/damage-sound.wav');
     this.load.audio('audio_attack', '/game/throw.wav');
     this.load.audio('audio_pickup', '/game/pick-up.wav');
@@ -93,38 +90,38 @@ export class LoadScene extends Phaser.Scene {
     this.load.tilemapTiledJSON('td', td);
 
     var callback = async function(successCallback, failureCallback) {
-
-        const gotchiCount = 100; //0;
-
-        let levelEnemies = _.slice(_this.registry.customData.allEnemies, 0, gotchiCount);
+        let levelEnemies = _.slice(_this.registry.customData.allEnemies, 0, _this.gotchiCount);
         levelEnemies = _.orderBy(levelEnemies, ['modifiedRarityScore', 'asc']);
 
         let gotchiIds = [];
-        for (var i = 0; i < gotchiCount; i++) {
+        for (var i = 0; i < levelEnemies.length; i++) {
           gotchiIds.push(levelEnemies[i].id);
         }
 
         console.log('loading following enemies', levelEnemies, gotchiIds);
         _this.registry.customData.levelEnemies = levelEnemies;
 
-        const maticPOSClient = await connectToMatic();
-        const aavegotchiContract = await new maticPOSClient.web3Client.web3.eth.Contract(aavegotchiContractAbi, contract.address);
-        let myGotchiSvgs = await retrieveGotchiSvgs(aavegotchiContract, gotchiIds, 10);
+        // const maticPOSClient = await connectToMatic();
+        // const aavegotchiContract = await new maticPOSClient.web3Client.web3.eth.Contract(aavegotchiContractAbi, contract.address);
+        // let myGotchiSvgs = await retrieveGotchiSvgs(aavegotchiContract, gotchiIds, 10);
+        //
+        // Object.keys(myGotchiSvgs).map((tokenId) => {
+        //   const url = generateGotchiUrl(myGotchiSvgs[tokenId]);
+        //
+        //   console.log('load enemy gotchi', tokenId);
+        //   _this.load.svg(tokenId, url, {
+        //     width: 48, height: 48
+        //   });
+        // });
 
-        Object.keys(myGotchiSvgs).map((tokenId) => {
-          const url = generateGotchiUrl(myGotchiSvgs[tokenId]);
-
-          console.log('load enemy gotchi', tokenId);
-          _this.load.svg(tokenId, url, {
-            width: 48, height: 48
-          });
-        });
         successCallback();
     }
     this.load.rexAwait(callback);
   }
 
   create() {
-    this.scene.start(Constants.SCENES.MENU, "Loaded");
+    // this.scene.start(Constants.SCENES.MENU, "Loaded");
+    this.musicSettings.music.stop();
+    this.scene.start(Constants.SCENES.GAMEPLAY, { musicSettings: this.musicSettings });
   }
 }
