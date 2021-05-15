@@ -120,7 +120,7 @@ class GotchiTowerDefence extends Component {
       physics: {
         default: 'arcade',
         arcade: {
-          debug: true, //false
+          debug: false,
           fps: 60
         },
       },
