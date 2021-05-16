@@ -64,7 +64,7 @@ class TDLeaderboard extends Component {
     ];
 
     if (this.state.results.length > 0) {
-      let leaders = _.orderBy(this.state.results, ['score', 'time', 'placed'], ['desc', 'desc', 'desc']);
+      let leaders = _.orderBy(this.state.results, ['score', 'timeElapsed', 'gotchisPlaced'], ['desc', 'asc', 'asc']);
 
       leaders.map((result, index) => {
         console.log(result);
