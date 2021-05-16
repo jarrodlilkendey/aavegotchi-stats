@@ -23,7 +23,7 @@ export class LevelSelectScene extends Phaser.Scene {
   create() {
     const _this = this;
 
-    var title = this.add.text(this.game.config.width / 2, 80, `Select Level`, { font: '128px m5x7', fill: '#ffffff' }).setOrigin(0.5);;
+    let title = this.add.text(this.game.config.width / 2, 80, `Select Level`, { font: '128px m5x7', fill: '#ffffff' }).setOrigin(0.5);
 
     let level1 = this.add.sprite(this.game.config.width / 2, this.game.config.height / 2, 'level1').setScale(0.3);
 

@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 
 import { Constants } from '../Constants';
 
+import { writeScore } from '../leaderboard/LeaderboardUtil';
+
 export class GameOverScene extends Phaser.Scene {
   constructor(config) {
     super({
@@ -13,10 +15,12 @@ export class GameOverScene extends Phaser.Scene {
     console.log('GameOverScene init', data);
     this.score = data.score;
     this.musicSettings = data.musicSettings;
+    this.gotchiCount = data.gotchiCount;
+    this.gotchisPlaced = data.gotchisPlaced;
+    this.timeElapsed = data.timeElapsed;
   }
 
   preload() {
-
   }
 
   create() {
@@ -31,5 +35,7 @@ export class GameOverScene extends Phaser.Scene {
       // window.location.reload(true);
       _this.scene.start(Constants.SCENES.LEVELSELECT, { musicSettings: _this.musicSettings });
     });
+
+    writeScore({ leaderboard: `leaderboard-level1-${this.gotchiCount}`, score: this.score, user: window.ethereum.selectedAddress, gotchisPlaced: this.gotchisPlaced, timeElapsed: this.timeElapsed });
   }
 }

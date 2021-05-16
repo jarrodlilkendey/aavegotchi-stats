@@ -13,19 +13,31 @@ import AavegotchiRarityDistributions from './components/AavegotchiRarityDistribu
 import PortalStats from './components/PortalStats';
 import WearableSales from './components/WearableSales';
 import AavegotchiSales from './components/AavegotchiSales';
-// import Timeline from './components/Timeline';
-// import AavegotchiNetworth from './components/AavegotchiNetworth';
 import AavegotchiVotingPower from './components/AavegotchiVotingPower';
 import PetAll from './components/PetAll';
 import GotchiTowerDefence from './tdgame/GotchiTowerDefence';
-// import SacrificedGotchis from './components/SacrificedGotchis';
+import TDLeaderboard from './components/TDLeaderboard';
+
+// import Timeline from './components/Timeline';
+// import AavegotchiNetworth from './components/AavegotchiNetworth';
 // import CheapestSets from './components/CheapestSets';
+// import Consumables from './components/Consumables';
+// import Kinship from './components/Kinship';
+// import DollarCostAverageTickets from './components/DollarCostAverageTickets';
+
+import firebase from 'firebase/app';
+
+import firebaseConfig from './config/firebaseConfig.json';
+
 
 import {
   BrowserRouter as Router,
   Switch,
   Route
 } from "react-router-dom";
+
+firebase.initializeApp(firebaseConfig);
+console.log('firebase initialize', firebase);
 
 const navBarPages = [
   { path: '/recommendations', name: 'Wearable Recommendations' },
@@ -84,6 +96,10 @@ ReactDOM.render(
             <GotchiTowerDefence title="Gotchi Tower Defence" />
           </Route>
 
+          <Route path="/tdleaderboard">
+            <TDLeaderboard title="Gotchi Tower Defence Leaderboard" />
+          </Route>
+
           <Route path="/petall">
             <PetAll title="Pet All Aavegotchis" />
           </Route>
@@ -100,25 +116,26 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
-
-
-          // <Route path="/sacrificed">
-          //   <SacrificedGotchis title="SacrificedGotchis" />
-          // </Route>
+          //                     <Route path="/timeline">
+          //                       <Timeline title="Timeline" />
+          //                     </Route>
           //
+          //                     <Route path="/networth">
+          //                       <AavegotchiNetworth title="Networth" />
+          //                     </Route>
+          //                     <Route path="/consumables">
+          //                       <Consumables title="Consumables" />
+          //                     </Route>
+          //                     <Route path="/kinship">
+          //                       <Kinship title="Kinship analytics" />
+          //                     </Route>
+          //
+          // <Route path="/tickets">
+          //   <DollarCostAverageTickets />
+          // </Route>
           // <Route path="/sets">
           //   <CheapestSets title="Cheapest Sets" />
           // </Route>
-          //
-          //
-          //           <Route path="/timeline">
-          //             <Timeline title="Timeline" />
-          //           </Route>
-          //
-          //           <Route path="/networth">
-          //             <AavegotchiNetworth title="Networth" />
-          //           </Route>
-
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

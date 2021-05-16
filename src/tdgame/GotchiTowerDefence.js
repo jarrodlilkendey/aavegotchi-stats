@@ -10,6 +10,8 @@ import { UIScene } from './scenes/UIScene';
 import { PausedScene } from './scenes/PausedScene';
 import { LevelSelectScene } from './scenes/LevelSelectScene';
 
+import Loading from '../components/Loading';
+
 import aavegotchiContractAbi from '../abi/diamond.json';
 import contract from '../config/aavegotchiContract.json';
 import { connectToMatic } from '../util/MaticClient';
@@ -18,6 +20,7 @@ import { retrieveUserAssets, retrieveAllGotchis } from '../util/Graph';
 
 import _ from 'lodash';
 import { RateLimit } from 'async-sema';
+
 import AwaitLoaderPlugin from 'phaser3-rex-plugins/plugins/awaitloader-plugin.js';
 
 class GotchiTowerDefence extends Component {
@@ -33,6 +36,8 @@ class GotchiTowerDefence extends Component {
       allEnemies: [],
 
       initialize: true,
+
+      loading: true
     }
   }
 
@@ -64,7 +69,7 @@ class GotchiTowerDefence extends Component {
 
               allEnemies = _.shuffle(allEnemies);
 
-              _this.setState({ allEnemies });
+              _this.setState({ allEnemies, loading: false });
 
               _this.retrieveGotchiSvgs(user, aavegotchiContract);
             });
@@ -158,6 +163,10 @@ class GotchiTowerDefence extends Component {
     return (
       <div>
         <h1>Gotchi Tower Defense (Beta)</h1>
+        <p><a href="./tdleaderboard">Gotchi Tower Defense Leaderboards</a> [<a href="https://discord.gg/yShc8P4wX9">Feedback</a>]</p>
+        {this.state.loading &&
+          <Loading message="Loading Gotchi Tower Defense..." />
+        }
         <div style={{ "font-family": "m5x7" }}>
           <IonPhaser game={game} initialize={initialize} />
         </div>

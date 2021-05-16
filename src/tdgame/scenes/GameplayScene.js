@@ -52,6 +52,8 @@ export class GameplayScene extends Phaser.Scene {
 
     this.particles = this.add.particles('flares');
     this.particles.setDepth(2);
+
+    this.gotchiCount = data.gotchiCount;
   }
 
   preload() {
@@ -92,7 +94,8 @@ export class GameplayScene extends Phaser.Scene {
     var score = custom.scene.get(Constants.SCENES.UI).score;
     custom.scene.remove(Constants.SCENES.UI);
     custom.events.off('addScore');
-    custom.scene.start(Constants.SCENES.GAMEOVER, { score: score, musicSettings: { music: custom.music, musicOn: custom.musicOn } });
+    custom.events.off('resume');
+    custom.scene.start(Constants.SCENES.GAMEOVER, { score: score, musicSettings: { music: custom.music, musicOn: custom.musicOn }, gotchiCount: custom.gotchiCount, gotchisPlaced: custom.gotchis.length, timeElapsed: custom.timeElapsed });
   }
 
   spawnEnemy() {
@@ -184,6 +187,8 @@ export class GameplayScene extends Phaser.Scene {
     console.log('initSpawning', this.speed);
     console.log('initSpawning', Constants.scalars.enemySpawnSpeeds[this.speed - 1]);
     this.spawning = this.time.addEvent({ delay: Constants.scalars.enemySpawnSpeeds[this.speed - 1], callback: this.spawnEnemy, callbackScope: this, loop: true });
+    this.timeElapsed = 0;
+    this.gameTimer = this.time.addEvent({ delay: 1000, callback: this.updateGameTimer, callbackScope: this, loop: true });
   }
 
   gotchiShoot(g) {
@@ -348,6 +353,12 @@ export class GameplayScene extends Phaser.Scene {
       _this.spawning.remove();
       _this.spawning = _this.time.addEvent({ delay: Constants.scalars.enemySpawnSpeeds[_this.speed - 1], callback: _this.spawnEnemy, callbackScope: _this, loop: true });
     });
+  }
+
+  updateGameTimer() {
+    var ourUi = this.scene.get(Constants.SCENES.UI);
+    this.timeElapsed += 1;
+    ourUi.timeText.text = `Timer: ${this.timeElapsed}`;
   }
 
   update() {

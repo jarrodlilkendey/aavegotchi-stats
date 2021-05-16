@@ -122,6 +122,6 @@ export class LoadScene extends Phaser.Scene {
   create() {
     // this.scene.start(Constants.SCENES.MENU, "Loaded");
     this.musicSettings.music.stop();
-    this.scene.start(Constants.SCENES.GAMEPLAY, { musicSettings: this.musicSettings });
+    this.scene.start(Constants.SCENES.GAMEPLAY, { musicSettings: this.musicSettings, gotchiCount: this.gotchiCount });
   }
 }
