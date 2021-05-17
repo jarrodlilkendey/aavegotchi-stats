@@ -171,7 +171,7 @@ class GotchiTowerDefence extends Component {
     return (
       <div>
         <h1>Gotchi Tower Defense (Beta)</h1>
-        <p><a href="./tdleaderboard">Gotchi Tower Defense Leaderboards</a> [<a href="https://discord.gg/yShc8P4wX9">Feedback</a>]</p>
+        <p><a href="./tdleaderboard">Gotchi Tower Defense Leaderboards</a> [<a href="https://docs.google.com/forms/d/e/1FAIpQLSe8fPhWSv2c8kUNFqG-3owMI3KK33X7_OM6CxU_dNEIHt8d_w/viewform?usp=sf_link">Feedback</a>]</p>
         {this.state.loading &&
           <Loading message="Loading Gotchi Tower Defense..." />
         }

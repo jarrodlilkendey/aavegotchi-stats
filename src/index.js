@@ -93,11 +93,11 @@ ReactDOM.render(
           </Route>
 
           <Route path="/td">
-            <GotchiTowerDefence title="Gotchi Tower Defence" />
+            <GotchiTowerDefence title="Gotchi Tower Defense" />
           </Route>
 
           <Route path="/tdleaderboard">
-            <TDLeaderboard title="Gotchi Tower Defence Leaderboard" />
+            <TDLeaderboard title="Gotchi Tower Defense Leaderboard" />
           </Route>
 
           <Route path="/petall">
