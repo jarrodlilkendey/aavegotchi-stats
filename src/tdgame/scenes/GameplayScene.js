@@ -91,11 +91,21 @@ export class GameplayScene extends Phaser.Scene {
   }
 
   tweenComplete(tween, targets, custom) {
-    var score = custom.scene.get(Constants.SCENES.UI).score;
+    let score = custom.scene.get(Constants.SCENES.UI).score;
     custom.scene.remove(Constants.SCENES.UI);
     custom.events.off('addScore');
     custom.events.off('resume');
-    custom.scene.start(Constants.SCENES.GAMEOVER, { score: score, musicSettings: { music: custom.music, musicOn: custom.musicOn }, gotchiCount: custom.gotchiCount, gotchisPlaced: custom.gotchis.length, timeElapsed: custom.timeElapsed });
+
+    let gotchiKills = {};
+    for (var i = 0; i < custom.gotchis.length; i++) {
+      let gotchi = custom.gotchis[i];
+      gotchiKills[gotchi.info.id] = {
+        info: gotchi.info,
+        kills: gotchi.kills
+      };
+    }
+
+    custom.scene.start(Constants.SCENES.GAMEOVER, { score: score, musicSettings: { music: custom.music, musicOn: custom.musicOn }, gotchiCount: custom.gotchiCount, gotchisPlaced: custom.gotchis.length, timeElapsed: custom.timeElapsed, gotchiKills: gotchiKills });
   }
 
   spawnEnemy() {

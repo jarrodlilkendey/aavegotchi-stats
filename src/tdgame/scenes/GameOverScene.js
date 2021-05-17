@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 
 import { Constants } from '../Constants';
 
-import { writeScore } from '../leaderboard/LeaderboardUtil';
+import { writeScore, writeGotchiKills } from '../leaderboard/LeaderboardUtil';
 
 export class GameOverScene extends Phaser.Scene {
   constructor(config) {
@@ -18,6 +18,7 @@ export class GameOverScene extends Phaser.Scene {
     this.gotchiCount = data.gotchiCount;
     this.gotchisPlaced = data.gotchisPlaced;
     this.timeElapsed = data.timeElapsed;
+    this.gotchiKills = data.gotchiKills;
   }
 
   preload() {
@@ -37,5 +38,6 @@ export class GameOverScene extends Phaser.Scene {
     });
 
     writeScore({ leaderboard: `leaderboard-level1-${this.gotchiCount}`, score: this.score, user: window.ethereum.selectedAddress, gotchisPlaced: this.gotchisPlaced, timeElapsed: this.timeElapsed });
+    writeGotchiKills({ gotchiKills: this.gotchiKills });
   }
 }

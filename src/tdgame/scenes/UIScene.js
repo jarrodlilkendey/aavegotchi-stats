@@ -261,7 +261,17 @@ export class UIScene extends Phaser.Scene {
           console.log('ourGame', ourGame);
           ourGame.events.off('addScore');
           ourGame.events.off('resume');
-          ourGame.scene.start(Constants.SCENES.GAMEOVER, { score: this.score, musicSettings: { music: ourGame.music, musicOn: ourGame.musicOn }, gotchiCount: ourGame.gotchiCount, gotchisPlaced: ourGame.gotchis.length, timeElapsed: ourGame.timeElapsed });
+
+          let gotchiKills = {};
+          for (var i = 0; i < ourGame.gotchis.length; i++) {
+            let gotchi = ourGame.gotchis[i];
+            gotchiKills[gotchi.info.id] = {
+              info: gotchi.info,
+              kills: gotchi.kills
+            };
+          }
+
+          ourGame.scene.start(Constants.SCENES.GAMEOVER, { score: this.score, musicSettings: { music: ourGame.music, musicOn: ourGame.musicOn }, gotchiCount: ourGame.gotchiCount, gotchisPlaced: ourGame.gotchis.length, timeElapsed: ourGame.timeElapsed, gotchiKills: gotchiKills });
         }
 
     }, this);
