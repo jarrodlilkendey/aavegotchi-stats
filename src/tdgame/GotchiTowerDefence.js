@@ -175,7 +175,7 @@ class GotchiTowerDefence extends Component {
         {this.state.loading &&
           <Loading message="Loading Gotchi Tower Defense..." />
         }
-        <div style={{ "font-family": "m5x7" }}>
+        <div style={{ "fontFamily": "m5x7" }}>
           <IonPhaser game={game} initialize={initialize} />
         </div>
         <p>Note: if you are using Brave browser, please disable shields for AavegotchiStats.com to prevent text alignment issues</p>

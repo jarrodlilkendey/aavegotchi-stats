@@ -16,7 +16,7 @@ class NavBar extends Component {
     return (
         <div className="row">
           <div className="col-md-6">
-            <img src='./aavegotchi-stats-banner.png' height='120px' class="img-fluid" />
+            <img src='./aavegotchi-stats-banner.png' height='120px' className="img-fluid" />
           </div>
           <div className="col-md-6" style={{ 'marginTop': '25px'}}>
             <p>Keep in touch with AavegotchiStats on popular social networks</p>
@@ -58,14 +58,14 @@ class NavBar extends Component {
       <div>
       {this.renderSiteInfo()}
 
-      <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+      <nav className="navbar navbar-expand-lg navbar-dark">
+        <div className="container-fluid">
+          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"></span>
           </button>
-          <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-            <a class="navbar-brand" href="https://aavegotchistats.com">AavegotchiStats.com</a>
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
+            <a className="navbar-brand" href="https://aavegotchistats.com">AavegotchiStats.com</a>
+            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               {this.renderNavBar()}
             </ul>
           </div>
