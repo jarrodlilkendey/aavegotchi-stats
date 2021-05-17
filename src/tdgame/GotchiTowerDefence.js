@@ -10,6 +10,8 @@ import { UIScene } from './scenes/UIScene';
 import { PausedScene } from './scenes/PausedScene';
 import { LevelSelectScene } from './scenes/LevelSelectScene';
 
+import { Constants } from './Constants';
+
 import Loading from '../components/Loading';
 
 import aavegotchiContractAbi from '../abi/diamond.json';
@@ -70,6 +72,12 @@ class GotchiTowerDefence extends Component {
               allEnemies = _.shuffle(allEnemies);
 
               _this.setState({ allEnemies, loading: false });
+
+              console.log('gotchis owned', user.gotchisOwned);
+              if (user.gotchisOwned.length > Constants.scalars.maxGotchis) {
+                user.gotchisOwned = _.slice(_.shuffle(user.gotchisOwned), 0, Constants.scalars.maxGotchis);
+              }
+              console.log('gotchis owned', user.gotchisOwned);
 
               _this.retrieveGotchiSvgs(user, aavegotchiContract);
             });

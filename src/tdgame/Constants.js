@@ -21,5 +21,6 @@ export const Constants = {
     enemyBasedSpeed: 8.5,
     enemyHealthPointsByDifficulty: [0.6, 0.9, 1.2, 1.4],
     svgBatchSize: 10,
+    maxGotchis: 21
   }
 }
