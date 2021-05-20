@@ -284,6 +284,7 @@ export class GameplayScene extends Phaser.Scene {
       var y = rect.y - (rect.height / 2);
       var within = _this.physics.overlapRect(x, y, rect.width, rect.height);
 
+      // todo: if paused button clicked, ignore below
       if (within.length == 0) {
         ourUi.setGotchiPlacementVisibility(true);
         _this.gotchis.map(function(g, i) {
