@@ -18,6 +18,7 @@ export class MenuScene extends Phaser.Scene {
     this.load.image('play', '/game/button_play.png');
     this.load.image('audio_off', '/game/audioOff.png');
     this.load.image('audio_on', '/game/audioOn.png');
+    this.load.image('fullscreen', '/game/larger.png');
   }
 
   create() {
@@ -40,6 +41,12 @@ export class MenuScene extends Phaser.Scene {
         _this.toggleMusic();
     });
 
+    this.fullscreenButton = this.add.sprite(this.game.config.width - 26, 26, 'fullscreen');
+    this.fullscreenButton.setInteractive();
+    this.fullscreenButton.on('pointerdown', function (pointer) {
+      _this.toggleFullscreen();
+    });
+
     if (window.ethereum.selectedAddress != '') {
       var selectedAddress = this.add.text(
         (this.game.config.width / 2) - 220,
@@ -54,7 +61,6 @@ export class MenuScene extends Phaser.Scene {
 
       playButton.on('pointerdown', function (pointer) {
         console.log('pointerdown', pointer);
-        _this.scale.startFullscreen();
         _this.scene.start(Constants.SCENES.LEVELSELECT, { musicSettings: { music: _this.music, musicOn: _this.musicOn } });
       });
     }
@@ -69,6 +75,14 @@ export class MenuScene extends Phaser.Scene {
     } else {
       this.musicSprite.setTexture('audio_off');
       this.music.stop();
+    }
+  }
+
+  toggleFullscreen() {
+    if (this.scale.isFullscreen) {
+      this.scale.stopFullscreen();
+    } else {
+      this.scale.startFullscreen();
     }
   }
 }

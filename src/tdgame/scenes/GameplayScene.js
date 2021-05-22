@@ -295,6 +295,7 @@ export class GameplayScene extends Phaser.Scene {
         var musicOverlap = Phaser.Geom.Intersects.RectangleToRectangle(rect, _this.musicSprite.getBounds());
         var pausedOverlap = Phaser.Geom.Intersects.RectangleToRectangle(rect, _this.pausedSprite.getBounds());
         var speedOverlap = Phaser.Geom.Intersects.RectangleToRectangle(rect, _this.speedSprite.getBounds());
+        var fullscreenOverlap = Phaser.Geom.Intersects.RectangleToRectangle(rect, _this.fullscreenButton.getBounds());
         // console.log('musicClicked', musicOverlap, 'pausedClicked', pausedOverlap, 'speedClicked', speedOverlap);
 
         if (!musicOverlap && !pausedOverlap && !speedOverlap) {
@@ -377,6 +378,12 @@ export class GameplayScene extends Phaser.Scene {
       _this.spawning.remove();
       _this.spawning = _this.time.addEvent({ delay: Constants.scalars.enemySpawnSpeeds[_this.speed - 1], callback: _this.spawnEnemy, callbackScope: _this, loop: true });
     });
+
+    this.fullscreenButton = this.add.sprite(this.game.config.width - 26, 26, 'fullscreen');
+    this.fullscreenButton.setInteractive();
+    this.fullscreenButton.on('pointerdown', function (pointer) {
+      _this.toggleFullscreen();
+    });
   }
 
   updateGameTimer() {
@@ -397,6 +404,14 @@ export class GameplayScene extends Phaser.Scene {
     } else {
       this.musicSprite.setTexture('audio_off');
       this.music.stop();
+    }
+  }
+
+  toggleFullscreen() {
+    if (this.scale.isFullscreen) {
+      this.scale.stopFullscreen();
+    } else {
+      this.scale.startFullscreen();
     }
   }
 }
