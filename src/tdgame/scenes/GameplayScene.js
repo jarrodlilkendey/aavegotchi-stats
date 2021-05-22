@@ -86,8 +86,11 @@ export class GameplayScene extends Phaser.Scene {
 
     this.initGotchiShooting(gotchi);
 
-    ourUi.setGotchiPlacementVisibility(false);
-    ourUi.setGotchiUpgradeVisibility(true, gotchi);
+
+    if (!this.paused) {
+      ourUi.setGotchiPlacementVisibility(false);
+      ourUi.setGotchiUpgradeVisibility(true, gotchi);
+    }
   }
 
   tweenComplete(tween, targets, custom) {
@@ -284,13 +287,23 @@ export class GameplayScene extends Phaser.Scene {
       var y = rect.y - (rect.height / 2);
       var within = _this.physics.overlapRect(x, y, rect.width, rect.height);
 
-      // todo: if paused button clicked, ignore below
+      // console.log('onMapClick', tile, within, _this.musicSprite, _this.pausedSprite, _this.speedSprite);
       if (within.length == 0) {
-        ourUi.setGotchiPlacementVisibility(true);
-        _this.gotchis.map(function(g, i) {
-          g.hideRange();
-        });
-        ourUi.setGotchiUpgradeVisibility(false, null);
+        // gotchi not pressed
+
+        // check if buttons pressed
+        var musicOverlap = Phaser.Geom.Intersects.RectangleToRectangle(rect, _this.musicSprite.getBounds());
+        var pausedOverlap = Phaser.Geom.Intersects.RectangleToRectangle(rect, _this.pausedSprite.getBounds());
+        var speedOverlap = Phaser.Geom.Intersects.RectangleToRectangle(rect, _this.speedSprite.getBounds());
+        // console.log('musicClicked', musicOverlap, 'pausedClicked', pausedOverlap, 'speedClicked', speedOverlap);
+
+        if (!musicOverlap && !pausedOverlap && !speedOverlap) {
+          ourUi.setGotchiPlacementVisibility(true);
+          _this.gotchis.map(function(g, i) {
+            g.hideRange();
+          });
+          ourUi.setGotchiUpgradeVisibility(false, null);
+        }
       }
     });
 
