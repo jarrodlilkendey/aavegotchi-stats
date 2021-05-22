@@ -54,9 +54,7 @@ export class MenuScene extends Phaser.Scene {
 
       playButton.on('pointerdown', function (pointer) {
         console.log('pointerdown', pointer);
-        // _this.music.stop();
-        // _this.scene.start(Constants.SCENES.GAMEPLAY, { music: this.music, musicSprite: this.musicSprite, musicOn: _this.musicOn });
-        // _this.scene.start(Constants.SCENES.LEVELSELECT, { musicSettings: { music: _this.music, musicSprite: _this.musicSprite, musicOn: _this.musicOn } });
+        _this.scale.startFullscreen();
         _this.scene.start(Constants.SCENES.LEVELSELECT, { musicSettings: { music: _this.music, musicOn: _this.musicOn } });
       });
     }

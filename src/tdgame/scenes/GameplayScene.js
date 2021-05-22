@@ -352,13 +352,13 @@ export class GameplayScene extends Phaser.Scene {
 
       if (_this.speed == 1) {
         _this.speedSprite.setTexture('button1');
-        _this.tweens.timeScale = 1;
+        _this.tweens.timeScale = Constants.scalars.enemyTimescaleSpeeds[_this.speed-1];
       } else if (_this.speed == 2) {
         _this.speedSprite.setTexture('button2');
-        _this.tweens.timeScale = 3;
+        _this.tweens.timeScale = Constants.scalars.enemyTimescaleSpeeds[_this.speed-1];
       } else if (_this.speed == 3) {
         _this.speedSprite.setTexture('button3');
-        _this.tweens.timeScale = 9;
+        _this.tweens.timeScale = Constants.scalars.enemyTimescaleSpeeds[_this.speed-1];
       }
 
       _this.spawning.remove();
