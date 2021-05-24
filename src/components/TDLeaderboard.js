@@ -70,7 +70,16 @@ class TDLeaderboard extends Component {
       if (this.state.selectedMode != 3) {
         columns = [
           { field: 'id', headerName: 'Rank', width: 90 },
-          { field: 'user', headerName: 'Account', width: 380 },
+          {
+            field: 'user',
+            headerName: 'Account',
+            width: 380,
+            renderCell: (params: GridCellParams) => (
+              <a href={`https://aavegotchi.com/aavegotchis/${params.value}`} target="_blank">
+                {params.value}
+              </a>
+            )
+          },
           { field: 'score', headerName: 'Score', width: 90 },
           { field: 'time', headerName: 'Time', width: 90 },
           { field: 'placed', headerName: 'Gotchis Placed', width: 160 },
@@ -94,7 +103,16 @@ class TDLeaderboard extends Component {
       } else {
         columns = [
           { field: 'id', headerName: 'Rank', width: 90 },
-          { field: 'gotchiId', headerName: 'Gotchi Id', width: 140 },
+          {
+            field: 'gotchiId',
+            headerName: 'Gotchi Id',
+            width: 140,
+            renderCell: (params: GridCellParams) => (
+              <a href={`https://aavegotchi.com/gotchi/${params.value}`} target="_blank">
+                {params.value}
+              </a>
+            )
+          },
           { field: 'name', headerName: 'Name', width: 260 },
           { field: 'kills', headerName: 'Kills', width: 90 },
         ];
