@@ -30,14 +30,12 @@ export class GameplayScene extends Phaser.Scene {
 
   init(data) {
     const _this = this;
-    // this.phsyics.startSystem(Phaser.Phsyics.ARCADE);
     this.physics.world.setFPS(60);
 
     this.maticPOSClient = connectToMatic();
     this.aavegotchiContract = new this.maticPOSClient.web3Client.web3.eth.Contract(aavegotchiContractAbi, contract.address);
 
     this.gotchis = [];
-    // this.activeEnemies = [];
     this.enemiesGroup = this.physics.add.group({
       immovable: true
     });
@@ -156,31 +154,6 @@ export class GameplayScene extends Phaser.Scene {
         tweens: tweens
       });
 
-      // likely cause of performance issues (adding 2 colliders per enemy)
-      // this.physics.world.addCollider(this.playerBullets, enemy, function(enemy, bullet) {
-      //   bullet.gotchi.increaseHits();
-      //
-      //   bullet.destroy();
-      //   enemy.damage(bullet);
-      //
-      //   if (_this.musicOn) {
-      //     _this.damageSound.play({ volume: 3});
-      //   }
-      // });
-      //
-      // this.physics.world.addCollider(this.playerFireballs, enemy, function(enemy, fireball) {
-      //   fireball.gotchi.increaseHits();
-      //
-      //   fireball.destroy();
-      //   enemy.fireballDamage(fireball);
-      //
-      //   if (_this.musicOn) {
-      //     _this.damageSound.play({ volume: 3});
-      //   }
-      // });
-      //
-
-      // this.activeEnemies.push(enemy);
       this.enemiesGroup.add(enemy);
       this.spawnCount++;
 
@@ -225,14 +198,10 @@ export class GameplayScene extends Phaser.Scene {
 
     if (!bullet) {
       // list of active enemies
-      // this.activeEnemies = _.filter(this.activeEnemies, { active: true });
-      // console.log('activeEnemies', this.activeEnemies);
-      // if (this.activeEnemies.length > 0) {
       if (this.enemiesGroup.children.entries.length > 0) {
         // for each enemy
         let minDists = [];
         this.enemiesGroup.children.entries.map(function(e, i) {
-          // this.activeEnemies.map(function(e, i) {
           const dist = Phaser.Math.Distance.Between(g.x, g.y, e.x, e.y);
           // if in range
           if (dist <= g.range) {
