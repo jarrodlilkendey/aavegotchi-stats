@@ -31,12 +31,16 @@ export class GameplayScene extends Phaser.Scene {
   init(data) {
     const _this = this;
     // this.phsyics.startSystem(Phaser.Phsyics.ARCADE);
+    this.physics.world.setFPS(60);
+
     this.maticPOSClient = connectToMatic();
     this.aavegotchiContract = new this.maticPOSClient.web3Client.web3.eth.Contract(aavegotchiContractAbi, contract.address);
 
     this.gotchis = [];
-    this.enemies = [];
-    this.activeEnemies = [];
+    // this.activeEnemies = [];
+    this.enemiesGroup = this.physics.add.group({
+      immovable: true
+    });
 
     console.log('init', data);
     this.musicOn = data.musicSettings.musicOn;
@@ -174,8 +178,8 @@ export class GameplayScene extends Phaser.Scene {
         }
       });
 
-      this.enemies.push(enemy);
-      this.activeEnemies.push(enemy);
+      // this.activeEnemies.push(enemy);
+      this.enemiesGroup.add(enemy);
       this.spawnCount++;
 
       console.log('spawn count', this.spawnCount, 'levelEnemies length', this.registry.customData.levelEnemies.length);
@@ -212,14 +216,21 @@ export class GameplayScene extends Phaser.Scene {
     let bullet = this.playerBullets.getFirstDead(false);
     let fireball = this.playerFireballs.getFirstDead(false);
 
+    console.log('playerBullets', this.playerBullets.children);
+    console.log('playerFireballs', this.playerFireballs.children);
+    // console.log('activeEnemies', this.activeEnemies);
+    console.log('enemiesGroup', this.enemiesGroup.children);
+
     if (!bullet) {
       // list of active enemies
-      this.activeEnemies = _.filter(this.activeEnemies, { active: true });
+      // this.activeEnemies = _.filter(this.activeEnemies, { active: true });
       // console.log('activeEnemies', this.activeEnemies);
-      if (this.activeEnemies.length > 0) {
+      // if (this.activeEnemies.length > 0) {
+      if (this.enemiesGroup.children.entries.length > 0) {
         // for each enemy
         let minDists = [];
-        this.activeEnemies.map(function(e, i) {
+        this.enemiesGroup.children.entries.map(function(e, i) {
+          // this.activeEnemies.map(function(e, i) {
           const dist = Phaser.Math.Distance.Between(g.x, g.y, e.x, e.y);
           // if in range
           if (dist <= g.range) {

@@ -12,8 +12,9 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
     this.scene.add.existing(this);
 
-    this.scene.physics.world.enableBody(this);
-    this.body.setImmovable();
+    // this.scene.physics.world.enableBody(this);
+    // this.body.setImmovable(false);
+    // this.body.setBounce(0);
 
     this.energy = this.gotchi.withSetsNumericTraits[0];
     this.aggression = this.gotchi.withSetsNumericTraits[1];
