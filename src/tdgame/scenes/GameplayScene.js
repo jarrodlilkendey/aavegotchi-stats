@@ -156,27 +156,29 @@ export class GameplayScene extends Phaser.Scene {
         tweens: tweens
       });
 
-      this.physics.world.addCollider(this.playerBullets, enemy, function(enemy, bullet) {
-        bullet.gotchi.increaseHits();
-
-        bullet.destroy();
-        enemy.damage(bullet);
-
-        if (_this.musicOn) {
-          _this.damageSound.play({ volume: 3});
-        }
-      });
-
-      this.physics.world.addCollider(this.playerFireballs, enemy, function(enemy, fireball) {
-        fireball.gotchi.increaseHits();
-
-        fireball.destroy();
-        enemy.fireballDamage(fireball);
-
-        if (_this.musicOn) {
-          _this.damageSound.play({ volume: 3});
-        }
-      });
+      // likely cause of performance issues (adding 2 colliders per enemy)
+      // this.physics.world.addCollider(this.playerBullets, enemy, function(enemy, bullet) {
+      //   bullet.gotchi.increaseHits();
+      //
+      //   bullet.destroy();
+      //   enemy.damage(bullet);
+      //
+      //   if (_this.musicOn) {
+      //     _this.damageSound.play({ volume: 3});
+      //   }
+      // });
+      //
+      // this.physics.world.addCollider(this.playerFireballs, enemy, function(enemy, fireball) {
+      //   fireball.gotchi.increaseHits();
+      //
+      //   fireball.destroy();
+      //   enemy.fireballDamage(fireball);
+      //
+      //   if (_this.musicOn) {
+      //     _this.damageSound.play({ volume: 3});
+      //   }
+      // });
+      //
 
       // this.activeEnemies.push(enemy);
       this.enemiesGroup.add(enemy);
@@ -394,6 +396,28 @@ export class GameplayScene extends Phaser.Scene {
     this.fullscreenButton.setInteractive();
     this.fullscreenButton.on('pointerdown', function (pointer) {
       _this.toggleFullscreen();
+    });
+
+    this.physics.world.addCollider(this.playerBullets, this.enemiesGroup, function(bullet, enemy) {
+      bullet.gotchi.increaseHits();
+
+      bullet.destroy();
+      enemy.damage(bullet);
+
+      if (_this.musicOn) {
+        _this.damageSound.play({ volume: 3});
+      }
+    });
+
+    this.physics.world.addCollider(this.playerFireballs, this.enemiesGroup, function(fireball, enemy) {
+      fireball.gotchi.increaseHits();
+
+      fireball.destroy();
+      enemy.fireballDamage(fireball);
+
+      if (_this.musicOn) {
+        _this.damageSound.play({ volume: 3});
+      }
     });
   }
 
