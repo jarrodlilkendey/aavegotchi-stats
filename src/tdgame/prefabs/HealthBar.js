@@ -31,29 +31,30 @@ export class HealthBar {
 
     draw ()
     {
+        // health bar is contributing to poor performance
         this.bar.clear();
 
-        let barSize = 40;
-        let bgSize = 4;
+        let barSize = 20;
+        let bgSize = 1;
         let p = ((barSize*2) - (bgSize/2)) / (this.maxHealth);
         //let p = ((barSize*2) - (bgSize/2)) / (this.maxHealth * (this.value / this.maxHealth));
 
-        let barHeight = 16;
+        let barHeight = 4; //16;
 
         //  BG
-        this.bar.fillStyle(0x000000);
-        this.bar.fillRect(
-          this.x - barSize,
-          this.y - barSize,
-          barSize * 2,
-          (barSize / 2) - bgSize
-        );
+        // this.bar.fillStyle(0x000000);
+        // this.bar.fillRect(
+        //   this.enemy.x - barSize,
+        //   this.enemy.y - barSize,
+        //   barSize * 2,
+        //   (barSize / 2) - bgSize
+        // );
 
         //  Health
         this.bar.fillStyle(0xffffff);
         this.bar.fillRect(
           this.enemy.x + (bgSize/2) - barSize,
-          this.enemy.y + (bgSize/2) - barSize,
+          (this.enemy.y + (bgSize/2) - barSize) - 10,
           (barSize * 2) - bgSize,
           barHeight
         );
@@ -75,10 +76,12 @@ export class HealthBar {
 
         this.bar.fillRect(
           this.enemy.x + (bgSize/2) - barSize,
-          this.enemy.y + (bgSize/2) - barSize,
+          (this.enemy.y + (bgSize/2) - barSize) - 10,
           d,
           barHeight
         );
+
+        this.lastDraw = Date.now();
     }
 
     move(x, y) {
