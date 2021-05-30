@@ -157,4 +157,39 @@ export class Gotchi extends Phaser.GameObjects.Sprite {
     }
     return false;
   }
+
+  hasMK2Grenade() {
+    if (_.includes(this.info.equippedWearables, 3)) {
+      return true;
+    }
+    return false;
+  }
+
+  hasM67Grenade() {
+    if (_.includes(this.info.equippedWearables, 6)) {
+      return true;
+    }
+    return false;
+  }
+
+  hasCommonWizardStaff() {
+    if (_.includes(this.info.equippedWearables, 64)) {
+      return true;
+    }
+    return false;
+  }
+
+  hasLegendaryWizardStaff() {
+    if (_.includes(this.info.equippedWearables, 65)) {
+      return true;
+    }
+    return false;
+  }
+
+  hasAagentPistol() {
+    if (_.includes(this.info.equippedWearables, 58)) {
+      return true;
+    }
+    return false;
+  }
 }

@@ -5,6 +5,9 @@ import { Bullet } from '../prefabs/Bullet';
 import { Enemy } from '../prefabs/Enemy';
 import { Gotchi } from '../prefabs/Gotchi';
 import { Fireball } from '../prefabs/Fireball';
+import { MK2Grenade } from '../prefabs/MK2Grenade';
+import { M67Grenade } from '../prefabs/M67Grenade';
+import { Explosion } from '../prefabs/Explosion';
 
 import { UIScene } from './UIScene';
 
@@ -164,6 +167,9 @@ export class GameplayScene extends Phaser.Scene {
   initShooting() {
     this.playerBullets = this.physics.add.group();
     this.playerFireballs = this.physics.add.group();
+    this.playerMk2Grenades = this.physics.add.group();
+    this.playerM67Grenades = this.physics.add.group();
+    this.explosions = this.physics.add.group();
   }
 
   initGotchiShooting(gotchi) {
@@ -190,9 +196,14 @@ export class GameplayScene extends Phaser.Scene {
 
     let bullet = this.playerBullets.getFirstDead(false);
     let fireball = this.playerFireballs.getFirstDead(false);
+    let mk2Grenade = this.playerMk2Grenades.getFirstDead(false);
+    let m67Grenade = this.playerM67Grenades.getFirstDead(false);
 
     console.log('playerBullets', this.playerBullets.children);
     console.log('playerFireballs', this.playerFireballs.children);
+    console.log('playerMk2Grenades', this.playerMk2Grenades.children);
+    console.log('playerM67Grenades', this.playerM67Grenades.children);
+    console.log('explosions', this.explosions.children);
     // console.log('activeEnemies', this.activeEnemies);
     console.log('enemiesGroup', this.enemiesGroup.children);
 
@@ -218,10 +229,26 @@ export class GameplayScene extends Phaser.Scene {
           if (gotchi.hasFireball()) {
             fireball = new Fireball({ scene: _this, x: gotchi.x, y: gotchi.y, damage: gotchi.damage, gotchi: gotchi });
             _this.playerFireballs.add(fireball);
-            _this.physics.accelerateToObject(fireball, e, Constants.scalars.bulletSpeed);//300);//00);
+            _this.physics.accelerateToObject(fireball, e, Constants.scalars.bulletSpeed);
 
             if (_this.musicOn) {
               _this.fireballSound.play({ volume: 1, rate: 4});
+            }
+          } else if (gotchi.hasMK2Grenade()) {
+            mk2Grenade = new MK2Grenade({ scene: _this, x: gotchi.x, y: gotchi.y, damage: gotchi.damage, gotchi: gotchi });
+            _this.playerMk2Grenades.add(mk2Grenade);
+            _this.physics.accelerateToObject(mk2Grenade, e, Constants.scalars.grenadeSpeed);
+
+            if (_this.musicOn) {
+              _this.attackSound.play({ volume: 4});
+            }
+          } else if (gotchi.hasM67Grenade()) {
+            m67Grenade = new M67Grenade({ scene: _this, x: gotchi.x, y: gotchi.y, damage: gotchi.damage, gotchi: gotchi });
+            _this.playerM67Grenades.add(m67Grenade);
+            _this.physics.accelerateToObject(m67Grenade, e, Constants.scalars.grenadeSpeed);
+
+            if (_this.musicOn) {
+              _this.attackSound.play({ volume: 4});
             }
           } else {
             // console.log('damage', gotchi.damage, gotchi.xp, parseInt(gotchi.info.modifiedRarityScore));
@@ -316,6 +343,7 @@ export class GameplayScene extends Phaser.Scene {
     this.pickupSound = this.sound.add("audio_pickup");
     this.placeSound = this.sound.add("audio_place");
     this.fireballSound = this.sound.add("audio_fireball");
+    this.explosionSound = this.sound.add("audio_explosion");
 
     this.pausedSprite = this.add.sprite(88, 600, 'playing');
     this.pausedSprite.setScale(0.8);
@@ -388,6 +416,54 @@ export class GameplayScene extends Phaser.Scene {
         _this.damageSound.play({ volume: 3});
       }
     });
+
+    this.anims.create({
+      key: 'explode',
+      frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 15 }),
+      frameRate: 24,
+      repeat: 0,
+      hideOnComplete: true,
+    });
+
+    this.physics.add.overlap(this.playerMk2Grenades, this.enemiesGroup, function(grenade, enemy) {
+      if (!grenade.collided) {
+        _this.time.addEvent({ delay: 20, callback: _this.grenadeExplode, callbackScope: _this, loop: false, args: [ grenade ] });
+      }
+      grenade.collided = true;
+    });
+
+    this.physics.add.overlap(this.playerM67Grenades, this.enemiesGroup, function(grenade, enemy) {
+      if (!grenade.collided) {
+        _this.time.addEvent({ delay: 20, callback: _this.grenadeExplode, callbackScope: _this, loop: false, args: [ grenade ] });
+      }
+      grenade.collided = true;
+    });
+  }
+
+  grenadeExplode(grenade) {
+    grenade.gotchi.increaseHits();
+
+    let blastCircle = new Phaser.Geom.Circle(grenade.x, grenade.y, grenade.blastRadius);
+    this.enemiesGroup.children.entries.map((e) => {
+      if (Phaser.Geom.Intersects.CircleToRectangle(blastCircle, e.getBounds())) {
+        e.grenadeDamage(grenade);
+      }
+    })
+
+    let explosion = new Explosion({ scene: this, x: grenade.x, y: grenade.y, radius: grenade.blastRadius });
+    this.explosions.add(explosion);
+    explosion.play('explode');
+    explosion.once('animationcomplete', () => {
+      console.log('animationcomplete')
+      explosion.destroy()
+    })
+    grenade.destroy();
+
+    console.log('explode', grenade, 'at', grenade.x, grenade.y);
+
+    if (this.musicOn) {
+      this.explosionSound.play({ volume: 0.4});
+    }
   }
 
   updateGameTimer() {

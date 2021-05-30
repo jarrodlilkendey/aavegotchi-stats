@@ -16,7 +16,13 @@ import uni from '../assets/collaterals/uniswap-uni-logo.svg';
 import usdc from '../assets/collaterals/usd-coin-usdc-logo.svg';
 import wbtc from '../assets/collaterals/wrapped-bitcoin-wbtc-logo.svg';
 import yfi from '../assets/collaterals/yearn-finance-yfi-logo.svg';
+
 import fireball from '../assets/weapons/fireball.svg';
+import mk2grenade from '../assets/weapons/mk2grenade.svg';
+import m67grenade from '../assets/weapons/m67grenade.svg';
+// import commonwizardstaff from '../assets/weapons/commonwizardstaff.svg';
+// import legendarywizardstaff from '../assets/weapons/legendarywizardstaff.svg';
+// import aagentpistol from '../assets/weapons/aagentpistol.svg';
 
 import td from '../assets/td.json';
 
@@ -65,6 +71,11 @@ export class LoadScene extends Phaser.Scene {
     this.load.svg('yfi', yfi, { width: 24, height: 24 });
 
     this.load.svg('fireball', fireball, { width: 24, height: 24 });
+    this.load.svg('mk2grenade', mk2grenade, { width: 48, height: 48 });
+    this.load.svg('m67grenade', m67grenade, { width: 48, height: 48 });
+    // this.load.svg('commonwizardstaff', commonwizardstaff, { width: 24, height: 24 });
+    // this.load.svg('legendarywizardstaff', legendarywizardstaff, { width: 24, height: 24 });
+    // this.load.svg('aagentpistol', aagentpistol, { width: 24, height: 24 });
 
     this.load.image('playagain', '/game/playagain.png');
 
@@ -82,12 +93,15 @@ export class LoadScene extends Phaser.Scene {
     this.load.audio('audio_pickup', '/game/pick-up.wav');
     this.load.audio('audio_place', '/game/place-item.wav');
     this.load.audio('audio_fireball', '/game/fireball-sound.wav');
+    this.load.audio('audio_explosion', '/game/explosion.mp3');
 
     this.load.image('fire', '/game/fire.png');
 
     this.load.image('terrain', terrain);
     this.load.image('items', items);
     this.load.tilemapTiledJSON('td', td);
+
+    this.load.spritesheet('explosion', '/game/explode.png', { frameWidth: 128, frameHeight: 128 });
 
     var callback = async function(successCallback, failureCallback) {
         let levelEnemies = _.slice(_this.registry.customData.allEnemies, 0, _this.gotchiCount);

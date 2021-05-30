@@ -17,6 +17,7 @@ export const Constants = {
     xpDifficultlyIncrease: 1.25,
     damageResistance: 1, // want to remove this
     bulletSpeed: 20000,
+    grenadeSpeed: 10000,
     enemySpawnSpeeds: [1600, 400, 200], //[600, 300, 275],
     enemyBasedSpeed: 10, //8.5,
     enemyTimescaleSpeeds: [1, 2.5, 3.5],
