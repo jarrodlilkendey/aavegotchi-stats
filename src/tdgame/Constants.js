@@ -21,7 +21,7 @@ export const Constants = {
     enemySpawnSpeeds: [1600, 400, 200], //[600, 300, 275],
     enemyBasedSpeed: 10, //8.5,
     enemyTimescaleSpeeds: [1, 2.5, 3.5],
-    enemyHealthPointsByDifficulty: [0.6, 0.9, 1.2, 1.4],
+    enemyHealthPointsByDifficulty: [0.3, 0.9, 1.2, 1.4],
     svgBatchSize: 10,
     maxGotchis: 21
   }
