@@ -184,7 +184,7 @@ export class UIScene extends Phaser.Scene {
       let gotchiKey = gameObject.texture.key;
       let gotchi = _.find(_this.registry.customData.myGotchis, { tokenId: gotchiKey });
       let gotchiRange = gotchi.gotchi.withSetsNumericTraits[2];
-      _this.range = Math.abs(50 - gotchiRange) * Constants.scalars.attackRange;
+      _this.range = Math.max(Constants.scalars.minimumRange, Math.abs(50 - gotchiRange) + Constants.scalars.minimumRange) * Constants.scalars.attackRange;
 
 
       console.log('dragstart', ourGame.gotchis);

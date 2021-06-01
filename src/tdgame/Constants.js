@@ -13,6 +13,10 @@ export const Constants = {
     attackDamage: 3, //1.5, // validated
     attackRange: 6, // validated
     attackSpeed: 10000, // validated
+    minimumDamage: 5,
+    minimumRange: 15,
+    minimumSpeed: 5,
+    minimumXpPerKill: 5,
     baseXpPerPoint: 100,
     xpDifficultlyIncrease: 1.25,
     damageResistance: 1, // want to remove this
@@ -21,7 +25,7 @@ export const Constants = {
     enemySpawnSpeeds: [1600, 400, 200], //[600, 300, 275],
     enemyBasedSpeed: 10, //8.5,
     enemyTimescaleSpeeds: [1, 2.5, 3.5],
-    enemyHealthPointsByDifficulty: [0.3, 0.9, 1.2, 1.4],
+    enemyHealthPointsByDifficulty: [0.6, 0.9, 1.2, 1.4],
     svgBatchSize: 10,
     maxGotchis: 21
   }

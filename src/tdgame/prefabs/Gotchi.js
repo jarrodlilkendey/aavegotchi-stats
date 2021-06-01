@@ -24,10 +24,10 @@ export class Gotchi extends Phaser.GameObjects.Sprite {
     this.spookiness = this.info.withSetsNumericTraits[2];
     this.brainSize = this.info.withSetsNumericTraits[3];
 
-    this.damage = Math.max(5, Math.abs(50 - this.aggression)) * Constants.scalars.attackDamage;
-    this.range = Math.max(5, Math.abs(50 - this.spookiness)) * Constants.scalars.attackRange;
-    this.speed = Math.max(5, Math.abs(50 - this.energy));
-    this.xpPerKill = Math.max(5, Math.abs(50 - this.brainSize));
+    this.damage = Math.max(Constants.scalars.minimumDamage, Math.abs(50 - this.aggression) + Constants.scalars.minimumDamage) * Constants.scalars.attackDamage;
+    this.range = Math.max(Constants.scalars.minimumRange, Math.abs(50 - this.spookiness) + Constants.scalars.minimumRange) * Constants.scalars.attackRange;
+    this.speed = Math.max(Constants.scalars.minimumSpeed, Math.abs(50 - this.energy) + Constants.scalars.minimumSpeed);
+    this.xpPerKill = Math.max(Constants.scalars.minimumXpPerKill, Math.abs(50 - this.brainSize) + Constants.scalars.minimumXpPerKill);
 
     this.xp = 0;
     this.upgradePoints = 0;
@@ -73,7 +73,7 @@ export class Gotchi extends Phaser.GameObjects.Sprite {
   increaseEnergy(amount) {
     if (this.upgradePoints > 0) {
       this.energy += amount;
-      this.speed = Math.max(5, Math.abs(50 - this.energy));
+      this.speed = Math.max(Constants.scalars.minimumSpeed, Math.abs(50 - this.energy) + Constants.scalars.minimumSpeed);
 
       this.spendPoint();
 
@@ -85,7 +85,7 @@ export class Gotchi extends Phaser.GameObjects.Sprite {
   increaseAggression(amount) {
     if (this.upgradePoints > 0) {
       this.aggression += amount;
-      this.damage = Math.max(5, Math.abs(50 - this.aggression)) * Constants.scalars.attackDamage;
+      this.damage = Math.max(Constants.scalars.minimumDamage, Math.abs(50 - this.aggression) + Constants.scalars.minimumDamage) * Constants.scalars.attackDamage;
 
       this.spendPoint();
     }
@@ -94,7 +94,7 @@ export class Gotchi extends Phaser.GameObjects.Sprite {
   increaseSpookiness(amount) {
     if (this.upgradePoints > 0) {
       this.spookiness += amount;
-      this.range = Math.max(5, Math.abs(50 - this.spookiness)) * Constants.scalars.attackRange;
+      this.range = Math.max(Constants.scalars.minimumRange, Math.abs(50 - this.spookiness) + Constants.scalars.minimumRange) * Constants.scalars.attackRange;
 
       this.spendPoint();
       this.drawRange();
@@ -104,7 +104,7 @@ export class Gotchi extends Phaser.GameObjects.Sprite {
   increaseBrainSize(amount) {
     if (this.upgradePoints > 0) {
       this.brainSize += amount;
-      this.xpPerKill = Math.max(5, Math.abs(50 - this.brainSize));
+      this.xpPerKill = Math.max(Constants.scalars.minimumXpPerKill, Math.abs(50 - this.brainSize) + Constants.scalars.minimumXpPerKill);
 
       this.spendPoint();
     }
