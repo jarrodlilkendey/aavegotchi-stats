@@ -156,4 +156,18 @@ export class Enemy extends Phaser.GameObjects.Sprite {
       }
     }
   }
+
+  boltDamage(bolt) {
+    console.log('boltDamage', bolt);
+
+    this.healthBar.decrease(bolt.damage);
+    if (this.healthBar.value <=  0) {
+      if (this.scene) {
+        this.scene.events.emit('addScore');
+        bolt.gotchi.increaseKills();
+        bolt.gotchi.increasePoints();
+        this.destroy();
+      }
+    }
+  }
 }

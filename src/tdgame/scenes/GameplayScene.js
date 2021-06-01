@@ -8,6 +8,7 @@ import { Fireball } from '../prefabs/Fireball';
 import { MK2Grenade } from '../prefabs/MK2Grenade';
 import { M67Grenade } from '../prefabs/M67Grenade';
 import { Explosion } from '../prefabs/Explosion';
+import { Bolt } from '../prefabs/Bolt';
 
 import { UIScene } from './UIScene';
 
@@ -250,6 +251,20 @@ export class GameplayScene extends Phaser.Scene {
             if (_this.musicOn) {
               _this.attackSound.play({ volume: 4});
             }
+          } else if (gotchi.hasCommonWizardStaff()) {
+            let bolt = new Bolt({ scene: _this, damage: gotchi.damage, gotchi: gotchi, enemy: e });
+            bolt.gotchi.increaseHits();
+
+            e.boltDamage(bolt);
+
+            this.time.addEvent({ delay: 100, callback: bolt.destroy, callbackScope: bolt, loop: false });
+
+            // if (_this.musicOn) {
+            //   _this.zapSound.play({ volume: 3});
+            // }
+
+          } else if (gotchi.hasLegendaryWizardStaff()) {
+
           } else {
             // console.log('damage', gotchi.damage, gotchi.xp, parseInt(gotchi.info.modifiedRarityScore));
             bullet = new Bullet({ scene: _this, x: gotchi.x, y: gotchi.y, damage: gotchi.damage, collateral: gotchi.info.collateral, gotchi: gotchi });
