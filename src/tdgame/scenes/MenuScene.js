@@ -10,10 +10,10 @@ export class MenuScene extends Phaser.Scene {
   }
 
   preload() {
-    window.ethereum.enable();
     console.log('MenuScene selectedAddress', window.ethereum.selectedAddress);
 
-    this.load.audio('synthwave', '/game/synthwave.wav');
+    // this.load.audio('synthwave', '/game/synthwave.wav');
+    this.load.audio('apes', '/game/I_wanna_be_the_Ape.wav');
     this.load.image('title', '/game/title.png');
     this.load.image('play', '/game/button_play.png');
     this.load.image('audio_off', '/game/audioOff.png');
@@ -28,7 +28,8 @@ export class MenuScene extends Phaser.Scene {
     title.displayWidth = this.game.config.width;
     title.displayHeight = this.game.config.height;
 
-    this.music = this.sound.add('synthwave');
+    // this.music = this.sound.add('synthwave');
+    this.music = this.sound.add('apes');
     this.music.play();
     this.music.setLoop(true);
 
