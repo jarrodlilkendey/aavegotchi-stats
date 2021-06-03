@@ -29,7 +29,7 @@ export class MenuScene extends Phaser.Scene {
     title.displayHeight = this.game.config.height;
 
     // this.music = this.sound.add('synthwave');
-    this.music = this.sound.add('apes');
+    this.music = this.sound.add('apes', { volume: 0.75 });
     this.music.play();
     this.music.setLoop(true);
 
