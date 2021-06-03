@@ -227,7 +227,7 @@ export class GameplayScene extends Phaser.Scene {
           let e = bulletPath.enemy;
           let dist = bulletPath.dist;
 
-          if (gotchi.hasFireball()) {
+          if (gotchi.isWeaponEquipped('fireball')) {
             fireball = new Fireball({ scene: _this, x: gotchi.x, y: gotchi.y, damage: gotchi.damage, gotchi: gotchi });
             _this.playerFireballs.add(fireball);
             _this.physics.accelerateToObject(fireball, e, Constants.scalars.bulletSpeed);
@@ -235,7 +235,7 @@ export class GameplayScene extends Phaser.Scene {
             if (_this.musicOn) {
               _this.fireballSound.play({ volume: 1, rate: 4});
             }
-          } else if (gotchi.hasMK2Grenade()) {
+          } else if (gotchi.isWeaponEquipped('mk2grenade')) {
             mk2Grenade = new MK2Grenade({ scene: _this, x: gotchi.x, y: gotchi.y, damage: gotchi.damage, gotchi: gotchi });
             _this.playerMk2Grenades.add(mk2Grenade);
             _this.physics.accelerateToObject(mk2Grenade, e, Constants.scalars.grenadeSpeed);
@@ -243,7 +243,7 @@ export class GameplayScene extends Phaser.Scene {
             if (_this.musicOn) {
               _this.attackSound.play({ volume: 4});
             }
-          } else if (gotchi.hasM67Grenade()) {
+          } else if (gotchi.isWeaponEquipped('m67grenade')) {
             m67Grenade = new M67Grenade({ scene: _this, x: gotchi.x, y: gotchi.y, damage: gotchi.damage, gotchi: gotchi });
             _this.playerM67Grenades.add(m67Grenade);
             _this.physics.accelerateToObject(m67Grenade, e, Constants.scalars.grenadeSpeed);
@@ -251,13 +251,14 @@ export class GameplayScene extends Phaser.Scene {
             if (_this.musicOn) {
               _this.attackSound.play({ volume: 4});
             }
-          } else if (gotchi.hasCommonWizardStaff()) {
+          }
+          /*else if (gotchi.hasCommonWizardStaff()) {
             let bolt = new Bolt({ scene: _this, damage: gotchi.damage, gotchi: gotchi, enemy: e });
             bolt.gotchi.increaseHits();
 
             e.boltDamage(bolt);
 
-            this.time.addEvent({ delay: 100, callback: bolt.destroy, callbackScope: bolt, loop: false });
+            this.time.addEvent({ delay: 2000, callback: bolt.destroy, callbackScope: bolt, loop: false });
 
             // if (_this.musicOn) {
             //   _this.zapSound.play({ volume: 3});
@@ -265,7 +266,8 @@ export class GameplayScene extends Phaser.Scene {
 
           } else if (gotchi.hasLegendaryWizardStaff()) {
 
-          } else {
+          }*/
+          else {
             // console.log('damage', gotchi.damage, gotchi.xp, parseInt(gotchi.info.modifiedRarityScore));
             bullet = new Bullet({ scene: _this, x: gotchi.x, y: gotchi.y, damage: gotchi.damage, collateral: gotchi.info.collateral, gotchi: gotchi });
             _this.playerBullets.add(bullet);
@@ -359,6 +361,7 @@ export class GameplayScene extends Phaser.Scene {
     this.placeSound = this.sound.add("audio_place");
     this.fireballSound = this.sound.add("audio_fireball");
     this.explosionSound = this.sound.add("audio_explosion");
+    this.purchaseSound = this.sound.add("audio_purchase");
 
     this.pausedSprite = this.add.sprite(88, 600, 'playing');
     this.pausedSprite.setScale(0.8);

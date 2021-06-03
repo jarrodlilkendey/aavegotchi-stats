@@ -94,8 +94,10 @@ export class LoadScene extends Phaser.Scene {
     this.load.audio('audio_place', '/game/place-item.wav');
     this.load.audio('audio_fireball', '/game/fireball-sound.wav');
     this.load.audio('audio_explosion', '/game/explosion.mp3');
+    this.load.audio('audio_purchase', '/game/purchase.mp3');
 
     this.load.image('fire', '/game/fire.png');
+    this.load.image('spark', '/game/spark.png');
 
     this.load.image('terrain', terrain);
     this.load.image('items', items);

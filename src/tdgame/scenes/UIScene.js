@@ -3,6 +3,8 @@ import Phaser from 'phaser';
 import { Constants } from '../Constants';
 import { Bullet } from '../prefabs/Bullet';
 
+import { graphAddressToCollateralSpriteKey } from '../../util/Collateral';
+
 import _ from 'lodash';
 
 export class UIScene extends Phaser.Scene {
@@ -17,6 +19,7 @@ export class UIScene extends Phaser.Scene {
   init() {
     // this.phsyics.startSystem(Phaser.Phsyics.ARCADE);
     this.score = 0;
+    this.ghst = 0;
   }
 
   preload() {
@@ -26,6 +29,41 @@ export class UIScene extends Phaser.Scene {
     // console.log('gotchiOverlap', gameObject, overlapObject);
     gameObject.setTint(0xff0000);
     gameObject.droppable = false;
+  }
+
+  resetWeaponLabels(gotchi) {
+    let weaponIds = ['collateral', 'mk2grenade', 'm67grenade', 'fireball'];
+    let labels = [this.collateralText, this.mk2GrenadeText, this.m67GrenadeText, this.fireballText];
+    let prices = [-1, Constants.prices.mk2grenade, Constants.prices.m67grenade, Constants.prices.fireball];
+
+    for (var i = 0; i < weaponIds.length; i++) {
+      let weapon = weaponIds[i];
+      if (gotchi.isWeaponEquipped(weapon)) {
+        labels[i].text = 'Equipped';
+      } else if (gotchi.isWeaponOwned(weapon)) {
+        labels[i].text = 'Owned';
+      } else {
+        labels[i].text = `${prices[i]} GHST`;
+      }
+    }
+  }
+
+  attemptPurchase(weaponId) {
+    let prices = {
+      'mk2grenade': Constants.prices.mk2grenade,
+      'm67grenade': Constants.prices.m67grenade,
+      'fireball': Constants.prices.fireball,
+    };
+
+    if (this.ghst >= prices[weaponId]) {
+      this.selectedGotchi.purchaseWeapon(weaponId);
+      this.ghst -= prices[weaponId];
+
+      var ourGame = this.scene.get(Constants.SCENES.GAMEPLAY);
+      if (ourGame.musicOn) {
+        ourGame.purchaseSound.play({ volume: 1 });
+      }
+    }
   }
 
   create() {
@@ -50,42 +88,87 @@ export class UIScene extends Phaser.Scene {
     //  Our Text object to display the Score
     // let enemiesRemaining = this.registry.customData.myEnemies.length + this.registry.customData.svgsToGet.length;
     let enemiesRemaining = this.registry.customData.levelEnemies.length; // + this.registry.customData.svgsToGet.length;
-    var scoreText = this.add.text(800, 80, `Score: 0`, { font: '30px m5x7', fill: '#000000' });
-    var enemiesText = this.add.text(800, 100, `Enemies: ${enemiesRemaining}`, { font: '30px m5x7', fill: '#000000' });
-    this.timeText = this.add.text(800, 120, 'Timer: 0', { font: '30px m5x7', fill: '#000000' });
+    let yPosition = 80;
+    var scoreText = this.add.text(800, yPosition, `Score: 0`, { font: '30px m5x7', fill: '#000000' });
+    var enemiesText = this.add.text(800, yPosition += 20, `Enemies: ${enemiesRemaining}`, { font: '30px m5x7', fill: '#000000' });
+    this.timeText = this.add.text(800, yPosition += 20, 'Timer: 0', { font: '30px m5x7', fill: '#000000' });
+    this.ghstText = this.add.text(800, yPosition += 20, 'GHST: 0', { font: '30px m5x7', fill: '#000000' });
 
-    this.yourGotchisText = this.add.text(800, 150, 'Place Gotchis', { font: '30px m5x7', fill: '#000000' });
+    this.yourGotchisText = this.add.text(800, yPosition += 30, 'Place Gotchis', { font: '30px m5x7', fill: '#000000' });
     this.gotchiPlacementGroup = this.add.group();
 
-    this.upgradeGotchiText = this.add.text(800, 150, 'Upgrade Gotchi', { font: '30px m5x7', fill: '#000000' });
-    this.gotchiNameText = this.add.text(800, 180, 'Gotchi', { font: '30px m5x7', fill: '#000000' });
-    this.hitsText = this.add.text(800, 210, 'HITS', { font: '24px m5x7', fill: '#000000' });
-    this.killsText = this.add.text(800, 230, 'KILLS', { font: '24px m5x7', fill: '#000000' });
-    this.damageText = this.add.text(800, 250, 'DAMAGE', { font: '24px m5x7', fill: '#000000' });
-    this.rangeText = this.add.text(800, 270, 'RANGE', { font: '24px m5x7', fill: '#000000' });
-    this.speedText = this.add.text(800, 290, 'SPEED', { font: '24px m5x7', fill: '#000000' });
-    this.xpPerKillText = this.add.text(800, 310, 'XP PER KILL', { font: '24px m5x7', fill: '#000000' });
-    this.xpProgressText = this.add.text(800, 330, 'LEVEL UP PROGRESS', { font: '24px m5x7', fill: '#000000' });
-    this.upgradePointsText = this.add.text(800, 350, 'UPGRADE POINTS', { font: '24px m5x7', fill: '#000000' });
+    this.upgradeGotchiText = this.add.text(800, yPosition, 'Upgrade Gotchi', { font: '30px m5x7', fill: '#000000' });
+    this.gotchiNameText = this.add.text(800, yPosition += 30, 'Gotchi', { font: '30px m5x7', fill: '#000000' });
+    this.hitsText = this.add.text(800, yPosition += 30, 'HITS', { font: '24px m5x7', fill: '#000000' });
+    this.killsText = this.add.text(800, yPosition += 20, 'KILLS', { font: '24px m5x7', fill: '#000000' });
+    this.damageText = this.add.text(800, yPosition += 20, 'DAMAGE', { font: '24px m5x7', fill: '#000000' });
+    this.rangeText = this.add.text(800, yPosition += 20, 'RANGE', { font: '24px m5x7', fill: '#000000' });
+    this.speedText = this.add.text(800, yPosition += 20, 'SPEED', { font: '24px m5x7', fill: '#000000' });
+    this.xpPerKillText = this.add.text(800, yPosition += 20, 'XP PER KILL', { font: '24px m5x7', fill: '#000000' });
 
-    this.energyText = this.add.text(800, 380, 'ENERGY', { font: '24px m5x7', fill: '#000000' });
-    this.energyUp = this.add.sprite(990, 390, 'uipack', 768).setInteractive();
-    this.energyDown = this.add.sprite(970, 390, 'uipack', 769).setInteractive();
+    this.xpProgressText = this.add.text(800, yPosition += 30, 'LEVEL UP PROGRESS', { font: '24px m5x7', fill: '#000000' });
+    this.upgradePointsText = this.add.text(800, yPosition += 20, 'UPGRADE POINTS', { font: '24px m5x7', fill: '#000000' });
 
-    this.aggressionText = this.add.text(800, 400, 'AGGRESSION', { font: '24px m5x7', fill: '#000000' });
-    this.aggressionUp = this.add.sprite(990, 410, 'uipack', 768).setInteractive();
-    this.aggressionDown = this.add.sprite(970, 410, 'uipack', 769).setInteractive();
+    this.energyText = this.add.text(800, yPosition += 30, 'ENERGY', { font: '24px m5x7', fill: '#000000' });
+    this.energyUp = this.add.sprite(990, yPosition += 10, 'uipack', 768).setInteractive();
+    this.energyDown = this.add.sprite(970, yPosition, 'uipack', 769).setInteractive();
 
-    this.spookinessText = this.add.text(800, 420, 'SPOOKINESS', { font: '24px m5x7', fill: '#000000' });
-    this.spookinessUp = this.add.sprite(990, 430, 'uipack', 768).setInteractive();
-    this.spookinessDown = this.add.sprite(970, 430, 'uipack', 769).setInteractive();
+    this.aggressionText = this.add.text(800, yPosition += 10, 'AGGRESSION', { font: '24px m5x7', fill: '#000000' });
+    this.aggressionUp = this.add.sprite(990, yPosition += 10, 'uipack', 768).setInteractive();
+    this.aggressionDown = this.add.sprite(970, yPosition, 'uipack', 769).setInteractive();
 
-    this.brainSizeText = this.add.text(800, 440, 'BRAIN SIZE', { font: '24px m5x7', fill: '#000000' });
-    this.brainSizeUp = this.add.sprite(990, 450, 'uipack', 768).setInteractive();
-    this.brainSizeDown = this.add.sprite(970, 450, 'uipack', 769).setInteractive();
+    this.spookinessText = this.add.text(800, yPosition += 10, 'SPOOKINESS', { font: '24px m5x7', fill: '#000000' });
+    this.spookinessUp = this.add.sprite(990,  yPosition += 10, 'uipack', 768).setInteractive();
+    this.spookinessDown = this.add.sprite(970, yPosition, 'uipack', 769).setInteractive();
 
-    this.eyeShapeText = this.add.text(800, 460, 'EYE SHAPE', { font: '24px m5x7', fill: '#000000' });
-    this.eyeSizeText = this.add.text(800, 480, 'EYE SIZE', { font: '24px m5x7', fill: '#000000' });
+    this.brainSizeText = this.add.text(800, yPosition += 10, 'BRAIN SIZE', { font: '24px m5x7', fill: '#000000' });
+    this.brainSizeUp = this.add.sprite(990, yPosition += 10, 'uipack', 768).setInteractive();
+    this.brainSizeDown = this.add.sprite(970, yPosition, 'uipack', 769).setInteractive();
+
+    this.eyeShapeText = this.add.text(800, yPosition += 20, 'EYE SHAPE', { font: '24px m5x7', fill: '#000000' });
+    this.eyeSizeText = this.add.text(800, yPosition += 20, 'EYE SIZE', { font: '24px m5x7', fill: '#000000' });
+
+    this.equipmentText = this.add.text(800, yPosition += 30, 'EQUIPMENT', { font: '24px m5x7', fill: '#000000' });
+
+    this.collateral = this.add.sprite(810, yPosition += 40, 'fireball').setInteractive();
+    this.collateralText = this.add.text(800, yPosition + 15, 'Owned', { font: '14px m5x7', fill: '#000000' });
+    this.collateral.on('pointerdown', function (pointer) {
+      _this.selectedGotchi.equipWeapon('collateral');
+      _this.resetWeaponLabels(_this.selectedGotchi);
+    });
+
+    this.mk2Grenade = this.add.sprite(860, yPosition, 'mk2grenade').setInteractive();
+    this.mk2GrenadeText = this.add.text(850, yPosition + 15, 'Owned', { font: '14px m5x7', fill: '#000000' });
+    this.mk2Grenade.on('pointerdown', function (pointer) {
+      if (_this.selectedGotchi.isWeaponOwned('mk2grenade')) {
+        _this.selectedGotchi.equipWeapon('mk2grenade');
+      } else {
+        _this.attemptPurchase('mk2grenade')
+      }
+      _this.resetWeaponLabels(_this.selectedGotchi);
+    });
+
+    this.m67Grenade = this.add.sprite(910, yPosition, 'm67grenade').setInteractive();
+    this.m67GrenadeText = this.add.text(900, yPosition + 15, 'Owned', { font: '14px m5x7', fill: '#000000' });
+    this.m67Grenade.on('pointerdown', function (pointer) {
+      if (_this.selectedGotchi.isWeaponOwned('m67grenade')) {
+        _this.selectedGotchi.equipWeapon('m67grenade');
+      } else {
+        _this.attemptPurchase('m67grenade')
+      }
+      _this.resetWeaponLabels(_this.selectedGotchi);
+    });
+
+    this.fireball = this.add.sprite(960, yPosition, 'fireball').setInteractive();
+    this.fireballText = this.add.text(950, yPosition + 15, 'Owned', { font: '14px m5x7', fill: '#000000' });
+    this.fireball.on('pointerdown', function (pointer) {
+      if (_this.selectedGotchi.isWeaponOwned('fireball')) {
+        _this.selectedGotchi.equipWeapon('fireball');
+      } else {
+        _this.attemptPurchase('fireball')
+      }
+      _this.resetWeaponLabels(_this.selectedGotchi);
+    });
 
     this.upgradeGotchiText.visible = false;
     this.xpPerKillText.visible = false;
@@ -111,6 +194,16 @@ export class UIScene extends Phaser.Scene {
     this.spookinessDown.visible = false;
     this.brainSizeUp.visible = false;
     this.brainSizeDown.visible = false;
+
+    this.equipmentText.visible = false;
+    this.collateral.visible = false;
+    this.fireball.visible = false;
+    this.mk2Grenade.visible = false;
+    this.m67Grenade.visible = false;
+    this.collateralText.visible = false;
+    this.mk2GrenadeText.visible = false;
+    this.m67GrenadeText.visible = false;
+    this.fireballText.visible = false;
 
     this.mode = 'placement';
 
@@ -245,16 +338,18 @@ export class UIScene extends Phaser.Scene {
         cellWidth: 64,
         cellHeight: 64,
         x: 840,
-        y: 210
+        y: 230
     });
 
     ourGame.events.on('addScore', function () {
         this.score += 1;
+        this.ghst += 1;
 
         let enemiesRemaining = this.registry.customData.levelEnemies.length - this.score;
 
         scoreText.setText(`Score: ${this.score}`);
         enemiesText.setText(`Enemies: ${enemiesRemaining}`);
+        _this.ghstText.setText(`GHST: ${this.ghst}`);
 
         if (enemiesRemaining == 0) {
           _this.scene.remove(Constants.SCENES.UI);
@@ -320,6 +415,16 @@ export class UIScene extends Phaser.Scene {
     this.brainSizeDown.visible = visibility;
     this.xpPerKillText.visible = visibility;
 
+    this.equipmentText.visible = visibility;
+    this.fireball.visible = visibility;
+    this.mk2Grenade.visible = visibility;
+    this.m67Grenade.visible = visibility;
+    this.collateral.visible = visibility;
+    this.collateralText.visible = visibility;
+    this.mk2GrenadeText.visible = visibility;
+    this.m67GrenadeText.visible = visibility;
+    this.fireballText.visible = visibility;
+
     if (gotchi != null) {
       this.gotchiNameText.setText(gotchi.info.name);
       this.hitsText.setText(`HITS: ${gotchi.hits}`);
@@ -337,6 +442,14 @@ export class UIScene extends Phaser.Scene {
       this.brainSizeText.setText(`BRAIN SIZE: ${gotchi.brainSize}`);
       this.eyeShapeText.setText(`EYE SHAPE: ${gotchi.info.numericTraits[4]}`);
       this.eyeSizeText.setText(`EYE SIZE: ${gotchi.info.numericTraits[5]}`);
+
+      this.collateral.setTexture(graphAddressToCollateralSpriteKey(gotchi.info.collateral));
+      this.resetWeaponLabels(gotchi);
+
+      this.collateralText.setText('Owned');
+      this.mk2GrenadeText.setText('Owned');
+      this.m67GrenadeText.setText('17 GHST');
+      this.fireballText.setText('Equipped');
     }
   }
 
@@ -359,6 +472,8 @@ export class UIScene extends Phaser.Scene {
       this.brainSizeText.setText(`BRAIN SIZE: ${this.selectedGotchi.brainSize}`);   // level up quicker
       this.eyeShapeText.setText(`EYE SHAPE: ${this.selectedGotchi.info.numericTraits[4]}`);
       this.eyeSizeText.setText(`EYE SIZE: ${this.selectedGotchi.info.numericTraits[5]}`);
+
+      this.resetWeaponLabels(this.selectedGotchi);
     }
   }
 }

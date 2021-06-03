@@ -27,6 +27,13 @@ export const Constants = {
     enemyTimescaleSpeeds: [1, 2.5, 3.5],
     enemyHealthPointsByDifficulty: [0.6, 0.9, 1.2, 1.4],
     svgBatchSize: 10,
-    maxGotchis: 21
+    maxGotchis: 21,
+    ghstPerKill: 1,
+  },
+
+  prices: {
+    fireball: 10,
+    mk2grenade: 20,
+    m67grenade: 30,
   }
 }

@@ -37,6 +37,24 @@ export class Gotchi extends Phaser.GameObjects.Sprite {
     this.xpPerPoint = Constants.scalars.baseXpPerPoint;
     this.xpProgress = '0%';
 
+    this.weaponEquipped = 'collateral';
+    this.weaponsOwned = ['collateral'];
+
+    if (this.hasFireball()) {
+      this.weaponsOwned.push('fireball');
+      this.equipWeapon('fireball');
+    }
+
+    if (this.hasMK2Grenade()) {
+      this.weaponsOwned.push('mk2grenade');
+      this.equipWeapon('mk2grenade');
+    }
+
+    if (this.hasM67Grenade()) {
+      this.weaponsOwned.push('m67grenade');
+      this.equipWeapon('m67grenade');
+    }
+
     this.gotchiRange = this.scene.add.graphics();
   }
 
@@ -191,5 +209,28 @@ export class Gotchi extends Phaser.GameObjects.Sprite {
       return true;
     }
     return false;
+  }
+
+  isWeaponOwned(weaponId) {
+    if (_.includes(this.weaponsOwned, weaponId)) {
+      return true;
+    }
+    return false;
+  }
+
+  isWeaponEquipped(weaponId) {
+    if (this.weaponEquipped == weaponId) {
+      return true;
+    }
+    return false;
+  }
+
+  equipWeapon(weaponId) {
+    this.weaponEquipped = weaponId;
+  }
+
+  purchaseWeapon(weaponId) {
+    this.weaponsOwned.push(weaponId);
+    this.equipWeapon(weaponId);
   }
 }
