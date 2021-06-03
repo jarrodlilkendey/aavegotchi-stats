@@ -14,7 +14,7 @@ export const Constants = {
     attackRange: 6, // validated
     attackSpeed: 10000, // validated
     minimumDamage: 5,
-    minimumRange: 15,
+    minimumRange: 10,
     minimumSpeed: 5,
     minimumXpPerKill: 5,
     baseXpPerPoint: 100,
