@@ -138,7 +138,7 @@ class GotchiTowerDefence extends Component {
       physics: {
         default: 'arcade',
         arcade: {
-          debug: false,
+          debug: false, //true,
           fps: 60
         },
       },
@@ -175,7 +175,8 @@ class GotchiTowerDefence extends Component {
 
     return (
       <div>
-        <h1>Gotchi Tower Defense (Beta)</h1>
+        <h1>Gotchi Tower Defense</h1>
+        <p>Gotchi Tower Defense was built by jarrod featuring music by jo0wz</p>
         <p><a href="./tdleaderboard">Leaderboards</a> <a href="tdhelp">How to Play</a> <a href="https://docs.google.com/forms/d/e/1FAIpQLSe8fPhWSv2c8kUNFqG-3owMI3KK33X7_OM6CxU_dNEIHt8d_w/viewform?usp=sf_link">Feedback</a></p>
         {this.state.loading &&
           <Loading message="Loading Gotchi Tower Defense..." />
