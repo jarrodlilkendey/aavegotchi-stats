@@ -36,7 +36,6 @@ import {
 
 require('dotenv').config();
 
-console.log('firebaseConfig', process.env.REACT_APP_FIREBASE_CONFIG);
 firebase.initializeApp(JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG));
 console.log('firebase initialize', firebase);
 
