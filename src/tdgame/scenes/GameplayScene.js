@@ -383,6 +383,8 @@ export class GameplayScene extends Phaser.Scene {
     });
 
     this.speedSprite = this.add.sprite(130, 600, 'button1');
+    this.speedText = this.add.text(105, 615, 'Toggle Speed', { font: '12px m5x7', fill: '#ffffff' });
+
     this.speedSprite.setScale(0.8);
     this.speedSprite.setInteractive();
     this.speedSprite.on('pointerdown', function (pointer) {
