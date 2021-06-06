@@ -35,5 +35,9 @@ export const Constants = {
     fireball: 10,
     mk2grenade: 20,
     m67grenade: 30,
+  },
+
+  assets: {
+    basePath: '/game', //'https://gotchitdgameassets.s3.amazonaws.com',
   }
 }

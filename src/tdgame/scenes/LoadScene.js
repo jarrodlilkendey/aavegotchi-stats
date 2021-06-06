@@ -77,33 +77,34 @@ export class LoadScene extends Phaser.Scene {
     // this.load.svg('legendarywizardstaff', legendarywizardstaff, { width: 24, height: 24 });
     // this.load.svg('aagentpistol', aagentpistol, { width: 24, height: 24 });
 
-    this.load.image('playagain', '/game/playagain.png');
-
     this.load.spritesheet('uipack', uipack, { frameWidth: 16, frameHeight: 16, spacing: 2 });
-    this.load.spritesheet('gotchis', '/game/gotchis.png', { frameWidth: 48, frameHeight: 48, spacing: 0 });
 
-    this.load.image('button1', '/game/button1.png');
-    this.load.image('button2', '/game/button2.png');
-    this.load.image('button3', '/game/button3.png');
-    this.load.image('playing', '/game/forward.png');
-    this.load.image('paused', '/game/pause.png');
+    this.load.image('playagain', `${Constants.assets.basePath}/playagain.png`);
 
-    this.load.audio('audio_damage', '/game/damage-sound.wav');
-    this.load.audio('audio_attack', '/game/throw.wav');
-    this.load.audio('audio_pickup', '/game/pick-up.wav');
-    this.load.audio('audio_place', '/game/place-item.wav');
-    this.load.audio('audio_fireball', '/game/fireball-sound.wav');
-    this.load.audio('audio_explosion', '/game/explosion.mp3');
-    this.load.audio('audio_purchase', '/game/purchase.mp3');
+    this.load.spritesheet('gotchis', `${Constants.assets.basePath}/gotchis.png`, { frameWidth: 48, frameHeight: 48, spacing: 0 });
 
-    this.load.image('fire', '/game/fire.png');
-    this.load.image('spark', '/game/spark.png');
+    this.load.image('button1', `${Constants.assets.basePath}/button1.png`);
+    this.load.image('button2', `${Constants.assets.basePath}/button2.png`);
+    this.load.image('button3', `${Constants.assets.basePath}/button3.png`);
+    this.load.image('playing', `${Constants.assets.basePath}/forward.png`);
+    this.load.image('paused', `${Constants.assets.basePath}/pause.png`);
+
+    this.load.audio('audio_damage', `${Constants.assets.basePath}/damage-sound.wav`);
+    this.load.audio('audio_attack', `${Constants.assets.basePath}/throw.wav`);
+    this.load.audio('audio_pickup', `${Constants.assets.basePath}/pick-up.wav`);
+    this.load.audio('audio_place', `${Constants.assets.basePath}/place-item.wav`);
+    this.load.audio('audio_fireball', `${Constants.assets.basePath}/fireball-sound.wav`);
+    this.load.audio('audio_explosion', `${Constants.assets.basePath}/explosion.mp3`);
+    this.load.audio('audio_purchase', `${Constants.assets.basePath}/purchase.mp3`);
+
+    this.load.image('fire', `${Constants.assets.basePath}/fire.png`);
+    this.load.image('spark', `${Constants.assets.basePath}/spark.png`);
+
+    this.load.spritesheet('explosion', `${Constants.assets.basePath}/explode.png`, { frameWidth: 128, frameHeight: 128 });
 
     this.load.image('terrain', terrain);
     this.load.image('items', items);
     this.load.tilemapTiledJSON('td', td);
-
-    this.load.spritesheet('explosion', '/game/explode.png', { frameWidth: 128, frameHeight: 128 });
 
     var callback = async function(successCallback, failureCallback) {
         let levelEnemies = _.slice(_this.registry.customData.allEnemies, 0, _this.gotchiCount);

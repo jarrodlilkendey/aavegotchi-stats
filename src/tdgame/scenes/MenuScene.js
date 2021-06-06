@@ -13,12 +13,12 @@ export class MenuScene extends Phaser.Scene {
     console.log('MenuScene selectedAddress', window.ethereum.selectedAddress);
 
     // this.load.audio('synthwave', '/game/synthwave.wav');
-    this.load.audio('apes', '/game/I_wanna_be_the_Ape.wav');
-    this.load.image('title', '/game/title.png');
-    this.load.image('play', '/game/button_play.png');
-    this.load.image('audio_off', '/game/audioOff.png');
-    this.load.image('audio_on', '/game/audioOn.png');
-    this.load.image('fullscreen', '/game/larger.png');
+    this.load.audio('apes', `${Constants.assets.basePath}/I_wanna_be_the_Ape.wav`);
+    this.load.image('title', `${Constants.assets.basePath}/title.png`);
+    this.load.image('play', `${Constants.assets.basePath}/button_play.png`);
+    this.load.image('audio_off', `${Constants.assets.basePath}/audioOff.png`);
+    this.load.image('audio_on', `${Constants.assets.basePath}/audioOn.png`);
+    this.load.image('fullscreen', `${Constants.assets.basePath}/larger.png`);
   }
 
   create() {
