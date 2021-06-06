@@ -27,3 +27,4 @@ src/config/apiKeys.json
 /src/data/gamescripts/png/*
 /src/data/gamescripts/svg/*
 src/config/firebaseConfig.json
+.env

@@ -28,16 +28,16 @@ import GotchiTDRules from './components/GotchiTDRules';
 
 import firebase from 'firebase/app';
 
-import firebaseConfig from './config/firebaseConfig.json';
-
-
 import {
   BrowserRouter as Router,
   Switch,
   Route
 } from "react-router-dom";
 
-firebase.initializeApp(firebaseConfig);
+require('dotenv').config();
+
+console.log('firebaseConfig', process.env.REACT_APP_FIREBASE_CONFIG);
+firebase.initializeApp(JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG));
 console.log('firebase initialize', firebase);
 
 const navBarPages = [
@@ -138,6 +138,10 @@ ReactDOM.render(
           // <Route path="/tickets">
           //   <DollarCostAverageTickets />
           // </Route>
+          // <Route path="/open">
+          //   <OpenPortalListings title="" />
+          // </Route>
+          //
           // <Route path="/sets">
           //   <CheapestSets title="Cheapest Sets" />
           // </Route>
