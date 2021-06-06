@@ -85,6 +85,8 @@ export class UIScene extends Phaser.Scene {
     this.panel.body.reset(790, 80);
     this.panel.fillRect(790, 80, 220, 550);
 
+    this.uiRect = new Phaser.Geom.Rectangle(790, 80, 220, 550);
+
     //  Our Text object to display the Score
     // let enemiesRemaining = this.registry.customData.myEnemies.length + this.registry.customData.svgsToGet.length;
     let enemiesRemaining = this.registry.customData.levelEnemies.length; // + this.registry.customData.svgsToGet.length;
@@ -323,9 +325,18 @@ export class UIScene extends Phaser.Scene {
         _this.gotchiRange.clear();
 
         if (gameObject.droppable) {
-          // create the enemy in the GameplayScene
-          _this.events.emit('placeGotchi', { gameObject: gameObject });
-          gameObject.destroy();
+          let pointerRect = new Phaser.Geom.Rectangle(pointer.x, pointer.y, 64, 64);
+          Phaser.Geom.Rectangle.CenterOn(pointerRect, pointer.x, pointer.y);
+          let intersect = Phaser.Geom.Intersects.RectangleToRectangle(_this.uiRect, pointerRect);
+
+          if (intersect == false) {
+            // create the enemy in the GameplayScene
+            _this.events.emit('placeGotchi', { gameObject: gameObject });
+            gameObject.destroy();
+          } else {
+            gameObject.x = gameObject.startX;
+            gameObject.y = gameObject.startY;
+          }
         } else {
           gameObject.x = gameObject.startX;
           gameObject.y = gameObject.startY;
