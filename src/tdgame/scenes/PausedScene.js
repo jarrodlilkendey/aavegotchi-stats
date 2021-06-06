@@ -9,6 +9,13 @@ export class PausedScene extends Phaser.Scene {
     })
   }
 
+  resumeGame() {
+    this.pausedText.visible = false;
+    this.pausedSprite.visible = false;
+    this.spaceBar.off('up');
+    this.scene.resume(Constants.SCENES.GAMEPLAY);
+  }
+
   create() {
     const _this = this;
     const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
@@ -21,9 +28,12 @@ export class PausedScene extends Phaser.Scene {
     this.pausedSprite.setInteractive();
 
     this.pausedSprite.on('pointerdown', function (pointer) {
-      _this.pausedText.visible = false;
-      _this.pausedSprite.visible = false;
-      _this.scene.resume(Constants.SCENES.GAMEPLAY);
+      _this.resumeGame();
+    });
+
+    this.spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    this.spaceBar.on('up', function() {
+      _this.resumeGame();
     });
   }
 }

@@ -105,6 +105,10 @@ export class GameplayScene extends Phaser.Scene {
     custom.events.off('addScore');
     custom.events.off('resume');
 
+    custom.spaceBar.off('up');
+    custom.downKey.off('up');
+    custom.upKey.off('up');
+
     let gotchiKills = {};
     for (var i = 0; i < custom.gotchis.length; i++) {
       let gotchi = custom.gotchis[i];
@@ -284,6 +288,20 @@ export class GameplayScene extends Phaser.Scene {
     }
   }
 
+  pauseGame() {
+    console.log('pause game');
+    this.paused = !this.paused;
+
+    if (this.paused) {
+      this.pausedSprite.setTexture('paused');
+      this.spaceBar.off('up');
+      this.upKey.off('up');
+      this.downKey.off('up');
+      this.scene.pause();
+      this.scene.launch(Constants.SCENES.PAUSED);
+    }
+  }
+
   create() {
     console.log('create GameplayScene');
 
@@ -367,19 +385,27 @@ export class GameplayScene extends Phaser.Scene {
     this.pausedSprite.setScale(0.8);
     this.pausedSprite.setInteractive();
     this.pausedSprite.on('pointerdown', function (pointer) {
-      _this.paused = !_this.paused;
+      _this.pauseGame();
+    });
 
-      if (_this.paused) {
-        _this.pausedSprite.setTexture('paused');
-        _this.scene.pause();
-        _this.scene.launch(Constants.SCENES.PAUSED);
-      }
+    this.spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    this.spaceBar.on('up', function() {
+      _this.pauseGame();
     });
 
     this.events.on('resume', function () {
       console.log('Gameplay resumed');
       _this.paused = !_this.paused;
       _this.pausedSprite.setTexture('playing');
+      _this.spaceBar.on('up', function() {
+        _this.pauseGame();
+      });
+      _this.upKey.on('up', function() {
+        _this.changeSpeed(1);
+      });
+      _this.downKey.on('up', function() {
+        _this.changeSpeed(-1);
+      });
     });
 
     this.speedSprite = this.add.sprite(130, 600, 'button1');
@@ -388,25 +414,17 @@ export class GameplayScene extends Phaser.Scene {
     this.speedSprite.setScale(0.8);
     this.speedSprite.setInteractive();
     this.speedSprite.on('pointerdown', function (pointer) {
-      if (_this.speed == 3) {
-        _this.speed = 1;
-      } else {
-        _this.speed += 1;
-      }
+      _this.changeSpeed(1);
+    });
 
-      if (_this.speed == 1) {
-        _this.speedSprite.setTexture('button1');
-        _this.tweens.timeScale = Constants.scalars.enemyTimescaleSpeeds[_this.speed-1];
-      } else if (_this.speed == 2) {
-        _this.speedSprite.setTexture('button2');
-        _this.tweens.timeScale = Constants.scalars.enemyTimescaleSpeeds[_this.speed-1];
-      } else if (_this.speed == 3) {
-        _this.speedSprite.setTexture('button3');
-        _this.tweens.timeScale = Constants.scalars.enemyTimescaleSpeeds[_this.speed-1];
-      }
+    this.upKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+    this.upKey.on('up', function() {
+      _this.changeSpeed(1);
+    });
 
-      _this.spawning.remove();
-      _this.spawning = _this.time.addEvent({ delay: Constants.scalars.enemySpawnSpeeds[_this.speed - 1], callback: _this.spawnEnemy, callbackScope: _this, loop: true });
+    this.downKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+    this.downKey.on('up', function() {
+      _this.changeSpeed(-1);
     });
 
     this.fullscreenButton = this.add.sprite(this.game.config.width - 26, 26, 'fullscreen');
@@ -513,5 +531,32 @@ export class GameplayScene extends Phaser.Scene {
     } else {
       this.scale.startFullscreen();
     }
+  }
+
+  changeSpeed(amount) {
+    console.log('changeSpeed', amount);
+
+    let tempSpeed = this.speed + amount;
+    if (tempSpeed == 4) {
+      this.speed = 1;
+    } else if (tempSpeed == 0) {
+      this.speed = 3;
+    } else {
+      this.speed = tempSpeed;
+    }
+
+    if (this.speed == 1) {
+      this.speedSprite.setTexture('button1');
+      this.tweens.timeScale = Constants.scalars.enemyTimescaleSpeeds[this.speed-1];
+    } else if (this.speed == 2) {
+      this.speedSprite.setTexture('button2');
+      this.tweens.timeScale = Constants.scalars.enemyTimescaleSpeeds[this.speed-1];
+    } else if (this.speed == 3) {
+      this.speedSprite.setTexture('button3');
+      this.tweens.timeScale = Constants.scalars.enemyTimescaleSpeeds[this.speed-1];
+    }
+
+    this.spawning.remove();
+    this.spawning = this.time.addEvent({ delay: Constants.scalars.enemySpawnSpeeds[this.speed - 1], callback: this.spawnEnemy, callbackScope: this, loop: true });
   }
 }

@@ -367,6 +367,9 @@ export class UIScene extends Phaser.Scene {
           console.log('ourGame', ourGame);
           ourGame.events.off('addScore');
           ourGame.events.off('resume');
+          ourGame.spaceBar.off('up');
+          ourGame.downKey.off('up');
+          ourGame.upKey.off('up');
 
           let gotchiKills = {};
           for (var i = 0; i < ourGame.gotchis.length; i++) {
