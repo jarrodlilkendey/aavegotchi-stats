@@ -48,6 +48,20 @@ export class UIScene extends Phaser.Scene {
     }
   }
 
+  resetUpgradeButtons(gotchi) {
+    if (gotchi.upgradePoints > 0) {
+      this.energyUpgrade.setTexture('upgrade_enabled');
+      this.aggressionUpgrade.setTexture('upgrade_enabled');
+      this.spookinessUpgrade.setTexture('upgrade_enabled');
+      this.brainSizeUpgrade.setTexture('upgrade_enabled');
+    } else {
+      this.energyUpgrade.setTexture('upgrade_disabled');
+      this.aggressionUpgrade.setTexture('upgrade_disabled');
+      this.spookinessUpgrade.setTexture('upgrade_disabled');
+      this.brainSizeUpgrade.setTexture('upgrade_disabled');
+    }
+  }
+
   attemptPurchase(weaponId) {
     let prices = {
       'mk2grenade': Constants.prices.mk2grenade,
@@ -103,31 +117,35 @@ export class UIScene extends Phaser.Scene {
     this.gotchiNameText = this.add.text(800, yPosition += 30, 'Gotchi', { font: '30px m5x7', fill: '#000000' });
     this.hitsText = this.add.text(800, yPosition += 30, 'HITS', { font: '24px m5x7', fill: '#000000' });
     this.killsText = this.add.text(800, yPosition += 20, 'KILLS', { font: '24px m5x7', fill: '#000000' });
+    this.speedText = this.add.text(800, yPosition += 20, 'SPEED', { font: '24px m5x7', fill: '#000000' });
     this.damageText = this.add.text(800, yPosition += 20, 'DAMAGE', { font: '24px m5x7', fill: '#000000' });
     this.rangeText = this.add.text(800, yPosition += 20, 'RANGE', { font: '24px m5x7', fill: '#000000' });
-    this.speedText = this.add.text(800, yPosition += 20, 'SPEED', { font: '24px m5x7', fill: '#000000' });
     this.xpPerKillText = this.add.text(800, yPosition += 20, 'XP PER KILL', { font: '24px m5x7', fill: '#000000' });
 
     this.xpProgressText = this.add.text(800, yPosition += 30, 'LEVEL UP PROGRESS', { font: '24px m5x7', fill: '#000000' });
     this.upgradePointsText = this.add.text(800, yPosition += 20, 'UPGRADE POINTS', { font: '24px m5x7', fill: '#000000' });
 
     this.energyText = this.add.text(800, yPosition += 30, 'ENERGY', { font: '24px m5x7', fill: '#000000' });
-    this.energyUp = this.add.sprite(990, yPosition += 10, 'uipack', 768).setInteractive();
-    this.energyDown = this.add.sprite(970, yPosition, 'uipack', 769).setInteractive();
+    this.energyUpgrade = this.add.sprite(970, yPosition += 10, 'upgrade_disabled').setInteractive();
+    this.energyUpgrade.setScale(0.35);
+    this.energyUpgradeText = this.add.text(947, yPosition - 9, 'UPGRADE', { font: '17px m5x7', fill: '#ffffff' });
 
     this.aggressionText = this.add.text(800, yPosition += 10, 'AGGRESSION', { font: '24px m5x7', fill: '#000000' });
-    this.aggressionUp = this.add.sprite(990, yPosition += 10, 'uipack', 768).setInteractive();
-    this.aggressionDown = this.add.sprite(970, yPosition, 'uipack', 769).setInteractive();
+    this.aggressionUpgrade = this.add.sprite(970, yPosition += 10, 'upgrade_disabled').setInteractive();
+    this.aggressionUpgrade.setScale(0.35);
+    this.aggressionUpgradeText = this.add.text(947, yPosition - 9, 'UPGRADE', { font: '17px m5x7', fill: '#ffffff' });
 
     this.spookinessText = this.add.text(800, yPosition += 10, 'SPOOKINESS', { font: '24px m5x7', fill: '#000000' });
-    this.spookinessUp = this.add.sprite(990,  yPosition += 10, 'uipack', 768).setInteractive();
-    this.spookinessDown = this.add.sprite(970, yPosition, 'uipack', 769).setInteractive();
+    this.spookinessUpgrade = this.add.sprite(970, yPosition += 10, 'upgrade_disabled').setInteractive();
+    this.spookinessUpgrade.setScale(0.35);
+    this.spookinessUpgradeText = this.add.text(947, yPosition - 9, 'UPGRADE', { font: '17px m5x7', fill: '#ffffff' });
 
     this.brainSizeText = this.add.text(800, yPosition += 10, 'BRAIN SIZE', { font: '24px m5x7', fill: '#000000' });
-    this.brainSizeUp = this.add.sprite(990, yPosition += 10, 'uipack', 768).setInteractive();
-    this.brainSizeDown = this.add.sprite(970, yPosition, 'uipack', 769).setInteractive();
+    this.brainSizeUpgrade = this.add.sprite(970, yPosition += 10, 'upgrade_disabled').setInteractive();
+    this.brainSizeUpgrade.setScale(0.35);
+    this.brainSizeUpgradeText = this.add.text(947, yPosition - 9, 'UPGRADE', { font: '17px m5x7', fill: '#ffffff' });
 
-    this.eyeShapeText = this.add.text(800, yPosition += 20, 'EYE SHAPE', { font: '24px m5x7', fill: '#000000' });
+    this.eyeShapeText = this.add.text(800, yPosition += 10, 'EYE SHAPE', { font: '24px m5x7', fill: '#000000' });
     this.eyeSizeText = this.add.text(800, yPosition += 20, 'EYE SIZE', { font: '24px m5x7', fill: '#000000' });
 
     this.equipmentText = this.add.text(800, yPosition += 30, 'EQUIPMENT', { font: '24px m5x7', fill: '#000000' });
@@ -182,20 +200,22 @@ export class UIScene extends Phaser.Scene {
     this.upgradePointsText.visible = false;
     this.xpProgressText.visible = false;
     this.killsText.visible = false;
+
     this.energyText.visible = false;
     this.aggressionText.visible = false;
     this.spookinessText.visible = false;
     this.brainSizeText.visible = false;
     this.eyeShapeText.visible = false;
     this.eyeSizeText.visible = false;
-    this.energyUp.visible = false;
-    this.energyDown.visible = false;
-    this.aggressionUp.visible = false;
-    this.aggressionDown.visible = false;
-    this.spookinessUp.visible = false;
-    this.spookinessDown.visible = false;
-    this.brainSizeUp.visible = false;
-    this.brainSizeDown.visible = false;
+
+    this.energyUpgrade.visible = false;
+    this.aggressionUpgrade.visible = false;
+    this.spookinessUpgrade.visible = false;
+    this.brainSizeUpgrade.visible = false;
+    this.energyUpgradeText.visible = false;
+    this.aggressionUpgradeText.visible = false;
+    this.spookinessUpgradeText.visible = false;
+    this.brainSizeUpgradeText.visible = false;
 
     this.equipmentText.visible = false;
     this.collateral.visible = false;
@@ -224,38 +244,37 @@ export class UIScene extends Phaser.Scene {
       gameObject.droppable = false;
     });
 
-    this.energyUp.on('pointerdown', function (pointer) {
-      _this.selectedGotchi.increaseEnergy(1);
+    this.energyUpgrade.on('pointerdown', function (pointer) {
+      if (_this.selectedGotchi.energy >= 50) {
+        _this.selectedGotchi.increaseEnergy(1);
+      } else {
+        _this.selectedGotchi.increaseEnergy(-1);
+      }
     });
 
-    this.energyDown.on('pointerdown', function (pointer) {
-      _this.selectedGotchi.increaseEnergy(-1);
+    this.aggressionUpgrade.on('pointerdown', function (pointer) {
+      if (_this.selectedGotchi.aggression >= 50) {
+        _this.selectedGotchi.increaseAggression(1);
+      } else {
+        _this.selectedGotchi.increaseAggression(-1);
+      }
     });
 
-    this.aggressionUp.on('pointerdown', function (pointer) {
-      _this.selectedGotchi.increaseAggression(1);
+    this.spookinessUpgrade.on('pointerdown', function (pointer) {
+      if (_this.selectedGotchi.spookiness >= 50) {
+        _this.selectedGotchi.increaseSpookiness(1);
+      } else {
+        _this.selectedGotchi.increaseSpookiness(-1);
+      }
     });
 
-    this.aggressionDown.on('pointerdown', function (pointer) {
-      _this.selectedGotchi.increaseAggression(-1);
+    this.brainSizeUpgrade.on('pointerdown', function (pointer) {
+      if (_this.selectedGotchi.brainSize >= 50) {
+        _this.selectedGotchi.increaseBrainSize(1);
+      } else {
+        _this.selectedGotchi.increaseBrainSize(-1);
+      }
     });
-
-    this.spookinessUp.on('pointerdown', function (pointer) {
-      _this.selectedGotchi.increaseSpookiness(1);
-    });
-
-    this.spookinessDown.on('pointerdown', function (pointer) {
-      _this.selectedGotchi.increaseSpookiness(-1);
-    });
-
-    this.brainSizeUp.on('pointerdown', function (pointer) {
-      _this.selectedGotchi.increaseBrainSize(1);
-    });
-
-    this.brainSizeDown.on('pointerdown', function (pointer) {
-      _this.selectedGotchi.increaseBrainSize(-1);
-    });
-
 
     this.registry.customData.myGotchis.map(function(g, index) {
       console.log('UIScene group create', g.tokenId);
@@ -412,6 +431,7 @@ export class UIScene extends Phaser.Scene {
     this.speedText.visible = visibility;
     this.upgradePointsText.visible = visibility;
     this.xpProgressText.visible = visibility;
+    this.xpPerKillText.visible = visibility;
     this.killsText.visible = visibility;
     this.energyText.visible = visibility;
     this.aggressionText.visible = visibility;
@@ -419,15 +439,15 @@ export class UIScene extends Phaser.Scene {
     this.brainSizeText.visible = visibility;
     this.eyeShapeText.visible = visibility;
     this.eyeSizeText.visible = visibility;
-    this.energyUp.visible = visibility;
-    this.energyDown.visible = visibility;
-    this.aggressionUp.visible = visibility;
-    this.aggressionDown.visible = visibility;
-    this.spookinessUp.visible = visibility;
-    this.spookinessDown.visible = visibility;
-    this.brainSizeUp.visible = visibility;
-    this.brainSizeDown.visible = visibility;
-    this.xpPerKillText.visible = visibility;
+
+    this.energyUpgrade.visible = visibility;
+    this.aggressionUpgrade.visible = visibility;
+    this.spookinessUpgrade.visible = visibility;
+    this.brainSizeUpgrade.visible = visibility;
+    this.energyUpgradeText.visible = visibility;
+    this.aggressionUpgradeText.visible = visibility;
+    this.spookinessUpgradeText.visible = visibility;
+    this.brainSizeUpgradeText.visible = visibility;
 
     this.equipmentText.visible = visibility;
     this.fireball.visible = visibility;
@@ -459,11 +479,7 @@ export class UIScene extends Phaser.Scene {
 
       this.collateral.setTexture(graphAddressToCollateralSpriteKey(gotchi.info.collateral));
       this.resetWeaponLabels(gotchi);
-
-      this.collateralText.setText('Owned');
-      this.mk2GrenadeText.setText('Owned');
-      this.m67GrenadeText.setText('17 GHST');
-      this.fireballText.setText('Equipped');
+      this.resetUpgradeButtons(gotchi);
     }
   }
 
@@ -488,6 +504,7 @@ export class UIScene extends Phaser.Scene {
       this.eyeSizeText.setText(`EYE SIZE: ${this.selectedGotchi.info.numericTraits[5]}`);
 
       this.resetWeaponLabels(this.selectedGotchi);
+      this.resetUpgradeButtons(this.selectedGotchi);
     }
   }
 }

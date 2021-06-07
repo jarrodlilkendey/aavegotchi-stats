@@ -78,6 +78,8 @@ export class LoadScene extends Phaser.Scene {
     // this.load.svg('aagentpistol', aagentpistol, { width: 24, height: 24 });
 
     this.load.spritesheet('uipack', uipack, { frameWidth: 16, frameHeight: 16, spacing: 2 });
+    this.load.image('upgrade_enabled', `${Constants.assets.basePath}/purple-button.png`);
+    this.load.image('upgrade_disabled', `${Constants.assets.basePath}/grey-button.png`);
 
     this.load.image('playagain', `${Constants.assets.basePath}/playagain.png`);
 
