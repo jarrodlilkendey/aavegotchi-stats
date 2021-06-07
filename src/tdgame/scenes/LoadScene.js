@@ -107,6 +107,8 @@ export class LoadScene extends Phaser.Scene {
     this.load.tilemapTiledJSON('td', td);
 
     var callback = async function(successCallback, failureCallback) {
+        let title = _this.add.text(_this.game.config.width / 2, 80, `Loading Enemies...`, { font: '128px m5x7', fill: '#ffffff' }).setOrigin(0.5);
+
         let levelEnemies = _.slice(_this.registry.customData.allEnemies, 0, _this.gotchiCount);
         levelEnemies = _.orderBy(levelEnemies, ['modifiedRarityScore', 'asc']);
 
