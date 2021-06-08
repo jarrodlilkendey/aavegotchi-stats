@@ -89,7 +89,8 @@ class TDXPLeaderboard extends Component {
             </a>
           )
         },
-        { field: 'name', headerName: 'NAME', width: 160 },
+        { field: 'name', headerName: 'NAME', width: 180 },
+        { field: 'xp', headerName: 'XP', width: 90 },
         { field: 'kills', headerName: 'KILLS', width: 90 },
         { field: 'c100Score', headerName: 'C1 SC.', width: 95 },
         { field: 'c100Time', headerName: 'C1 TI.', width: 90 },
@@ -103,7 +104,6 @@ class TDXPLeaderboard extends Component {
         { field: 'c1000Time', headerName: 'C3 TI.', width: 90 },
         { field: 'c1000Placed', headerName: 'C3 PL.', width: 95 },
         { field: 'c1000Rank', headerName: 'C3 RA.', width: 100 },
-        { field: 'xp', headerName: 'XP', width: 90 },
       ];
 
       let leaders = _.orderBy(this.state.results, ['kills'], ['desc']);
