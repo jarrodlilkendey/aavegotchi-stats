@@ -7,6 +7,7 @@ export const Constants = {
     GAMEOVER: "GAMEOVER",
     PAUSED: "PAUSED",
     LEVELSELECT: "LEVELSELECT",
+    GOTCHISELECT: "GOTCHISELECT"
   },
 
   scalars: {
@@ -27,7 +28,7 @@ export const Constants = {
     enemyTimescaleSpeeds: [1, 2.5, 3.5],
     enemyHealthPointsByDifficulty: [0.6, 0.9, 1.2, 1.4],
     svgBatchSize: 10,
-    maxGotchis: 21,
+    maxGotchis: 5,
     ghstPerKill: 1,
   },
 
@@ -39,5 +40,9 @@ export const Constants = {
 
   assets: {
     basePath: '/game', //'https://gotchitdgameassets.s3.amazonaws.com',
+  },
+
+  events: {
+    xpEventLive: false
   }
 }

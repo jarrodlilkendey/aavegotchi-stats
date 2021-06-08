@@ -17,6 +17,7 @@ import AavegotchiVotingPower from './components/AavegotchiVotingPower';
 import PetAll from './components/PetAll';
 import GotchiTowerDefence from './tdgame/GotchiTowerDefence';
 import TDLeaderboard from './components/TDLeaderboard';
+import TDXPLeaderboard from './components/TDXPLeaderboard';
 import GotchiTDRules from './components/GotchiTDRules';
 
 // import Timeline from './components/Timeline';
@@ -98,6 +99,10 @@ ReactDOM.render(
 
           <Route path="/tdleaderboard">
             <TDLeaderboard title="Gotchi Tower Defense Leaderboard" />
+          </Route>
+
+          <Route path="/tdxpleaderboard">
+            <TDXPLeaderboard title="Gotchi Tower Defense XP Event Leaderboard" />
           </Route>
 
           <Route path="/tdhelp">

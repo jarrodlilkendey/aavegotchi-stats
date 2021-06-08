@@ -9,6 +9,11 @@ export class PausedScene extends Phaser.Scene {
     })
   }
 
+  init(data) {
+    this.placedGotchis = data;
+    console.log('PausedScene', this.placedGotchis);
+  }
+
   resumeGame() {
     this.pausedText.visible = false;
     this.pausedSprite.visible = false;
@@ -27,12 +32,32 @@ export class PausedScene extends Phaser.Scene {
     this.pausedSprite.setScale(0.8);
     this.pausedSprite.setInteractive();
 
+    this.input.on('pointerdown', function (pointer) {
+      console.log('clicked', pointer);
+      for (var i = 0; i < _this.placedGotchis.length; i++) {
+        let g = _this.placedGotchis[i];
+        var pointerRect = new Phaser.Geom.Rectangle(pointer.x, pointer.y, 1, 1);
+        var gotchiRect = new Phaser.Geom.Rectangle(g.x - (g.width / 2), g.y - (g.width / 2), g.width, g.height);
+        let overlaps = Phaser.Geom.Intersects.RectangleToRectangle(pointerRect, gotchiRect);
+        if (overlaps) {
+          let ourUi = _this.scene.get(Constants.SCENES.UI);
+          ourUi.setGotchiPlacementVisibility(false);
+          _this.placedGotchis.map(function(g, i) {
+            g.hideRange();
+          });
+          ourUi.setGotchiUpgradeVisibility(true, g);
+        }
+      }
+    });
+
     this.pausedSprite.on('pointerdown', function (pointer) {
+      _this.input.off('pointerdown');
       _this.resumeGame();
     });
 
     this.spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.spaceBar.on('up', function() {
+      _this.input.off('pointerdown');
       _this.resumeGame();
     });
   }

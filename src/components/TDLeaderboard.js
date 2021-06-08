@@ -88,8 +88,6 @@ class TDLeaderboard extends Component {
         let leaders = _.orderBy(this.state.results, ['score', 'timeElapsed', 'gotchisPlaced'], ['desc', 'asc', 'asc']);
 
         leaders.map((result, index) => {
-          console.log(result);
-
           let row = {
             id: index + 1,
             user: result.user,

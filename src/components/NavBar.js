@@ -54,7 +54,7 @@ class NavBar extends Component {
   }
 
   render() {
-    if (this.props.location.pathname !== "/td") {
+    if (this.props.location.pathname !== "/td" && this.props.location.pathname !== "/tdxpleaderboard") {
       return (
         <div>
         {this.renderSiteInfo()}

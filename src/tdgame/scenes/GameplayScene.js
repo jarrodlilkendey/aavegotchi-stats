@@ -298,7 +298,7 @@ export class GameplayScene extends Phaser.Scene {
       this.upKey.off('up');
       this.downKey.off('up');
       this.scene.pause();
-      this.scene.launch(Constants.SCENES.PAUSED);
+      this.scene.launch(Constants.SCENES.PAUSED, this.gotchis);
     }
   }
 

@@ -1,6 +1,84 @@
 import { RateLimit } from 'async-sema';
 
 import firebase from 'firebase';
+import _ from 'lodash';
+
+export const writeXPEventResult = async (data) => {
+  console.log('writeXPEventResult', data);
+  const courseScore = {
+    score: data.score,
+    gotchisPlaced: data.gotchisPlaced,
+    timeElapsed: data.timeElapsed,
+  };
+
+  if (data.score > 0) {
+    const db = firebase.firestore();
+
+    let gotchiIds = Object.keys(data.gotchiKills);
+
+    const leaderboardRef = db.collection('xpEvent');
+    const snapshot = await leaderboardRef.get();
+    console.log('snapshot', snapshot);
+
+    Object.keys(data.gotchiKills).map(async (gotchiId) => {
+      let kills = data.gotchiKills[gotchiId].kills;
+      let info = {
+        gotchiId: gotchiId,
+        name: data.gotchiKills[gotchiId].info.name,
+        owner: data.user
+      };
+
+      let results = _.filter(snapshot.docs, ['id', gotchiId]);
+      if (results.length > 0) {
+        // gotchi does exist
+        const gotchiRef = db.collection('xpEvent').doc(gotchiId);
+        const gotchiDoc = await gotchiRef.get();
+        let gotchiData = gotchiDoc.data();
+
+        gotchiData.kills += kills;
+        gotchiData.info = info;
+
+        if (!gotchiData.hasOwnProperty(data.course)) {
+          gotchiData[data.course] = courseScore;
+          db.collection('xpEvent').doc(gotchiId).set(gotchiData);
+          console.log('id', gotchiId, 'new course complete');
+        } else if (betterScore(gotchiData[data.course], courseScore)) {
+          // score is better
+          gotchiData[data.course] = courseScore;
+          db.collection('xpEvent').doc(gotchiId).set(gotchiData);
+          console.log('id', gotchiId, 'better score');
+        } else {
+          // increase kills
+          db.collection('xpEvent').doc(gotchiId).set(gotchiData);
+          console.log('id', gotchiId, 'increase kills');
+        }
+      } else {
+        // gotchi does not exist
+        let gotchiData = {
+          kills: kills,
+          [data.course]: courseScore,
+          info: info
+        };
+
+        db.collection('xpEvent').doc(gotchiId).set(gotchiData);
+        console.log('id', gotchiId, 'new gotchi');
+      }
+    });
+  }
+};
+
+
+export const betterScore = (oldScore, newScore) => {
+  console.log("betterScore comparison", oldScore, newScore);
+  if (newScore.score > oldScore.score) {
+    return true;
+  } else if (newScore.score == oldScore.score && newScore.timeElapsed < oldScore.timeElapsed) {
+    return true;
+  } else if (newScore.score == oldScore.score && newScore.timeElapsed == oldScore.timeElapsed && oldScore.gotchisPlaced < newScore.gotchisPlaced) {
+    return true;
+  }
+  return false;
+};
 
 export const writeScore = async (data) => {
   const db = firebase.firestore();

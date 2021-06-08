@@ -9,6 +9,7 @@ import { GameOverScene } from './scenes/GameOverScene';
 import { UIScene } from './scenes/UIScene';
 import { PausedScene } from './scenes/PausedScene';
 import { LevelSelectScene } from './scenes/LevelSelectScene';
+import { GotchiSelectScene } from './scenes/GotchiSelectScene';
 
 import { Constants } from './Constants';
 
@@ -73,10 +74,10 @@ class GotchiTowerDefence extends Component {
 
               _this.setState({ allEnemies, loading: false });
 
-              console.log('gotchis owned', user.gotchisOwned);
-              if (user.gotchisOwned.length > Constants.scalars.maxGotchis) {
-                user.gotchisOwned = _.slice(_.shuffle(user.gotchisOwned), 0, Constants.scalars.maxGotchis);
-              }
+              // console.log('gotchis owned', user.gotchisOwned);
+              // if (user.gotchisOwned.length > Constants.scalars.maxGotchis) {
+              //   user.gotchisOwned = _.slice(_.shuffle(user.gotchisOwned), 0, Constants.scalars.maxGotchis);
+              // }
               console.log('gotchis owned', user.gotchisOwned);
 
               _this.retrieveGotchiSvgs(user, aavegotchiContract);
@@ -108,7 +109,7 @@ class GotchiTowerDefence extends Component {
       .then((svg) => {
         console.log('GotchiTowerDefence svg for', tokenId);
         _this.setState(
-          { myGotchis: [..._this.state.myGotchis, { tokenId: tokenId, svg: svg, gotchi: gotchi }]},
+          { myGotchis: [..._this.state.myGotchis, { tokenId: tokenId, svg: svg, gotchi: gotchi, selected: false }]},
           () => {
             if (_this.state.myGotchis.length == user.gotchisOwned.length) {
               _this.loadGame();
@@ -127,7 +128,7 @@ class GotchiTowerDefence extends Component {
 
     let game = {
       type: Phaser.AUTO,
-      scene: [ MenuScene, LevelSelectScene, LoadScene, GameplayScene, GameOverScene, PausedScene ],
+      scene: [ MenuScene, LevelSelectScene, LoadScene, GotchiSelectScene, GameplayScene, GameOverScene, PausedScene ],
       scale: {
         mode: Phaser.Scale.FIT,
         parent: 'phaser-example',
@@ -173,11 +174,16 @@ class GotchiTowerDefence extends Component {
   render() {
     let { initialize, game } = this.state
 
+    let leaderboardLink = './tdleaderboard';
+    if (Constants.events.xpEventLive) {
+      leaderboardLink = './tdxpleaderboard';
+    }
+
     return (
       <div>
         <h1>Gotchi Tower Defense</h1>
         <p>Gotchi Tower Defense was built by jarrod featuring the track "I Wanna Be The Ape" by <a href='https://soundcloud.com/jowijames/sets/aavegotchicom-minigame-chiptunes'>jo0wz</a></p>
-        <p><a href="./tdleaderboard">Leaderboards</a> <a href="tdhelp">How to Play</a> <a href="https://docs.google.com/forms/d/e/1FAIpQLSe8fPhWSv2c8kUNFqG-3owMI3KK33X7_OM6CxU_dNEIHt8d_w/viewform?usp=sf_link">Feedback</a></p>
+        <p><a href={`${leaderboardLink}`}>Leaderboards</a> <a href="tdhelp">How to Play</a> <a href="https://docs.google.com/forms/d/e/1FAIpQLSe8fPhWSv2c8kUNFqG-3owMI3KK33X7_OM6CxU_dNEIHt8d_w/viewform?usp=sf_link">Feedback</a></p>
         {this.state.loading &&
           <Loading message="Loading Gotchi Tower Defense..." />
         }

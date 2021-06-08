@@ -141,8 +141,21 @@ export class LoadScene extends Phaser.Scene {
   }
 
   create() {
-    // this.scene.start(Constants.SCENES.MENU, "Loaded");
+    const _this = this;
     this.musicSettings.music.stop();
-    this.scene.start(Constants.SCENES.GAMEPLAY, { musicSettings: this.musicSettings, gotchiCount: this.gotchiCount });
+
+    console.log("loadscene", this.gotchiCount, Constants.scalars.maxGotchis);
+
+    if (this.registry.customData.myGotchis.length <= Constants.scalars.maxGotchis) {
+      this.registry.customData.myGotchis.map(function(g, index) {
+        _this.registry.customData.myGotchis[index].selected = true;
+      });
+      this.scene.start(Constants.SCENES.GAMEPLAY, { musicSettings: this.musicSettings, gotchiCount: this.gotchiCount });
+    } else {
+      this.registry.customData.myGotchis.map(function(g, index) {
+        _this.registry.customData.myGotchis[index].selected = false;
+      });
+      this.scene.start(Constants.SCENES.GOTCHISELECT, { musicSettings: this.musicSettings, gotchiCount: this.gotchiCount });
+    }
   }
 }

@@ -276,7 +276,7 @@ export class UIScene extends Phaser.Scene {
       }
     });
 
-    this.registry.customData.myGotchis.map(function(g, index) {
+    _.filter(this.registry.customData.myGotchis, ['selected', true]).map(function(g, index) {
       console.log('UIScene group create', g.tokenId);
 
       let item = _this.gotchiPlacementGroup.create(0, 0, g.tokenId);
