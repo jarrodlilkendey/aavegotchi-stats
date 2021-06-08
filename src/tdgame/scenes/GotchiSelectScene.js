@@ -38,6 +38,7 @@ export class GotchiSelectScene extends Phaser.Scene {
     this.playGameText.on('pointerdown', function (pointer) {
       if (_this.selectionCount > 0 && _this.selectionCount <= Constants.scalars.maxGotchis) {
         _this.input.setHitArea(_this.gotchiSelectionGroup.getChildren()).off('gameobjectdown');
+        _this.musicSettings.music.stop();
         _this.scene.start(Constants.SCENES.GAMEPLAY, { musicSettings: _this.musicSettings, gotchiCount: _this.gotchiCount });
       }
     });

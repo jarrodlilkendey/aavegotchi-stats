@@ -142,11 +142,11 @@ export class LoadScene extends Phaser.Scene {
 
   create() {
     const _this = this;
-    this.musicSettings.music.stop();
 
     console.log("loadscene", this.gotchiCount, Constants.scalars.maxGotchis);
 
     if (this.registry.customData.myGotchis.length <= Constants.scalars.maxGotchis) {
+      this.musicSettings.music.stop();
       this.registry.customData.myGotchis.map(function(g, index) {
         _this.registry.customData.myGotchis[index].selected = true;
       });
