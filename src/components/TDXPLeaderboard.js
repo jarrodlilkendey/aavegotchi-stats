@@ -189,7 +189,7 @@ class TDXPLeaderboard extends Component {
           <li>Level 2 (10XP Total): Level 1 Requirements, Score of 250 on Course 2 & Score of 1000 on Course 3</li>
           <li>Level 3 (15XP Total): Level 1 & 2 Requirements & Top 500 Rank in Course 3</li>
         </ul>
-        <p>Course ranks are sorted by score, time, then by the lowest amount of gotchis placed.</p>
+        <p>Course ranks are sorted by score, time, then by the lowest amount of gotchis placed. <a href='/td'>Play Gotchi Tower Defense</a></p>
         <div>
           <p><b>Filter Aavegotchis in Leaderboard</b></p>
           <div className="form-group">
