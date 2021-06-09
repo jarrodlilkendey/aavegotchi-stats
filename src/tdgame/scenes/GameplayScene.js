@@ -191,7 +191,7 @@ export class GameplayScene extends Phaser.Scene {
     console.log('initSpawning', Constants.scalars.enemySpawnSpeeds[this.speed - 1]);
     this.spawning = this.time.addEvent({ delay: Constants.scalars.enemySpawnSpeeds[this.speed - 1], callback: this.spawnEnemy, callbackScope: this, loop: true });
     this.timeElapsed = 0;
-    this.gameTimer = this.time.addEvent({ delay: 1000, callback: this.updateGameTimer, callbackScope: this, loop: true });
+    this.gameTimer = this.time.addEvent({ delay: 100, callback: this.updateGameTimer, callbackScope: this, loop: true });
   }
 
   gotchiShoot(g) {
@@ -506,8 +506,9 @@ export class GameplayScene extends Phaser.Scene {
 
   updateGameTimer() {
     var ourUi = this.scene.get(Constants.SCENES.UI);
-    this.timeElapsed += 1;
-    ourUi.timeText.text = `Timer: ${this.timeElapsed}`;
+    this.timeElapsed += 0.1;
+    ourUi.timeText.text = `Timer: ${this.timeElapsed.toFixed(1)}`;
+    console.log(this.gameTimer);
   }
 
   update() {

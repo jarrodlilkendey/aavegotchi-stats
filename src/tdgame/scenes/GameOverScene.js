@@ -19,7 +19,7 @@ export class GameOverScene extends Phaser.Scene {
     this.musicSettings = data.musicSettings;
     this.gotchiCount = data.gotchiCount;
     this.gotchisPlaced = data.gotchisPlaced;
-    this.timeElapsed = data.timeElapsed;
+    this.timeElapsed = parseFloat(data.timeElapsed.toFixed(1));
     this.gotchiKills = data.gotchiKills;
   }
 
