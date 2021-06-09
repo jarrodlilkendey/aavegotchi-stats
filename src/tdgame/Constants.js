@@ -43,6 +43,6 @@ export const Constants = {
   },
 
   events: {
-    xpEventLive: false
+    xpEventLive: true
   }
 }
