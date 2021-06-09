@@ -18,10 +18,13 @@ class TDXPLeaderboard extends Component {
       loading: true,
       results: [],
       filter: '',
+      modes: ['XP Overview', 'Course 1 Results', 'Course 2 Results', 'Course 3 Results'],
+      selectedMode: 0,
     };
 
     this.onFilterChange = this.onFilterChange.bind(this);
     this.renderLeaderboard = this.renderLeaderboard.bind(this);
+    this.handleLeaderboardSelect = this.handleLeaderboardSelect.bind(this);
   }
 
   onFilterChange(event) {
@@ -75,36 +78,44 @@ class TDXPLeaderboard extends Component {
     const _this = this;
 
     let rows = [];
-    let columns = [];
+    let columns = [
+      {
+        field: 'id',
+        headerName: 'ID',
+        width: 140,
+        renderCell: (params: GridCellParams) => (
+          <a href={`https://aavegotchi.com/gotchi/${params.value}`} target="_blank">
+            {params.value}
+          </a>
+        )
+      },
+      { field: 'name', headerName: 'NAME', width: 220 },
+      { field: 'xp', headerName: 'XP', width: 100 },
+    ];
+
 
     if (this.state.results.length > 0) {
-      columns = [
-        {
-          field: 'id',
-          headerName: 'ID',
-          width: 140,
-          renderCell: (params: GridCellParams) => (
-            <a href={`https://aavegotchi.com/gotchi/${params.value}`} target="_blank">
-              {params.value}
-            </a>
-          )
-        },
-        { field: 'name', headerName: 'NAME', width: 180 },
-        { field: 'xp', headerName: 'XP', width: 100 },
-        { field: 'kills', headerName: 'KILLS', width: 120 },
-        { field: 'c100Score', headerName: 'C1 SCORE', width: 160 },
-        { field: 'c100Time', headerName: 'C1 TIME', width: 160 },
-        { field: 'c100Placed', headerName: 'C1 PLACED', width: 180 },
-        { field: 'c100Rank', headerName: 'C1 RANK', width: 160 },
-        { field: 'c250Score', headerName: 'C2 SCORE', width: 160 },
-        { field: 'c250Time', headerName: 'C2 TIME', width: 160 },
-        { field: 'c250Placed', headerName: 'C2 PLACED', width: 180 },
-        { field: 'c250Rank', headerName: 'C2 RANK', width: 160 },
-        { field: 'c1000Score', headerName: 'C3 SCORE', width: 160 },
-        { field: 'c1000Time', headerName: 'C3 TIME', width: 160 },
-        { field: 'c1000Placed', headerName: 'C3 PLACED', width: 180 },
-        { field: 'c1000Rank', headerName: 'C3 RANK', width: 160 },
-      ];
+      if (this.state.selectedMode == 0) {
+        columns.push({ field: 'kills', headerName: 'KILLS', width: 120 });
+        columns.push({ field: 'c100Score', headerName: 'C1 SCORE', width: 160 });
+        columns.push({ field: 'c250Score', headerName: 'C2 SCORE', width: 160 });
+        columns.push({ field: 'c1000Score', headerName: 'C3 SCORE', width: 160 });
+      } else if (this.state.selectedMode == 1) {
+        columns.push({ field: 'c100Score', headerName: 'C1 SCORE', width: 160 });
+        columns.push({ field: 'c100Time', headerName: 'C1 TIME', width: 160 });
+        columns.push({ field: 'c100Placed', headerName: 'C1 PLACED', width: 180 });
+        columns.push({ field: 'c100Rank', headerName: 'C1 RANK', width: 160 });
+      } else if (this.state.selectedMode == 2) {
+        columns.push({ field: 'c250Score', headerName: 'C2 SCORE', width: 160 });
+        columns.push({ field: 'c250Time', headerName: 'C2 TIME', width: 160 });
+        columns.push({ field: 'c250Placed', headerName: 'C2 PLACED', width: 180 });
+        columns.push({ field: 'c250Rank', headerName: 'C2 RANK', width: 160 });
+      } else if (this.state.selectedMode == 3) {
+        columns.push({ field: 'c1000Score', headerName: 'C3 SCORE', width: 160 });
+        columns.push({ field: 'c1000Time', headerName: 'C3 TIME', width: 160 });
+        columns.push({ field: 'c1000Placed', headerName: 'C3 PLACED', width: 180 });
+        columns.push({ field: 'c1000Rank', headerName: 'C3 RANK', width: 160 });
+      }
 
       let leaders = _.orderBy(this.state.results, ['kills'], ['desc']);
 
@@ -138,6 +149,8 @@ class TDXPLeaderboard extends Component {
           row.c100Placed = result['course-100'].gotchisPlaced;
           if (row.c100Score == 100) {
             row.c100Rank = _.findIndex(results100, ['info.gotchiId', row.id]) + 1;
+          } else {
+            row.c100Rank = 99999;
           }
         }
 
@@ -147,6 +160,8 @@ class TDXPLeaderboard extends Component {
           row.c250Placed = result['course-250'].gotchisPlaced;
           if (row.c250Score == 250) {
             row.c250Rank = _.findIndex(results250, ['info.gotchiId', row.id]) + 1;
+          } else {
+            row.c250Rank = 99999;
           }
         }
 
@@ -156,11 +171,27 @@ class TDXPLeaderboard extends Component {
           row.c1000Placed = result['course-1000'].gotchisPlaced;
           if (row.c1000Score == 1000) {
             row.c1000Rank = _.findIndex(results1000, ['info.gotchiId', row.id]) + 1;
+          } else {
+            row.c1000Rank = 99999;
           }
         }
 
         if (_this.filterGotchi(row)) {
-          rows.push(row);
+          if (this.state.selectedMode == 0) {
+            rows.push(row);
+          } else if (this.state.selectedMode == 1) {
+            if (result.hasOwnProperty('course-100')) {
+              rows.push(row);
+            }
+          } else if (this.state.selectedMode == 2) {
+            if (result.hasOwnProperty('course-250')) {
+              rows.push(row);
+            }
+          } else if (this.state.selectedMode == 3) {
+            if (result.hasOwnProperty('course-1000')) {
+              rows.push(row);
+            }
+          }
         }
       });
 
@@ -179,6 +210,10 @@ class TDXPLeaderboard extends Component {
     }
   }
 
+  handleLeaderboardSelect(mode) {
+    this.setState({ selectedMode: mode });
+  }
+
   render() {
     return(
       <div>
@@ -190,6 +225,10 @@ class TDXPLeaderboard extends Component {
           <li>Level 3 (15XP Total): Level 1 & 2 Requirements & Top 500 Rank in Course 3</li>
         </ul>
         <p>Course ranks are sorted by score, time, then by the lowest amount of gotchis placed. <a href='/td'>Play Gotchi Tower Defense</a></p>
+        <h2>{this.state.modes[this.state.selectedMode]}</h2>
+        <div style={{margin: "10px"}}>
+          <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(0)}>XP Overview</button> <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(1)}>Course 1</button> <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(2)}>Course 2</button> <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(3)}>Course 3</button>
+        </div>
         <div>
           <p><b>Filter Aavegotchis in Leaderboard</b></p>
           <div className="form-group">
