@@ -82,7 +82,7 @@ class TDXPLeaderboard extends Component {
         {
           field: 'id',
           headerName: 'ID',
-          width: 80,
+          width: 140,
           renderCell: (params: GridCellParams) => (
             <a href={`https://aavegotchi.com/gotchi/${params.value}`} target="_blank">
               {params.value}
@@ -92,18 +92,18 @@ class TDXPLeaderboard extends Component {
         { field: 'name', headerName: 'NAME', width: 180 },
         { field: 'xp', headerName: 'XP', width: 100 },
         { field: 'kills', headerName: 'KILLS', width: 120 },
-        { field: 'c100Score', headerName: 'C1 SCORE', width: 120 },
-        { field: 'c100Time', headerName: 'C1 TIME', width: 120 },
-        { field: 'c100Placed', headerName: 'C1 PLACED', width: 140 },
-        { field: 'c100Rank', headerName: 'C1 RANK', width: 120 },
-        { field: 'c250Score', headerName: 'C2 SCORE', width: 120 },
-        { field: 'c250Time', headerName: 'C2 TIME', width: 120 },
-        { field: 'c250Placed', headerName: 'C2 PLACED', width: 140 },
-        { field: 'c250Rank', headerName: 'C2 RANK', width: 120 },
-        { field: 'c1000Score', headerName: 'C3 SCORE', width: 120 },
-        { field: 'c1000Time', headerName: 'C3 TIME', width: 120 },
-        { field: 'c1000Placed', headerName: 'C3 PLACED', width: 140 },
-        { field: 'c1000Rank', headerName: 'C3 RANK', width: 120 },
+        { field: 'c100Score', headerName: 'C1 SCORE', width: 160 },
+        { field: 'c100Time', headerName: 'C1 TIME', width: 160 },
+        { field: 'c100Placed', headerName: 'C1 PLACED', width: 180 },
+        { field: 'c100Rank', headerName: 'C1 RANK', width: 160 },
+        { field: 'c250Score', headerName: 'C2 SCORE', width: 160 },
+        { field: 'c250Time', headerName: 'C2 TIME', width: 160 },
+        { field: 'c250Placed', headerName: 'C2 PLACED', width: 180 },
+        { field: 'c250Rank', headerName: 'C2 RANK', width: 160 },
+        { field: 'c1000Score', headerName: 'C3 SCORE', width: 160 },
+        { field: 'c1000Time', headerName: 'C3 TIME', width: 160 },
+        { field: 'c1000Placed', headerName: 'C3 PLACED', width: 180 },
+        { field: 'c1000Rank', headerName: 'C3 RANK', width: 160 },
       ];
 
       let leaders = _.orderBy(this.state.results, ['kills'], ['desc']);
