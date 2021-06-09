@@ -25,8 +25,8 @@ class GotchiTDRules extends Component {
         </ul>
         <h3>Bring Your Equipped Weapons</h3>
         <p>Enemies health points are based on their rarity score and they are easier to kill if you have fewer Gotchis on your account. You can select a maximum of 5 Gotchis from your account to be placed on a course.</p>
-        <p>If your Gotchi has equipped a fireball it can be used as an in game item to deal attack damage and burn damage to enemies.</p>
-        <p>If your Gotchi has equipped a MK2 grenade or a M67 grenade these can be used as an in game item to deal attack damage and splash damage to nearby enemies.</p>
+        <p>If your Gotchi has equipped a <a href='https://aavegotchi.com/baazaar/wearables?sort=priceLow&filter=all&search=fireball&slot=all'>fireball</a> it can be used as an in game item to deal attack damage and burn damage to enemies.</p>
+        <p>If your Gotchi has equipped a <a href='https://aavegotchi.com/baazaar/wearables?sort=priceLow&filter=all&search=MK2%20Grenade&slot=all'>MK2 grenade</a> or a <a href='https://aavegotchi.com/baazaar/wearables?sort=priceLow&filter=all&search=M67%20Grenade&slot=all'>M67 grenade</a> these can be used as an in game item to deal attack damage and splash damage to nearby enemies.</p>
         <p>These items can be purchased in game from in-game currency that is earned from killing enemies.</p>
         <h3>Leaderboards</h3>
         <p>Gotchi Tower Defense has leaderboards and Gotchis that have got at least one kill will appear in these leaderboards.</p>
