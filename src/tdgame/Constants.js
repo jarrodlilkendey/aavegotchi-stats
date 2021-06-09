@@ -12,7 +12,7 @@ export const Constants = {
 
   scalars: {
     attackDamage: 3, //1.5, // validated
-    attackRange: 3, // validated
+    attackRange: 2.5, // validated
     attackSpeed: 10000, // validated
     minimumDamage: 5,
     minimumRange: 50,
