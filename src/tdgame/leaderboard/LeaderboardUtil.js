@@ -74,7 +74,7 @@ export const betterScore = (oldScore, newScore) => {
     return true;
   } else if (newScore.score == oldScore.score && newScore.timeElapsed < oldScore.timeElapsed) {
     return true;
-  } else if (newScore.score == oldScore.score && newScore.timeElapsed == oldScore.timeElapsed && oldScore.gotchisPlaced < newScore.gotchisPlaced) {
+  } else if (newScore.score == oldScore.score && newScore.timeElapsed == oldScore.timeElapsed && newScore.gotchisPlaced < oldScore.gotchisPlaced) {
     return true;
   }
   return false;
