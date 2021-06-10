@@ -64,17 +64,44 @@ export class GameOverScene extends Phaser.Scene {
 
       writeGotchiKills({ gotchiKills: this.gotchiKills });
     } else {
-      writeXPEventResult({
-        course: `course-${this.gotchiCount}`,
-        score: this.score,
-        user: window.ethereum.selectedAddress,
-        gotchisPlaced: this.gotchisPlaced,
-        timeElapsed: this.timeElapsed,
-        gotchiKills: this.gotchiKills
-      }).then((res) => {
-        console.log('writeXPEventResult', res);
-      });
+      if (this.isScoreValid(this.gotchiCount, this.score, this.timeElapsed)) {
+        writeXPEventResult({
+          course: `course-${this.gotchiCount}`,
+          score: this.score,
+          user: window.ethereum.selectedAddress,
+          gotchisPlaced: this.gotchisPlaced,
+          timeElapsed: this.timeElapsed,
+          gotchiKills: this.gotchiKills
+        }).then((res) => {
+          console.log('writeXPEventResult', res);
+        });
+      } else {
+        alert('Score is invalid')
+      }
     }
+  }
+
+  isScoreValid(gotchiCount, score, timeElapsed) {
+    if (gotchiCount != score) {
+      return true;
+    }
+
+    // course 1 - no result is less than 100 * 0.2 (20 seconds)
+    if (gotchiCount == 100 && timeElapsed < 20) {
+      return false;
+    }
+
+    // course 2 - no result is less than 250 * 0.2 (50 seconds)
+    if (gotchiCount == 250 && timeElapsed < 50) {
+      return false;
+    }
+
+    // course 3 - no result is less than 1000 * 0.2 (200 seconds)
+    if (gotchiCount == 1000 && timeElapsed < 200) {
+      return false;
+    }
+
+    return true;
   }
 
   openLeaderboard() {
