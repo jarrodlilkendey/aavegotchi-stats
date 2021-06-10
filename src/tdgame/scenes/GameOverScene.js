@@ -76,7 +76,7 @@ export class GameOverScene extends Phaser.Scene {
           console.log('writeXPEventResult', res);
         });
       } else {
-        alert('Score is invalid')
+        alert(`Score is invalid ${this.timeElapsed} on course ${this.gotchiCount}`)
       }
     }
   }
