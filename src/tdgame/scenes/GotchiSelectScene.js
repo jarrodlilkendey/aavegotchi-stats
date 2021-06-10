@@ -46,8 +46,11 @@ export class GotchiSelectScene extends Phaser.Scene {
     this.gotchiSelectionGroup = this.add.group();
 
     console.log('myGotchis', this.registry.customData.myGotchis);
+    for (var i = 0; i < this.registry.customData.myGotchis.length; i++) {
+      this.registry.customData.myGotchis[i].raritySorter = parseInt(this.registry.customData.myGotchis[i].gotchi.baseRarityScore);
+    }
 
-    this.registry.customData.myGotchis.map(function(g, index) {
+    _.orderBy(this.registry.customData.myGotchis, ['raritySorter'], ['desc']).map(function(g, index) {
       console.log('GotchiSelectScene group create', g.tokenId);
 
       let item = _this.gotchiSelectionGroup.create(0, 0, g.tokenId);
