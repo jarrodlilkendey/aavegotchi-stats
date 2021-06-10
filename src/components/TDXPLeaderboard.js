@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import { DataGrid } from '@material-ui/data-grid';
 
+import { retrieveAllGotchis } from '../util/Graph';
 import { readScores } from '../tdgame/leaderboard/LeaderboardUtil';
 
 import Loading from './Loading';
@@ -17,6 +18,7 @@ class TDXPLeaderboard extends Component {
     this.state = {
       loading: true,
       results: [],
+      filteredResults: [],
       filter: '',
       modes: ['XP Overview', 'Course 1 Results', 'Course 2 Results', 'Course 3 Results'],
       selectedMode: 0,
@@ -29,7 +31,33 @@ class TDXPLeaderboard extends Component {
 
   onFilterChange(event) {
     event.preventDefault();
-    this.setState({ filter: event.target.value });
+    console.log('onFilterChange', event.target.id, event.target.value);
+    this.setState(
+      { filter: event.target.value },
+      () => {
+        this.applyFilters();
+      }
+    );
+  }
+
+  applyFilters() {
+    let filteredResults = [];
+    for (var i = 0; i < this.state.results.length; i++) {
+      let r = this.state.results[i];
+
+      let row = {
+        id: r.info.gotchiId,
+        name: r.info.name,
+        kills: r.kills,
+        owner: this.state.idToOwner[r.info.gotchiId],
+      };
+
+      // console.log('apply filters: ' + gotchi);
+      if (this.filterGotchi(row)) {
+        filteredResults.push(r);
+      }
+    };
+    this.setState({ filteredResults });
   }
 
   filterGotchi(aavegotchi) {
@@ -67,11 +95,20 @@ class TDXPLeaderboard extends Component {
   }
 
   async componentDidMount() {
-    readScores({ leaderboard: 'xpEvent' })
-      .then((results) => {
-        console.log('results', results);
-        this.setState({ results, loading: false });
+    retrieveAllGotchis()
+      .then((gotchis) => {
+        let idToOwner = { };
+        for (var i = 0; i < gotchis.length; i++) {
+          idToOwner[gotchis[i].id] = gotchis[i].owner.id;
+        }
+        // console.log(idToOwner);
+        readScores({ leaderboard: 'xpEvent' })
+          .then((results) => {
+            // console.log('results', results);
+            this.setState({ results, filteredResults: results, loading: false, idToOwner: idToOwner });
+          });
       });
+
   }
 
   renderLeaderboard() {
@@ -93,8 +130,7 @@ class TDXPLeaderboard extends Component {
       { field: 'xp', headerName: 'XP', width: 100 },
     ];
 
-
-    if (this.state.results.length > 0) {
+    if (this.state.filteredResults.length > 0) {
       if (this.state.selectedMode == 0) {
         columns.push({ field: 'kills', headerName: 'KILLS', width: 120 });
         columns.push({ field: 'c100Score', headerName: 'C1 SCORE', width: 160 });
@@ -117,18 +153,18 @@ class TDXPLeaderboard extends Component {
         columns.push({ field: 'c1000Rank', headerName: 'C3 RANK', width: 160 });
       }
 
-      let leaders = _.orderBy(this.state.results, ['kills'], ['desc']);
+      let leaders = _.orderBy(this.state.filteredResults, ['kills'], ['desc']);
 
-      let results100 = _.orderBy(_.filter(this.state.results, ['course-100.score', 100]), ['course-100.timeElapsed', 'course-100.gotchisPlaced'], ['asc', 'asc']);
-      let results250 = _.orderBy(_.filter(this.state.results, ['course-250.score', 250]), ['course-250.timeElapsed', 'course-250.gotchisPlaced'], ['asc', 'asc']);
-      let results1000 = _.orderBy(_.filter(this.state.results, ['course-1000.score', 1000]), ['course-1000.timeElapsed', 'course-1000.gotchisPlaced'], ['asc', 'asc']);
+      let results100 = _.orderBy(_.filter(this.state.filteredResults, ['course-100.score', 100]), ['course-100.timeElapsed', 'course-100.gotchisPlaced'], ['asc', 'asc']);
+      let results250 = _.orderBy(_.filter(this.state.filteredResults, ['course-250.score', 250]), ['course-250.timeElapsed', 'course-250.gotchisPlaced'], ['asc', 'asc']);
+      let results1000 = _.orderBy(_.filter(this.state.filteredResults, ['course-1000.score', 1000]), ['course-1000.timeElapsed', 'course-1000.gotchisPlaced'], ['asc', 'asc']);
 
       leaders.map((result, index) => {
         let row = {
           id: result.info.gotchiId,
           name: result.info.name,
           kills: result.kills,
-          owner: result.info.owner,
+          owner: _this.state.idToOwner[result.info.gotchiId],
         };
 
         row.xp = 0;
@@ -176,21 +212,19 @@ class TDXPLeaderboard extends Component {
           }
         }
 
-        if (_this.filterGotchi(row)) {
-          if (this.state.selectedMode == 0) {
+        if (this.state.selectedMode == 0) {
+          rows.push(row);
+        } else if (this.state.selectedMode == 1) {
+          if (result.hasOwnProperty('course-100')) {
             rows.push(row);
-          } else if (this.state.selectedMode == 1) {
-            if (result.hasOwnProperty('course-100')) {
-              rows.push(row);
-            }
-          } else if (this.state.selectedMode == 2) {
-            if (result.hasOwnProperty('course-250')) {
-              rows.push(row);
-            }
-          } else if (this.state.selectedMode == 3) {
-            if (result.hasOwnProperty('course-1000')) {
-              rows.push(row);
-            }
+          }
+        } else if (this.state.selectedMode == 2) {
+          if (result.hasOwnProperty('course-250')) {
+            rows.push(row);
+          }
+        } else if (this.state.selectedMode == 3) {
+          if (result.hasOwnProperty('course-1000')) {
+            rows.push(row);
           }
         }
       });
