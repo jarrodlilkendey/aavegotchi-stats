@@ -155,9 +155,9 @@ class TDXPLeaderboard extends Component {
 
       let leaders = _.orderBy(this.state.filteredResults, ['kills'], ['desc']);
 
-      let results100 = _.orderBy(_.filter(this.state.filteredResults, ['course-100.score', 100]), ['course-100.timeElapsed', 'course-100.gotchisPlaced'], ['asc', 'asc']);
-      let results250 = _.orderBy(_.filter(this.state.filteredResults, ['course-250.score', 250]), ['course-250.timeElapsed', 'course-250.gotchisPlaced'], ['asc', 'asc']);
-      let results1000 = _.orderBy(_.filter(this.state.filteredResults, ['course-1000.score', 1000]), ['course-1000.timeElapsed', 'course-1000.gotchisPlaced'], ['asc', 'asc']);
+      let results100 = _.orderBy(_.filter(this.state.results, ['course-100.score', 100]), ['course-100.timeElapsed', 'course-100.gotchisPlaced'], ['asc', 'asc']);
+      let results250 = _.orderBy(_.filter(this.state.results, ['course-250.score', 250]), ['course-250.timeElapsed', 'course-250.gotchisPlaced'], ['asc', 'asc']);
+      let results1000 = _.orderBy(_.filter(this.state.results, ['course-1000.score', 1000]), ['course-1000.timeElapsed', 'course-1000.gotchisPlaced'], ['asc', 'asc']);
 
       leaders.map((result, index) => {
         let row = {
