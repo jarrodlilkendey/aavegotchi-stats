@@ -77,10 +77,10 @@ export class GotchiSelectScene extends Phaser.Scene {
     });
 
     Phaser.Actions.GridAlign(this.gotchiSelectionGroup.getChildren(), {
-        width: 15,
+        width: 20,
         height: 10,
-        cellWidth: 64,
-        cellHeight: 64,
+        cellWidth: 48,
+        cellHeight: 48,
         x: 64,
         y: 240
     });

@@ -473,7 +473,7 @@ export const retrieveUserAssets = async (address) => {
       query: `{
         users(where: { id: "${address.toLowerCase()}" }) {
           id
-          gotchisOwned {
+          gotchisOwned(first: 1000) {
             id
             name
             numericTraits
