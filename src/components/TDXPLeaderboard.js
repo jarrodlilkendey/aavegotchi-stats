@@ -3,7 +3,9 @@ import React, { Component } from 'react';
 import { DataGrid } from '@material-ui/data-grid';
 
 import { retrieveAllGotchis } from '../util/Graph';
-import { readScores } from '../tdgame/leaderboard/LeaderboardUtil';
+// import { readScores } from '../tdgame/leaderboard/LeaderboardUtil';
+
+import finalXPEventScores from '../data/scores/xpEventFinal.json'
 
 import Loading from './Loading';
 
@@ -101,12 +103,15 @@ class TDXPLeaderboard extends Component {
         for (var i = 0; i < gotchis.length; i++) {
           idToOwner[gotchis[i].id] = gotchis[i].owner.id;
         }
-        // console.log(idToOwner);
-        readScores({ leaderboard: 'xpEvent' })
-          .then((results) => {
-            // console.log('results', results);
-            this.setState({ results, filteredResults: results, loading: false, idToOwner: idToOwner });
-          });
+
+        let results = finalXPEventScores;
+        this.setState({ results, filteredResults: results, loading: false, idToOwner: idToOwner });
+
+        // // console.log(idToOwner);
+        // readScores({ leaderboard: 'xpEvent' })
+        //   .then((results) => {
+        //     // console.log('results', results);
+        //   });
       });
 
   }
@@ -173,6 +178,7 @@ class TDXPLeaderboard extends Component {
           if (result.hasOwnProperty('course-250') && result['course-250'].score == 250 && result.hasOwnProperty('course-1000') && result['course-1000'].score == 1000) {
             row.xp = 10;
             let rank1000 = _.findIndex(results1000, ['info.gotchiId', row.id]) + 1;
+            // todo update 500 number based on potential ties
             if (rank1000 <= 500) {
               row.xp = 15;
             }
@@ -259,6 +265,7 @@ class TDXPLeaderboard extends Component {
           <li>Level 3 (15XP Total): Level 1 & 2 Requirements & Top 500 Rank in Course 3</li>
         </ul>
         <p>Course ranks are sorted by score, time, then by the lowest amount of gotchis placed. <a href='/td'>Play Gotchi Tower Defense</a></p>
+        <p><i>The Gotchi Tower Defense XP event has concluded, the data shown below is from the leaderboard snapshot at the conclusion of the event.</i></p>
         <h2>{this.state.modes[this.state.selectedMode]}</h2>
         <div style={{margin: "10px"}}>
           <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(0)}>XP Overview</button> <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(1)}>Course 1</button> <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(2)}>Course 2</button> <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(3)}>Course 3</button>
