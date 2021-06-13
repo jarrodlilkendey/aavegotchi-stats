@@ -65,16 +65,16 @@ export class GameOverScene extends Phaser.Scene {
       writeGotchiKills({ gotchiKills: this.gotchiKills });
     } else {
       if (this.isScoreValid(this.gotchiCount, this.score, this.timeElapsed)) {
-        writeXPEventResult({
-          course: `course-${this.gotchiCount}`,
-          score: this.score,
-          user: window.ethereum.selectedAddress,
-          gotchisPlaced: this.gotchisPlaced,
-          timeElapsed: this.timeElapsed,
-          gotchiKills: this.gotchiKills
-        }).then((res) => {
-          console.log('writeXPEventResult', res);
-        });
+        // writeXPEventResult({
+        //   course: `course-${this.gotchiCount}`,
+        //   score: this.score,
+        //   user: window.ethereum.selectedAddress,
+        //   gotchisPlaced: this.gotchisPlaced,
+        //   timeElapsed: this.timeElapsed,
+        //   gotchiKills: this.gotchiKills
+        // }).then((res) => {
+        //   console.log('writeXPEventResult', res);
+        // });
       } else {
         alert(`Score is invalid ${this.timeElapsed} on course ${this.gotchiCount}`)
       }
