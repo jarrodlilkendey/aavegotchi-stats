@@ -184,6 +184,7 @@ class GotchiTowerDefence extends Component {
         <h1>Gotchi Tower Defense</h1>
         <p>Gotchi Tower Defense was built by <a href='https://aavegotchistats.com'>jarrod</a> featuring the track "I Wanna Be The Ape" by <a href='https://soundcloud.com/jowijames/sets/aavegotchicom-minigame-chiptunes'>jo0wz</a></p>
         <p><a href={`${leaderboardLink}`}>Leaderboards</a> <a href="tdhelp">How to Play</a> <a href="https://docs.google.com/forms/d/e/1FAIpQLSe8fPhWSv2c8kUNFqG-3owMI3KK33X7_OM6CxU_dNEIHt8d_w/viewform?usp=sf_link">Feedback</a></p>
+        <p><i>The Gotchi Tower Defense XP event has concluded, check the leaderboard for the scores at the end of the event.</i></p>
         {this.state.loading &&
           <Loading message="Loading Gotchi Tower Defense..." />
         }
