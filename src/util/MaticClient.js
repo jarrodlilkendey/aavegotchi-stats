@@ -7,6 +7,7 @@ export const connectToMatic = () => {
   const apiKeys = JSON.parse(process.env.REACT_APP_RPC_CONFIG);
   const parentProvider = `https://mainnet.infura.io/v3/${apiKeys.infura}`;
   const maticProvider = `https://rpc-mainnet.maticvigil.com/v1/${apiKeys.maticvigil}`;
+  // const maticProvider = `https://polygon-mainnet.infura.io/v3/${apiKeys.infura}`;
 
   // const maticProvider = new WalletConnectProvider({
   //   infuraId: `${apiKeys.infura}`,

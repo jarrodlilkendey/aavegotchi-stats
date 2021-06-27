@@ -151,6 +151,7 @@ export const scoreWearable = (wearable, aavegotchi) => {
 export const wearablePoints = (wearable, aavegotchi) => {
   let traitsEnd = [...aavegotchi.numericTraits];
   for (var i = 0; i < 4; i++) {
+    // console.log('wearablePoints', i, wearable, aavegotchi);
     traitsEnd[i] = parseInt(traitsEnd[i]) + parseInt(wearable.traitModifiers[i]);
   }
 
@@ -207,7 +208,7 @@ export const wearableBySlot = (wearables, aavegotchi, slot) => {
   const slots = ['Body', 'Face', 'Eyes', 'Head', 'Left Hand', 'Right Hand', 'Pet', 'Background'];
   const slotIndex = _.indexOf(slots, slot);
   if (slotIndex != -1) {
-    if (aavegotchi.equippedWearables[slotIndex] === '0') {
+    if (aavegotchi.equippedWearables[slotIndex] === 0) {
       return null;
     }
     return wearables[aavegotchi.equippedWearables[slotIndex]];
@@ -216,15 +217,15 @@ export const wearableBySlot = (wearables, aavegotchi, slot) => {
       let leftHand = aavegotchi.equippedWearables[4];
       let rightHand = aavegotchi.equippedWearables[5];
 
-      if (leftHand === '0' && rightHand === '0') {
+      if (leftHand === 0 && rightHand === 0) {
         return null;
       }
 
-      if (leftHand === '0') {
+      if (leftHand === 0) {
         return wearables[rightHand];
       }
 
-      if (rightHand === '0') {
+      if (rightHand === 0) {
         return wearables[leftHand];
       }
 

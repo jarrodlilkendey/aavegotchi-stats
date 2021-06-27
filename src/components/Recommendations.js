@@ -7,7 +7,7 @@ import contract from '../config/aavegotchiContract.json';
 
 import { connectToMatic } from '../util/MaticClient';
 import { scoreWearable, wearablePositionLabel, wearableTraitModifiers, wearableBRSModifierLabel, wearableBySlot, formatGhst } from '../util/AavegotchiMath';
-import { retrieveGraphWearableListings } from '../util/Graph';
+import { retrieveGraphWearableListings, retrieveUserAssets } from '../util/Graph';
 
 import Loading from './Loading';
 
@@ -17,7 +17,6 @@ import wearableItemTypes from '../data/wearables/wearables.json';
 import { RateLimit } from 'async-sema';
 
 const _ = require('lodash');
-const axios = require('axios');
 
 // enter your aavegotchi number
 
@@ -113,20 +112,25 @@ class Recommendations extends Component {
 
     _this.setState({ loading: true });
 
-    this.state.aavegotchiContract.methods.allAavegotchisOfOwner(this.state.address).call().then(function (myAavegotchis) {
-      _this.setState({ myAavegotchis: myAavegotchis });
+    console.log('retrieveAavegotchis', this.state.address);
 
-      _this.retrieveGotchiSvgs(myAavegotchis);
+    // this.state.aavegotchiContract.methods.allAavegotchisOfOwner(this.state.address).call().then(function (myAavegotchis) {
+    retrieveUserAssets(this.state.address).then(function (myAavegotchis) {
+      console.log(myAavegotchis.gotchisOwned);
+      _this.setState({ myAavegotchis: myAavegotchis.gotchisOwned });
+
+      _this.retrieveGotchiSvgs(myAavegotchis.gotchisOwned);
     });
   }
 
   async retrieveGotchiSvgs(myAavegotchis) {
     const _this = this;
 
-    const limit = RateLimit(15);
+    const limit = RateLimit(30);
 
     for (let i = 0; i < myAavegotchis.length; i++) {
-      let tokenId = myAavegotchis[i].tokenId;
+      let tokenId = myAavegotchis[i].id;
+      console.log('retrieveGotchiSvgs', tokenId);
       await limit();
       _this.fetchFromRPC(tokenId);
     }
@@ -154,7 +158,7 @@ class Recommendations extends Component {
 
     this.setState({ selectedAavegotchiId : aavegotchiId });
 
-    const aavegotchi = _.find(this.state.myAavegotchis, ['tokenId', aavegotchiId]);
+    const aavegotchi = _.find(this.state.myAavegotchis, ['id', aavegotchiId]);
     Object.keys(this.state.wearableItemTypes).map(function(key, index){
       const wearable = _this.state.wearableItemTypes[key];
       const score = scoreWearable(wearable, aavegotchi);
@@ -187,12 +191,13 @@ class Recommendations extends Component {
   renderRecommendations() {
     const _this = this;
     if (this.state.selectedAavegotchiId && this.state.wearableItemTypes && this.state.wearableListings.length > 0) {
-      const aavegotchi = _.find(_this.state.myAavegotchis, ['tokenId', _this.state.selectedAavegotchiId]);
+      const aavegotchi = _.find(_this.state.myAavegotchis, ['id', _this.state.selectedAavegotchiId]);
 
       let rows = [];
 
       Object.keys(_this.state.wearableItemTypes).map(function(key, index){
         const wearable = _this.state.wearableItemTypes[key];
+        console.log('wearable', wearable);
         const score = _this.state.wearableItemScores[key];
         const slot = wearablePositionLabel(wearable);
         const comparisonWearable = wearableBySlot(_this.state.wearableItemTypes, aavegotchi, slot);
@@ -296,11 +301,11 @@ class Recommendations extends Component {
 
   renderEquippedWearables() {
     const _this = this;
-    const aavegotchi = _.find(this.state.myAavegotchis, ['tokenId', this.state.selectedAavegotchiId]);
+    const aavegotchi = _.find(this.state.myAavegotchis, ['id', this.state.selectedAavegotchiId]);
     const slots = ['Body', 'Face', 'Eyes', 'Head', 'Left Hand', 'Right Hand', 'Pet', 'Background'];
 
     let equippedWearables = slots.map(function(value, index){
-      if (aavegotchi.equippedWearables[index] !== "0") {
+      if (aavegotchi.equippedWearables[index] !== 0) {
         const wearable = _this.state.wearableItemTypes[aavegotchi.equippedWearables[index]];
         return(
           <li key={`cmp${wearable.name}${index}`}>{value}: {wearable.name} ({wearableTraitModifiers(wearable.traitModifiers)} {wearableBRSModifierLabel(wearable.maxQuantity)})</li>
@@ -317,11 +322,11 @@ class Recommendations extends Component {
 
   renderSelectedAavegotchi() {
     if (this.state.selectedAavegotchiId) {
-      const aavegotchi = _.find(this.state.myAavegotchis, ['tokenId', this.state.selectedAavegotchiId]);
+      const aavegotchi = _.find(this.state.myAavegotchis, ['id', this.state.selectedAavegotchiId]);
       return(
         <div>
           <h2>Selected Aavegotchi</h2>
-          <h3>{aavegotchi.name} ({aavegotchi.tokenId})</h3>
+          <h3>{aavegotchi.name} ({aavegotchi.id})</h3>
           <p>Your selected Aavegotchi</p>
           <div className="container">
             <div className="row">
@@ -354,7 +359,7 @@ class Recommendations extends Component {
 
     if (this.state.mySvgObjects && Object.keys(this.state.mySvgObjects).length > 0) {
       let myAavegotchiCards = Object.keys(this.state.mySvgObjects).map(function(key, index){
-        let aavegotchi =_.find(this.state.myAavegotchis, ['tokenId', key]);
+        let aavegotchi =_.find(this.state.myAavegotchis, ['id', key]);
         let svgElement = {__html: this.state.mySvgObjects[key]};
         return (
           <div className="col d-flex align-items-stretch" key={`svgcard${key}`}>
@@ -362,9 +367,9 @@ class Recommendations extends Component {
               <div className="card-img-top" dangerouslySetInnerHTML={svgElement}>
               </div>
               <div className="card-body">
-                <h5 className="card-title">{aavegotchi.name} ({aavegotchi.tokenId})</h5>
+                <h5 className="card-title">{aavegotchi.name} ({aavegotchi.id})</h5>
                 <p className="card-text">Rarity: {aavegotchi.modifiedRarityScore} ({aavegotchi.baseRarityScore})</p>
-                <button className="btn btn-primary btn-sm" onClick={() => this.selectAavegotchi(aavegotchi.tokenId)}>Recommendations</button>
+                <button className="btn btn-primary btn-sm" onClick={() => this.selectAavegotchi(aavegotchi.id)}>Recommendations</button>
               </div>
             </div>
           </div>

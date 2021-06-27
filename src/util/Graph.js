@@ -527,3 +527,51 @@ export const retrieveTicketListings = async () => {
 
   return ticketListings.data.data.erc1155Listings;
 };
+
+const soldTicketListingsGraphQuery = (skip) => {
+  let query = `{
+    erc1155Purchases(
+      first: 1000,
+      skip: ${skip},
+      where: {
+       category: 3,
+       quantity_gt: 0
+      },
+      orderBy:timeLastPurchased,
+      orderDirection:desc
+    ) {
+      id
+      priceInWei
+      erc1155TypeId
+      timeLastPurchased
+      quantity
+      seller
+      buyer
+      listingID
+    }
+  }`;
+
+  return query;
+}
+
+export const retrieveSoldTicketListings = async () => {
+  let listings = [];
+  let moreListings = true;
+
+  for (let i = 0; i < 5 && moreListings; i++) {
+    const tickets = await axios.post(
+      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      {
+        query: soldTicketListingsGraphQuery(i * 1000)
+      }
+    );
+
+    if (tickets.data.data.erc1155Purchases.length > 0) {
+      listings.push(...tickets.data.data.erc1155Purchases);
+    } else {
+      moreListings = false;
+    }
+  }
+
+  return listings;
+};

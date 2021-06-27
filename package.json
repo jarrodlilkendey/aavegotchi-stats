@@ -26,6 +26,8 @@
     "async-sema": "^3.1.0",
     "axios": "^0.21.1",
     "cross-blob": "^2.0.0",
+    "csv-parser": "^3.0.0",
+    "csv-writer": "^1.6.0",
     "date-fns": "^2.20.1",
     "dotenv": "^10.0.0",
     "ethers": "^5.0.32",
