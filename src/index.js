@@ -19,6 +19,7 @@ import GotchiTowerDefence from './tdgame/GotchiTowerDefence';
 import TDLeaderboard from './components/TDLeaderboard';
 import TDXPLeaderboard from './components/TDXPLeaderboard';
 import GotchiTDRules from './components/GotchiTDRules';
+import TicketSales from './components/TicketSales';
 
 // import Timeline from './components/Timeline';
 // import AavegotchiNetworth from './components/AavegotchiNetworth';
@@ -48,6 +49,7 @@ const navBarPages = [
   { path: '/portals', name: 'Portal Stats' },
   { path: '/wearablesales', name: 'Wearable Sales' },
   { path: '/gotchisales', name: 'Aavegotchi Sales' },
+  { path: '/ticketsales', name: 'Ticket Sales' },
   { path: '/td', name: 'Tower Defense' },
   // { path: '/timeline', name: 'Timeline' },
   // { path: '/networth', name: 'Networth' },
@@ -87,6 +89,10 @@ ReactDOM.render(
 
           <Route path="/gotchisales">
             <AavegotchiSales title="Aavegotchi Sales" />
+          </Route>
+
+          <Route path="/ticketsales">
+            <TicketSales title="Ticket Sales" />
           </Route>
 
           <Route path="/voting">
