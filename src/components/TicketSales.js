@@ -316,7 +316,7 @@ class TicketSales extends Component {
         {
           field: 'listingId',
           headerName: 'Listing',
-          width: 100,
+          width: 120,
           renderCell: (params: GridCellParams) => (
             <a href={`https://aavegotchi.com/baazaar/erc1155/${params.value}`} target="_blank">
               {params.value}
@@ -325,11 +325,11 @@ class TicketSales extends Component {
         },
         { field: 'rarity', headerName: 'Rarity', width: 120 },
         { field: 'date', headerName: 'Date', width: 120 },
-        { field: 'buyer', headerName: 'Buyer', width: 300 },
-        { field: 'seller', headerName: 'Seller', width: 300 },
-        { field: 'quantity', headerName: 'Qty', width: 80 },
-        { field: 'price', headerName: 'Sale Price', width: 120 },
-        { field: 'totalPrice', headerName: 'Total Price', width: 130 },
+        { field: 'buyer', headerName: 'Buyer', width: 260 },
+        { field: 'seller', headerName: 'Seller', width: 260 },
+        { field: 'quantity', headerName: 'Qty', width: 120 },
+        { field: 'price', headerName: 'Sale Price', width: 150 },
+        { field: 'totalPrice', headerName: 'Total Price', width: 150 },
       ];
 
       let rows = [];
@@ -366,14 +366,14 @@ class TicketSales extends Component {
     if (this.state.filteredTicketSales.length > 0) {
       const buyersColumns = [
         { field: 'id', headerName: 'Buyer', width: 370 },
-        { field: 'spend', headerName: 'Spend', width: 100 },
-        { field: 'tickets', headerName: '# Tickets', width: 140 },
+        { field: 'spend', headerName: 'Spend', width: 120 },
+        { field: 'tickets', headerName: '# Tickets', width: 120 },
       ];
 
       const sellersColumns = [
         { field: 'id', headerName: 'Seller', width: 370 },
-        { field: 'spend', headerName: 'Spend', width: 100 },
-        { field: 'tickets', headerName: '# Tickets', width: 140 },
+        { field: 'spend', headerName: 'Spend', width: 120 },
+        { field: 'tickets', headerName: '# Tickets', width: 120 },
       ];
 
       let buyersRows = [];
@@ -536,7 +536,7 @@ class TicketSales extends Component {
       <div>
         <h1>Ticket Sales</h1>
         {this.state.loading &&
-          <Loading message="Loading Wearable Sales from TheGraph..." />
+          <Loading message="Loading Ticket Sales from TheGraph..." />
         }
         {this.renderFilters()}
         {this.renderSalesAvgPriceChart()}
