@@ -53,7 +53,7 @@ const navBarPages = [
   { path: '/td', name: 'Tower Defense' },
   // { path: '/timeline', name: 'Timeline' },
   // { path: '/networth', name: 'Networth' },
-  { path: '/petall', name: 'Pet All' },
+  // { path: '/petall', name: 'Pet All' },
 ];
 
 ReactDOM.render(

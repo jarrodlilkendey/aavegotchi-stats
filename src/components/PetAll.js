@@ -15,32 +15,32 @@ class PetAll extends Component {
   componentDidMount() {
   }
 
-  async petAll() {
-    console.log('petAll');
-    let provider = new Web3(Web3.givenProvider || "ws://localhost:8545");
-    console.log(provider);
-
-    const aavegotchiContract = new provider.eth.Contract(aavegotchiContractAbi, contract.address);
-    console.log(aavegotchiContract);
-
-    let accounts = await window.ethereum.request({
-      method: 'eth_requestAccounts'
-    });
-    console.log(accounts);
-
-    let gotchis = await aavegotchiContract.methods.tokenIdsOfOwner(accounts[0]).call();
-    console.log(gotchis);
-    if (gotchis.length > 0) {
-      let pet = aavegotchiContract.methods.interact(gotchis).send({from: accounts[0]});
-      console.log(pet);
-    }
-  }
+  // async petAll() {
+  //   console.log('petAll');
+  //   let provider = new Web3(Web3.givenProvider || "ws://localhost:8545");
+  //   console.log(provider);
+  //
+  //   const aavegotchiContract = new provider.eth.Contract(aavegotchiContractAbi, contract.address);
+  //   console.log(aavegotchiContract);
+  //
+  //   let accounts = await window.ethereum.request({
+  //     method: 'eth_requestAccounts'
+  //   });
+  //   console.log(accounts);
+  //
+  //   let gotchis = await aavegotchiContract.methods.tokenIdsOfOwner(accounts[0]).call();
+  //   console.log(gotchis);
+  //   if (gotchis.length > 0) {
+  //     let pet = aavegotchiContract.methods.interact(gotchis).send({from: accounts[0]});
+  //     console.log(pet);
+  //   }
+  // }
 
   render() {
     return (
       <div>
         <h1>Pet All</h1>
-        <button onClick={() => this.petAll()}>Pet All</button>
+        <img src='secretpetall.gif' />
       </div>
     );
   }
