@@ -28,7 +28,7 @@ class TicketSales extends Component {
       ticketSales: [],
       filteredTicketSales: [],
       loading: true,
-      ticketRarityLabel: ['Common', 'Uncommon', 'Rare', 'Legendary', 'Mythical', 'Godlike']
+      ticketRarityLabel: ['Common', 'Uncommon', 'Rare', 'Legendary', 'Mythical', 'Godlike', 'Drop']
     };
 
     this.onChangeDebounced = _.debounce(this.onChangeDebounced, 2000);
@@ -201,7 +201,7 @@ class TicketSales extends Component {
 
     this.setState({ salesChartData: data });
 
-    console.log('salesChartDate', data, averageSales);
+    console.log('salesChartData', data, averageSales);
   }
 
   prepareRarityChartData() {
@@ -209,8 +209,8 @@ class TicketSales extends Component {
     let rarityData = [];
     let totalSales = this.state.filteredTicketSales.length;
 
-    let rarities = ['Common', 'Uncommon', 'Rare', 'Legendary', 'Mythical' ,'Godlike'];
-    let colors = ['#8064ff', '#33bacc', '#59bcff', '#ffc36b', '#ff96ff', '#51ffa8'];
+    let rarities = ['Common', 'Uncommon', 'Rare', 'Legendary', 'Mythical' ,'Godlike', 'Drop'];
+    let colors = ['#8064ff', '#33bacc', '#59bcff', '#ffc36b', '#ff96ff', '#51ffa8', '#000'];
     rarities.map(function(r, index) {
       let countRarity = _.filter(_this.state.filteredTicketSales, ['rarity', r]).length;
       if (countRarity > 0) {
@@ -511,6 +511,7 @@ class TicketSales extends Component {
               <option>Legendary</option>
               <option>Mythical</option>
               <option>Godlike</option>
+              <option>Drop</option>
             </select>
           </div>
 
