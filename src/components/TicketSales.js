@@ -449,7 +449,7 @@ class TicketSales extends Component {
         <div className="container">
           <div className="row">
             <div className="col-12">
-              <h2>Wearable Rarity Breakdown</h2>
+              <h2>Ticket Rarity Breakdown</h2>
               <HighchartsReact
                 highcharts={Highcharts}
                 options={rarityOptions}
