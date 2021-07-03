@@ -212,7 +212,7 @@ class TicketSales extends Component {
     let rarities = ['Common', 'Uncommon', 'Rare', 'Legendary', 'Mythical' ,'Godlike', 'Drop'];
     let colors = ['#8064ff', '#33bacc', '#59bcff', '#ffc36b', '#ff96ff', '#51ffa8', '#000'];
     rarities.map(function(r, index) {
-      let countRarity = _.filter(_this.state.filteredTicketSales, ['rarity', r]).length;
+      let countRarity = _.sumBy(_.filter(_this.state.filteredTicketSales, ['rarity', r]), 'quantity');
       if (countRarity > 0) {
         let rarityPercentage = parseFloat(((countRarity/totalSales)*100).toFixed(2));
         rarityData.push({
@@ -237,7 +237,7 @@ class TicketSales extends Component {
 
         series: [{
           data: this.state.salesChartData.totalSales,
-          name: 'Number of Sales',
+          name: 'Number of Tickets Sold',
           type: 'column',
         }, {
           data: this.state.salesChartData.averageSales,
@@ -249,7 +249,7 @@ class TicketSales extends Component {
         yAxis: [
           {
             title: {
-              text: 'Number of Sales',
+              text: 'Number of Tickets Sold',
               style: {
                 color: Highcharts.getOptions().colors[0]
               },
@@ -427,12 +427,12 @@ class TicketSales extends Component {
             cursor: 'pointer',
             dataLabels: {
               enabled: true,
-              format: '<b>{point.name}</b>: {point.x} Sales, {point.percentage:.2f}% of Tickets Sold'
+              format: '<b>{point.name}</b>: {point.x} Tickets Sold ({point.percentage:.2f}%)'
             }
           }
         },
         tooltip: {
-          pointFormat: '{point.x} Sales, {point.percentage:.2f}% of Tickets Sold'
+          pointFormat: '{point.x} Tickets Sold ({point.percentage:.2f}%)'
         },
         credits: {
           enabled: true,
