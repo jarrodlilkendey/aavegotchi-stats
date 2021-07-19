@@ -380,17 +380,33 @@ class TicketSales extends Component {
       let sellersRows = [];
 
       Object.keys(this.state.filteredBuyers).map(function(buyer, index) {
+        let totalBuyerSpend = 0;
+        let totalBuyerTickets = 0;
+
+        _this.state.filteredBuyers[buyer].listings.map((listing) => {
+          totalBuyerSpend += (listing.priceInGhst * listing.quantity);
+          totalBuyerTickets += listing.quantity;
+        });
+
         buyersRows.push({
           id: buyer,
-          spend: parseFloat(_.sumBy(_this.state.filteredBuyers[buyer].listings, 'priceInGhst').toFixed(0)),
-          tickets: _this.state.filteredBuyers[buyer].listings.length
+          spend: parseFloat(totalBuyerSpend.toFixed(0)),
+          tickets: totalBuyerTickets
         });
       });
 
       Object.keys(this.state.filteredSellers).map(function(seller, index) {
+        let totalSellerSpend = 0;
+        let totalSellerTickets = 0;
+
+        _this.state.filteredSellers[seller].listings.map((listing) => {
+          totalSellerSpend += (listing.priceInGhst * listing.quantity);
+          totalSellerTickets += listing.quantity;
+        });
+
         sellersRows.push({
           id: seller,
-          spend: parseFloat(_.sumBy(_this.state.filteredSellers[seller].listings, 'priceInGhst').toFixed(0)),
+          spend: parseFloat(totalSellerSpend.toFixed(0)),
           tickets: _this.state.filteredSellers[seller].listings.length
         });
       });

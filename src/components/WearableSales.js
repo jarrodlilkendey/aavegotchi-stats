@@ -39,6 +39,8 @@ class WearableSales extends Component {
   async componentDidMount() {
     retrieveSoldWearableListings()
       .then((listings) => {
+        console.log('soldlistings', listings);
+        
         let sellers = {};
         let buyers = {};
         let wearableIds = [];
