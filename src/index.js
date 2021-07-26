@@ -20,6 +20,7 @@ import TDLeaderboard from './components/TDLeaderboard';
 import TDXPLeaderboard from './components/TDXPLeaderboard';
 import GotchiTDRules from './components/GotchiTDRules';
 import TicketSales from './components/TicketSales';
+import FloorPrices from './components/FloorPrices';
 
 // import Timeline from './components/Timeline';
 // import AavegotchiNetworth from './components/AavegotchiNetworth';
@@ -43,13 +44,14 @@ console.log('firebase initialize', firebase);
 
 const navBarPages = [
   { path: '/recommendations', name: 'Wearable Recommendations' },
-  { path: '/leaderboards', name: 'Rarity Leaderboards' },
+  // { path: '/leaderboards', name: 'Rarity Leaderboards' },
   { path: '/traits', name: 'Traits Distribution' },
   { path: '/rarity', name: 'Rarity Distribution' },
   { path: '/portals', name: 'Portal Stats' },
   { path: '/wearablesales', name: 'Wearable Sales' },
   { path: '/gotchisales', name: 'Aavegotchi Sales' },
   { path: '/ticketsales', name: 'Ticket Sales' },
+  { path: '/floor', name: 'Floor Prices' },
   { path: '/td', name: 'Tower Defense' },
   // { path: '/timeline', name: 'Timeline' },
   // { path: '/networth', name: 'Networth' },
@@ -117,6 +119,10 @@ ReactDOM.render(
 
           <Route path="/petall">
             <PetAll title="Pet All Aavegotchis" />
+          </Route>
+
+          <Route path="/floor">
+            <FloorPrices title="Aavegotchi Floor Prices" />
           </Route>
 
           <Route path="/">
