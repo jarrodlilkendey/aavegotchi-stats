@@ -41,7 +41,7 @@ class GHSTOnAave extends Component {
           <div>
           <h2>Proposition Power as of Block {this.state.blockNumber}</h2>
             <p>Coderdan's PP: {this.state.pp}</p>
-            <p>We need a total of {this.state.target} proposition power. We are {(this.state.pp/this.state.target).toFixed(4)}% of the way.</p>
+            <p>We need a total of {this.state.target} proposition power. We are {((this.state.pp/this.state.target)*100).toFixed(2)}% of the way.</p>
           </div>
         }
         <h2>Process</h2>
