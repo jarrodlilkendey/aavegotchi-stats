@@ -21,6 +21,7 @@ import TDXPLeaderboard from './components/TDXPLeaderboard';
 import GotchiTDRules from './components/GotchiTDRules';
 import TicketSales from './components/TicketSales';
 import FloorPrices from './components/FloorPrices';
+import GHSTOnAave from './components/GHSTOnAave';
 
 // import Timeline from './components/Timeline';
 // import AavegotchiNetworth from './components/AavegotchiNetworth';
@@ -123,6 +124,10 @@ ReactDOM.render(
 
           <Route path="/floor">
             <FloorPrices title="Aavegotchi Floor Prices" />
+          </Route>
+
+          <Route path="/ghstonaave">
+            <GHSTOnAave title="Get GHST on Aave" />
           </Route>
 
           <Route path="/">
