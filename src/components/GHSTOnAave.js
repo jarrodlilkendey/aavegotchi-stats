@@ -50,9 +50,9 @@ class GHSTOnAave extends Component {
           <li>Obtain AAVE or stkAAVE on your ETH mainnet wallet</li>
           <li>Go to <a href='https://app.aave.com/governance'>https://app.aave.com/governance</a></li>
           <li>Click the "Delegate" button</li>
-          <li>Select the asset to delegate either AAVE or stkAAVE</li>
+          <li>Select the asset to delegate as either AAVE or stkAAVE</li>
           <li>Set the type to "Proposition power"</li>
-          <li>Enter coderdan's address 0xC3c2e1Cf099Bc6e1fA94ce358562BCbD5cc59FE5 <a href='https://twitter.com/aavegotchi/status/1420058870907510790'>[src]</a></li>
+          <li>Enter Coderdan's address 0xC3c2e1Cf099Bc6e1fA94ce358562BCbD5cc59FE5 <a href='https://twitter.com/aavegotchi/status/1420058870907510790'>[src]</a></li>
           <li>Share this on social media with the hashtag #GHSTonAave</li>
         </ol>
       </div>
