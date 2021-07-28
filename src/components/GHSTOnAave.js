@@ -10,6 +10,8 @@ class GHSTOnAave extends Component {
   constructor(props) {
     super(props);
 
+    document.title = this.props.title;
+
     this.state = {
       blockNumber: null,
       pp: null,
