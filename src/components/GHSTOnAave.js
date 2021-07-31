@@ -57,6 +57,9 @@ class GHSTOnAave extends Component {
           <li>Enter Coderdan's address 0xC3c2e1Cf099Bc6e1fA94ce358562BCbD5cc59FE5 <a href='https://twitter.com/aavegotchi/status/1420058870907510790'>[src]</a></li>
           <li>Share this on social media with the hashtag #GHSTonAave</li>
         </ol>
+        <h2>Share it</h2>
+        <p><a href="https://twitter.com/intent/tweet?button_hashtag=GHSTonAave&ref_src=twsrc%5Etfw" class="twitter-hashtag-button" data-size="large" data-text="Let&#39;s get $GHST on Aave" data-url="https://aavegotchistats.com/ghstonaave" data-related="GotchiStats" data-show-count="false">Tweet #GHSTonAave</a></p>
+        <iframe src="https://widget.taggbox.com/66640" style={{width:'100%', height:'400px', overflow:'auto', border:'none' }}></iframe>
       </div>
     );
   }

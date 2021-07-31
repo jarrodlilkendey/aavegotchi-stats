@@ -32,6 +32,7 @@ class NavBar extends Component {
             <a href="https://aavegotchi.com/realm" style={{ padding: '5px' }}>
               <img src='/supreme-commander.png' width='45px' />
             </a>
+            <p><a href="/ghstonaave">#GHSTonAave</a></p>
           </div>
         </div>
     );
