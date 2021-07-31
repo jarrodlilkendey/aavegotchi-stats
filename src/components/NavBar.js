@@ -16,7 +16,7 @@ class NavBar extends Component {
     return (
         <div className="row">
           <div className="col-md-6">
-            <img src='./aavegotchi-stats-banner.png' height='120px' className="img-fluid" />
+            <img src='/aavegotchi-stats-banner.png' height='120px' className="img-fluid" />
           </div>
           <div className="col-md-6" style={{ 'marginTop': '25px'}}>
             <p>Keep in touch with AavegotchiStats on popular social networks</p>
@@ -30,7 +30,7 @@ class NavBar extends Component {
               <FontAwesomeIcon icon={faYoutube} size="2x" color="#E259FD" />
             </a>
             <a href="https://aavegotchi.com/realm" style={{ padding: '5px' }}>
-              <img src='supreme-commander.png' width='45px' />
+              <img src='/supreme-commander.png' width='45px' />
             </a>
           </div>
         </div>
