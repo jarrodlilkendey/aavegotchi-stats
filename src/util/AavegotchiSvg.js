@@ -1,20 +1,8 @@
 import { RateLimit } from 'async-sema';
 
 export const filterSvgBackground = (gotchiSvg) => {
-  let from = gotchiSvg.search('<g class="gotchi-bg">');
-
-  if (from == -1) {
-    // todo fix this to deal with h1 background
-    // gotchiSvg = gotchiSvg.replace('<g class="gotchi-wearable wearable-bg">', '<g class="gotchi-bg">');
-    // from = gotchiSvg.search('<g class="gotchi-bg">');
-    return gotchiSvg;
-  }
-
-  let fromString = '';
-  gotchiSvg.substring(from, gotchiSvg.length);
-  let to = fromString.search('</g>');
-  let newSvg = gotchiSvg.substring(0, from) + fromString.substring(to + 4, gotchiSvg.length);
-  return newSvg;
+  gotchiSvg = gotchiSvg.replace("<style>", "<style>.gotchi-bg,.wearable-bg{display: none}");
+  return gotchiSvg;
 };
 
 export const generateGotchiUrl = (gotchiSvg) => {
