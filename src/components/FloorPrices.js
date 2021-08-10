@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { erc721FloorPrice, erc1155FloorPrice, erc1155FloorPriceById, erc721CheapestMythEyes, erc721CheapestGodlike, erc721CheapestMythical } from '../util/FloorPricesUtil';
+import { erc721FloorPrice, erc1155FloorPrice, erc1155FloorPriceById, erc721CheapestMythEyes, erc721CheapestGodlike, erc721CheapestMythical, cheapestXP, cheapestKIN } from '../util/FloorPricesUtil';
 
 import { ethers } from "ethers";
 
@@ -78,16 +78,22 @@ class FloorPrices extends Component {
 
     const erc1155ConsumableTypes = ['kinship', 'greaterKinship', 'xp', 'greaterXp'];
     const erc1155ConsumableIds = [126, 127, 128, 129];
+    const erc1155ConsumableUnitLabel = ['kinship', 'kinship', 'xp', 'xp'];
+    const erc1155PointsPerUnit = [2, 10, 20, 50];
+
     erc1155ConsumableIds.map((i, index) => {
       erc1155FloorPriceById(2, i)
         .then((listings) => {
           let floor = 0;
           let link = 'https://aavegotchi.com/baazaar';
+          let unit = '';
           if (listings.length > 0) {
             floor = ethers.utils.formatEther(listings[0].priceInWei);
             link = `https://aavegotchi.com/baazaar/erc1155/${listings[0].id}`;
+            let unitPrice = parseInt(floor) / erc1155PointsPerUnit[index];
+            unit = `(${unitPrice} GHST/${erc1155ConsumableUnitLabel[index]})`;
           }
-          _this.setState({ [erc1155ConsumableTypes[index]]: { listings, floor, link  } });
+          _this.setState({ [erc1155ConsumableTypes[index]]: { listings, floor, link, unit  } });
         });
     });
 
@@ -129,6 +135,52 @@ class FloorPrices extends Component {
           }
           _this.setState({ aavegotchiMythical: { listings, floor, link, tokenId  } });
         });
+
+      // portalOptionCheapestMythEyes()
+      //   .then((listings) => {
+      //     console.log(listings);
+      //     // let floor = 0;
+      //     // let link = 'https://aavegotchi.com/baazaar';
+      //     // let tokenId = '';
+      //     // if (listings.length > 0) {
+      //     //   floor = ethers.utils.formatEther(listings[0].priceInWei);
+      //     //   link = `https://aavegotchi.com/baazaar/erc721/${listings[0].id}`;
+      //     //   tokenId = listings[0].gotchi.id;
+      //     // }
+      //     // _this.setState({ mythEyes: { listings, floor, link, tokenId  } });
+      //   });
+
+      cheapestXP()
+        .then((listings) => {
+          console.log('cheapestXP', listings);
+          let floor = 0;
+          let link = 'https://aavegotchi.com/baazaar';
+          let tokenId = 'No Listings';
+          let unit = 0;
+          if (listings.length > 0) {
+            floor = ethers.utils.formatEther(listings[0].priceInWei);
+            link = `https://aavegotchi.com/baazaar/erc721/${listings[0].id}`;
+            tokenId = `#${listings[0].gotchi.id}`;
+            unit = `(${listings[0].ghstPerXp.toFixed(3)} GHST/xp)`;
+          }
+          _this.setState({ aavegotchiXP: { listings, floor, link, tokenId, unit } });
+        });
+
+      cheapestKIN()
+        .then((listings) => {
+          console.log('cheapestKIN', listings);
+          let floor = 0;
+          let link = 'https://aavegotchi.com/baazaar';
+          let tokenId = 'No Listings';
+          let unit = 0;
+          if (listings.length > 0) {
+            floor = ethers.utils.formatEther(listings[0].priceInWei);
+            link = `https://aavegotchi.com/baazaar/erc721/${listings[0].id}`;
+            tokenId = `#${listings[0].gotchi.id}`;
+            unit = `(${listings[0].ghstPerKinship.toFixed(3)} GHST/kinship)`;
+          }
+          _this.setState({ aavegotchiKinship: { listings, floor, link, tokenId, unit } });
+        });
   }
 
 
@@ -138,7 +190,7 @@ class FloorPrices extends Component {
       && this.state.godlikeWearables && this.state.commonTickets && this.state.uncommonTickets && this.state.rareTickets
       && this.state.legendaryTickets && this.state.mythicalTickets && this.state.godlikeTickets && this.state.dropTickets
       && this.state.kinship && this.state.greaterKinship && this.state.xp && this.state.greaterXp && this.state.mythEyes
-     && this.state.aavegotchiGodlike && this.state.aavegotchiMythical) {
+     && this.state.aavegotchiGodlike && this.state.aavegotchiMythical && this.state.aavegotchiXP && this.state.aavegotchiKinship) {
       return(
         <div className="container">
           <h2>Aavegotchi Baazaar Floor Prices</h2>
@@ -161,10 +213,12 @@ class FloorPrices extends Component {
             </div>
             <div className="col">
               <h3>Consumables</h3>
-              <p><img src='/consumables/xp.svg' height='35px' /> XP Potion Floor Price: <a href={this.state.xp.link}>{this.state.xp.floor} GHST</a></p>
-              <p><img src='/consumables/greaterxp.svg' height='35px' /> Greater XP Potion Floor Price: <a href={this.state.greaterXp.link}>{this.state.greaterXp.floor} GHST</a></p>
-              <p><img src='/consumables/kinship.svg' height='35px' /> KINSHIP Potion Floor Price: <a href={this.state.kinship.link}>{this.state.kinship.floor} GHST</a></p>
-              <p><img src='/consumables/greaterkinship.svg' height='35px' /> Greater KINSHIP Potion Floor Price: <a href={this.state.greaterKinship.link}>{this.state.greaterKinship.floor} GHST</a></p>
+              <p><img src='/consumables/xp.svg' height='35px' /> XP Potion Floor Price: <a href={this.state.xp.link}>{this.state.xp.floor} GHST {this.state.xp.unit}</a></p>
+              <p><img src='/consumables/greaterxp.svg' height='35px' /> Greater XP Potion Floor Price: <a href={this.state.greaterXp.link}>{this.state.greaterXp.floor} GHST {this.state.greaterXp.unit}</a></p>
+              <p><img src='/portals/aavegotchi.png' height='35px' /> Cheapest Aavegotchi by XP: <a href={this.state.aavegotchiXP.link}>{this.state.aavegotchiXP.floor} GHST {this.state.aavegotchiXP.unit}</a> ({this.state.aavegotchiXP.tokenId})</p>
+              <p><img src='/consumables/kinship.svg' height='35px' /> KINSHIP Potion Floor Price: <a href={this.state.kinship.link}>{this.state.kinship.floor} GHST {this.state.kinship.unit}</a></p>
+              <p><img src='/consumables/greaterkinship.svg' height='35px' /> Greater KINSHIP Potion Floor Price: <a href={this.state.greaterKinship.link}>{this.state.greaterKinship.floor} GHST {this.state.greaterKinship.unit}</a></p>
+              <p><img src='/portals/aavegotchi.png' height='35px' /> Cheapest Aavegotchi by KINSHIP: <a href={this.state.aavegotchiKinship.link}>{this.state.aavegotchiKinship.floor} GHST {this.state.aavegotchiKinship.unit}</a> ({this.state.aavegotchiKinship.tokenId})</p>
               <h3>Tickets</h3>
               <p><img src='/tickets/godlike.png' height='30px' /> Godlike Ticket Floor Price: <a href={this.state.godlikeTickets.link}>{this.state.godlikeTickets.floor} GHST ({this.state.godlikeTickets.perFren} GHST/fren)</a></p>
               <p><img src='/tickets/drop.png' height='30px' /> Drop Ticket Floor Price: <a href={this.state.dropTickets.link}>{this.state.dropTickets.floor} GHST ({this.state.dropTickets.perFren} GHST/fren)</a></p>

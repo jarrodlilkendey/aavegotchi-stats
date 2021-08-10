@@ -1,3 +1,5 @@
+import { ethers } from "ethers";
+
 const axios = require('axios');
 const _ = require('lodash');
 
@@ -229,4 +231,136 @@ export const erc721CheapestMythical = async () => {
   });
 
   return aavegotchiMythicals;
+};
+
+// export const portalOptionCheapestMythEyes = async () => {
+//   let query = `{
+//     erc721Listings(
+//       first: 1000,
+//       orderBy: priceInWei,
+//       orderDirection: asc,
+//       where:{
+//         category: 2, cancelled: false, timePurchased: 0
+//       }) {
+//       id
+//       priceInWei
+//     	portal {
+//         options{
+//           id
+//           numericTraits
+//           baseRarityScore
+//         }
+//       }
+//     }
+//   }`;
+//
+//   const result = await axios.post(
+//     'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+//     {
+//       query: query
+//     }
+//   );
+//
+//   console.log(result.data.data.erc721Listings.length);
+//
+//   let mythEyes = [];
+//   result.data.data.erc721Listings.map((listing) => {
+//     listing.portal.options.map((option) => {
+//       // let eyeShape = option.numericTraits[4];
+//       // let eyeColor = option.numericTraits[5];
+//       // if ((eyeShape <= 1 || eyeShape >= 98) && (eyeColor <= 1 || eyeColor >= 98)) {
+//       //   mythEyes.push(listing);
+//       //   console.log('push', listing);
+//       // }
+//       if (option.baseRarityScore > 530) {
+//          mythEyes.push(listing);
+//       }
+//     });
+//   });
+//
+//   return mythEyes;
+// };
+
+export const cheapestXP = async () => {
+  let query = `{
+    erc721Listings(
+      first: 1000,
+      orderBy: priceInWei,
+      orderDirection: asc,
+      where:{
+        category: 3, cancelled: false, timePurchased: 0
+      }) {
+      id
+      gotchi {
+        id
+        experience
+      }
+      priceInWei
+      equippedWearables
+    }
+  }`;
+
+  const result = await axios.post(
+    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    {
+      query: query
+    }
+  );
+
+  let aavegotchiListings = [];
+
+  result.data.data.erc721Listings.map((listing) => {
+    let xp = parseInt(listing.gotchi.experience);
+    if (xp > 0) {
+      let ghst = parseInt(ethers.utils.formatEther(listing.priceInWei));
+      let ghstPerXp = ghst / xp;
+      aavegotchiListings.push({...listing, ghstPerXp, ghst })
+    }
+  });
+
+  aavegotchiListings = _.orderBy(aavegotchiListings, ['ghstPerXp', 'asc']);
+
+  return aavegotchiListings;
+};
+
+export const cheapestKIN = async () => {
+  let query = `{
+    erc721Listings(
+      first: 1000,
+      orderBy: priceInWei,
+      orderDirection: asc,
+      where:{
+        category: 3, cancelled: false, timePurchased: 0
+      }) {
+      id
+      gotchi {
+        id
+        kinship
+      }
+      priceInWei
+      equippedWearables
+    }
+  }`;
+
+  const result = await axios.post(
+    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    {
+      query: query
+    }
+  );
+
+  let aavegotchiListings = [];
+
+  result.data.data.erc721Listings.map((listing) => {
+    let kinship = parseInt(listing.gotchi.kinship);
+    if (kinship > 0) {
+      let ghst = parseInt(ethers.utils.formatEther(listing.priceInWei));
+      let ghstPerKinship = ghst / kinship;
+      aavegotchiListings.push({...listing, ghstPerKinship, ghst })
+    }
+  });
+
+  aavegotchiListings = _.orderBy(aavegotchiListings, ['ghstPerKinship', 'asc']);
+
+  return aavegotchiListings;
 };
