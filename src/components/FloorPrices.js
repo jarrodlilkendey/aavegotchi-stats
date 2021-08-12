@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { erc721FloorPrice, erc1155FloorPrice, erc1155FloorPriceById, erc721CheapestMythEyes, erc721CheapestGodlike, erc721CheapestMythical, cheapestXP, cheapestKIN } from '../util/FloorPricesUtil';
+import { erc721FloorPrice, erc1155FloorPrice, erc1155FloorPriceById, erc721CheapestMythEyes, erc721CheapestGodlike, erc721CheapestMythical, erc721CheapestLegendary, cheapestXP, cheapestKIN } from '../util/FloorPricesUtil';
 
 import { ethers } from "ethers";
 
@@ -136,6 +136,19 @@ class FloorPrices extends Component {
           _this.setState({ aavegotchiMythical: { listings, floor, link, tokenId  } });
         });
 
+      erc721CheapestLegendary()
+        .then((listings) => {
+          let floor = 0;
+          let link = 'https://aavegotchi.com/baazaar';
+          let tokenId = 'No Listings';
+          if (listings.length > 0) {
+            floor = ethers.utils.formatEther(listings[0].priceInWei);
+            link = `https://aavegotchi.com/baazaar/erc721/${listings[0].id}`;
+            tokenId = `#${listings[0].gotchi.id}`;
+          }
+          _this.setState({ aavegotchiLegendary: { listings, floor, link, tokenId  } });
+        });
+
       // portalOptionCheapestMythEyes()
       //   .then((listings) => {
       //     console.log(listings);
@@ -190,7 +203,7 @@ class FloorPrices extends Component {
       && this.state.godlikeWearables && this.state.commonTickets && this.state.uncommonTickets && this.state.rareTickets
       && this.state.legendaryTickets && this.state.mythicalTickets && this.state.godlikeTickets && this.state.dropTickets
       && this.state.kinship && this.state.greaterKinship && this.state.xp && this.state.greaterXp && this.state.mythEyes
-     && this.state.aavegotchiGodlike && this.state.aavegotchiMythical && this.state.aavegotchiXP && this.state.aavegotchiKinship) {
+      && this.state.aavegotchiGodlike && this.state.aavegotchiMythical && this.state.aavegotchiLegendary && this.state.aavegotchiXP && this.state.aavegotchiKinship) {
       return(
         <div className="container">
           <h2>Aavegotchi Baazaar Floor Prices</h2>
@@ -203,6 +216,7 @@ class FloorPrices extends Component {
               <p><img src='/portals/aavegotchi.png' height='35px' /> Myth Eyes Aavegotchi Floor Price: <a href={this.state.mythEyes.link}>{this.state.mythEyes.floor} GHST</a> (#{this.state.mythEyes.tokenId})</p>
               <p><img src='/portals/aavegotchi.png' height='35px' /> Aavegotchi with Godlike Floor Price: <a href={this.state.aavegotchiGodlike.link}>{this.state.aavegotchiGodlike.floor} GHST</a> ({this.state.aavegotchiGodlike.tokenId})</p>
               <p><img src='/portals/aavegotchi.png' height='35px' /> Aavegotchi with Mythical Floor Price: <a href={this.state.aavegotchiMythical.link}>{this.state.aavegotchiMythical.floor} GHST</a> ({this.state.aavegotchiMythical.tokenId})</p>
+              <p><img src='/portals/aavegotchi.png' height='35px' /> Aavegotchi with Legendary Floor Price: <a href={this.state.aavegotchiLegendary.link}>{this.state.aavegotchiLegendary.floor} GHST</a> ({this.state.aavegotchiLegendary.tokenId})</p>
               <h3>Wearables</h3>
               <p><img src='/tickets/godlike.png' height='30px' /> Godlike Wearable Floor Price: <a href={this.state.godlikeWearables.link}>{this.state.godlikeWearables.floor} GHST</a> ({this.state.godlikeWearables.name})</p>
               <p><img src='/tickets/mythical.png' height='30px' /> Mythical Wearable Floor Price: <a href={this.state.mythicalWearables.link}>{this.state.mythicalWearables.floor} GHST</a> ({this.state.mythicalWearables.name})</p>
