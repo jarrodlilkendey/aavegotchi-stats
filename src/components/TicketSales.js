@@ -407,7 +407,7 @@ class TicketSales extends Component {
         sellersRows.push({
           id: seller,
           spend: parseFloat(totalSellerSpend.toFixed(0)),
-          tickets: _this.state.filteredSellers[seller].listings.length
+          tickets: totalSellerTickets
         });
       });
 
