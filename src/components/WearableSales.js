@@ -40,7 +40,7 @@ class WearableSales extends Component {
     retrieveSoldWearableListings()
       .then((listings) => {
         console.log('soldlistings', listings);
-        
+
         let sellers = {};
         let buyers = {};
         let wearableIds = [];
@@ -423,18 +423,34 @@ class WearableSales extends Component {
       let sellersRows = [];
 
       Object.keys(this.state.filteredBuyers).map(function(buyer, index) {
+        let totalBuyerSpend = 0;
+        let totalBuyerWearables = 0;
+
+        _this.state.filteredBuyers[buyer].listings.map((listing) => {
+          totalBuyerSpend += (listing.priceInGhst * listing.quantity);
+          totalBuyerWearables += listing.quantity;
+        });
+
         buyersRows.push({
           id: buyer,
-          spend: parseFloat(_.sumBy(_this.state.filteredBuyers[buyer].listings, 'priceInGhst').toFixed(0)),
-          wearables: _this.state.filteredBuyers[buyer].listings.length
+          spend: parseFloat(totalBuyerSpend.toFixed(0)),
+          wearables: totalBuyerWearables
         });
       });
 
       Object.keys(this.state.filteredSellers).map(function(seller, index) {
+        let totalSellerSpend = 0;
+        let totalSellerWearables = 0;
+
+        _this.state.filteredSellers[seller].listings.map((listing) => {
+          totalSellerSpend += (listing.priceInGhst * listing.quantity);
+          totalSellerWearables += listing.quantity;
+        });
+
         sellersRows.push({
           id: seller,
-          spend: parseFloat(_.sumBy(_this.state.filteredSellers[seller].listings, 'priceInGhst').toFixed(0)),
-          wearables: _this.state.filteredSellers[seller].listings.length
+          spend: parseFloat(totalSellerSpend.toFixed(0)),
+          wearables: totalSellerWearables
         });
       });
 
