@@ -22,6 +22,10 @@ import GotchiTDRules from './components/GotchiTDRules';
 import TicketSales from './components/TicketSales';
 import FloorPrices from './components/FloorPrices';
 import GHSTOnAave from './components/GHSTOnAave';
+import WearableDetails from './components/WearableDetails';
+import WearablesList from './components/WearablesList';
+// import Frens from './components/Frens';
+import Tools from './components/Tools';
 
 // import Timeline from './components/Timeline';
 // import AavegotchiNetworth from './components/AavegotchiNetworth';
@@ -54,6 +58,7 @@ const navBarPages = [
   { path: '/ticketsales', name: 'Ticket Sales' },
   { path: '/floor', name: 'Floor Prices' },
   { path: '/td', name: 'Tower Defense' },
+  { path: '/tools', name: 'Recommended Tools' },
   // { path: '/timeline', name: 'Timeline' },
   // { path: '/networth', name: 'Networth' },
   // { path: '/petall', name: 'Pet All' },
@@ -130,6 +135,19 @@ ReactDOM.render(
             <GHSTOnAave title="Get GHST on Aave" />
           </Route>
 
+
+          <Route path="/wearables/:id">
+            <WearableDetails />
+          </Route>
+
+          <Route exact path="/wearables">
+            <WearablesList title='Aavegotchi Wearables' />
+          </Route>
+
+          <Route path="/tools">
+            <Tools title="Recommended Tools" />
+          </Route>
+
           <Route path="/">
             <Home title="What is AavegotchiStats?" />
           </Route>
@@ -141,6 +159,10 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
+
+// <Route path="/frens">
+//   <Frens />
+// </Route>
 
           //                     <Route path="/timeline">
           //                       <Timeline title="Timeline" />

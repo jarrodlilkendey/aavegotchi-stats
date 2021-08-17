@@ -8,21 +8,31 @@ import DatePicker from 'react-datepicker';
 
 import Loading from './Loading';
 
-import { retrieveSoldWearableListings } from '../util/Graph';
-import { formatGhst, wearableRarityLabel, wearablePositionLabel } from '../util/AavegotchiMath';
+import { retrieveSoldWearableListingsById, erc1155PricesById } from '../util/WearablesUtil';
+import { formatGhst, wearableRarityLabel, wearablePositionLabel, wearableTraitModifiers } from '../util/AavegotchiMath';
+
+import { withRouter } from 'react-router-dom';
 
 import wearableItemTypes from '../data/wearables/wearables.json';
+
+import { ethers } from "ethers";
 
 const _ = require('lodash');
 const moment = require('moment');
 
-class WearableSales extends Component {
+class WearableDetails extends Component {
   constructor(props) {
     super(props);
 
-    document.title = this.props.title;
+    let wearable = wearableItemTypes[this.props.match.params.id];
+
+    document.title = `${wearable.name} Aavegotchi Wearable Analytics`;
+
+    console.log('wearable', wearable);
 
     this.state = {
+      wearable: wearable,
+      wearableId: this.props.match.params.id,
       sales: [],
       sellers: {},
       buyers: {},
@@ -37,7 +47,7 @@ class WearableSales extends Component {
   }
 
   async componentDidMount() {
-    retrieveSoldWearableListings()
+    retrieveSoldWearableListingsById(this.state.wearableId)
       .then((listings) => {
         console.log('soldlistings', listings);
 
@@ -98,12 +108,46 @@ class WearableSales extends Component {
 
         this.applyFilters();
       });
+
+    erc1155PricesById(0, this.state.wearableId)
+      .then((listings) => {
+        console.log('openListings', listings);
+        let floor = 0;
+        let ceiling = 0;
+        let link = 'https://aavegotchi.com/baazaar';
+        let name = 'No Listings';
+        let qty = 0;
+        if (listings.length > 0) {
+          floor = ethers.utils.formatEther(listings[0].priceInWei);
+          link = `https://aavegotchi.com/baazaar/erc1155/${listings[0].id}`;
+          name = wearableItemTypes[listings[0].erc1155TypeId].name;
+          qty = parseInt(listings[0].quantity);
+          ceiling = ethers.utils.formatEther(listings[listings.length-1].priceInWei);
+        }
+
+        let listedQuantity = 0;
+        listings.map((listing, index) => {
+          listedQuantity += parseInt(listing.quantity);
+        });
+
+        this.setState({
+          floorPrice: {
+            floor, link, name, qty
+          },
+
+          openListings: {
+            listings: listings,
+            listingCount: listings.length,
+            listedQuantity: listedQuantity,
+            floor,
+            ceiling
+          }
+        });
+      });
   }
 
   refreshVisualisations() {
     this.prepareSalesAvgPriceChartData();
-    this.prepareRarityChartData();
-    this.prepareSlotChartData();
   }
 
   applyFilters() {
@@ -137,21 +181,6 @@ class WearableSales extends Component {
     // apply account filters
     if (this.state.account && this.state.account != '') {
       filteredWearableSales = _.filter(filteredWearableSales, function(w) { return w.buyer.toLowerCase().includes(_this.state.account.toLowerCase()) || w.seller.toLowerCase().includes(_this.state.account.toLowerCase()); });
-    }
-
-    // apply name filters
-    if (this.state.wearable && this.state.wearable != '') {
-      filteredWearableSales = _.filter(filteredWearableSales, function(w) { return w.name.toLowerCase().includes(_this.state.wearable.toLowerCase()); });
-    }
-
-    // apply rarity filters
-    if (this.state.rarity && this.state.rarity != '' && this.state.rarity != 'Any') {
-      filteredWearableSales = _.filter(filteredWearableSales, function(w) { return w.rarity == _this.state.rarity; });
-    }
-
-    // apply slot filters
-    if (this.state.slot && this.state.slot != '' && this.state.slot != 'Any') {
-      filteredWearableSales = _.filter(filteredWearableSales, function(w) { return w.slot == _this.state.slot; });
     }
 
     // order by time last purchased
@@ -220,54 +249,11 @@ class WearableSales extends Component {
     console.log('salesChartDate', data, averageSales);
   }
 
-  prepareRarityChartData() {
-    const _this = this;
-    let rarityData = [];
-    let totalSales = this.state.filteredWearableSales.length;
-
-    let rarities = ['Common', 'Uncommon', 'Rare', 'Legendary', 'Mythical' ,'Godlike'];
-    let colors = ['#8064ff', '#33bacc', '#59bcff', '#ffc36b', '#ff96ff', '#51ffa8'];
-    rarities.map(function(r, index) {
-      let countRarity = _.filter(_this.state.filteredWearableSales, ['rarity', r]).length;
-      if (countRarity > 0) {
-        let rarityPercentage = parseFloat(((countRarity/totalSales)*100).toFixed(2));
-        rarityData.push({
-          name: r,
-          y: rarityPercentage,
-          color: colors[index]
-        });
-      }
-    });
-
-    console.log('prepareRarityChartData', rarityData);
-    this.setState({ rarityData });
-  }
-
-  prepareSlotChartData() {
-    const _this = this;
-    let slotData = [];
-    let totalSales = this.state.filteredWearableSales.length;
-    let slots = ['Body', 'Face', 'Eyes', 'Head', 'Hand', 'Pet', 'Background'];
-    slots.map(function(s, index) {
-      let countSlot = _.filter(_this.state.filteredWearableSales, ['slot', s]).length;
-      if (countSlot > 0) {
-        let slotPercentage = parseFloat(((countSlot/totalSales)*100).toFixed(2));
-        slotData.push({
-          name: s,
-          y: slotPercentage
-        });
-      }
-    });
-
-    console.log('prepareSlotChartData', slotData);
-    this.setState({ slotData });
-  }
-
   renderSalesAvgPriceChart() {
     if (this.state.salesChartData && this.state.salesChartData.totalSales && this.state.salesChartData.totalSales.length > 0) {
       const options = {
         chart: { zoomType: 'xy' },
-        title: { text: 'Wearable Sales Over Time' },
+        title: { text: `${this.state.wearable.name} Sales Over Time` },
         subtitle: { text: 'Daily Sales Volume and Average Sales Price' },
 
         series: [{
@@ -327,14 +313,14 @@ class WearableSales extends Component {
 
         credits: {
           enabled: true,
-          href: 'https://aavegotchistats.com/wearablesales',
-          text: 'aavegotchistats.com/wearablesales'
+          href: `https://aavegotchistats.com/wearable/${this.state.wearableId}`,
+          text: `aavegotchistats.com/wearable/${this.state.wearableId}`
         }
       };
 
       return (
         <div>
-          <h2>Wearable Sales Over Time</h2>
+          <h2>{this.state.wearable.name} Sales Over Time</h2>
           <HighchartsReact
             highcharts={Highcharts}
             options={options}
@@ -354,16 +340,6 @@ class WearableSales extends Component {
           width: 100,
           renderCell: (params: GridCellParams) => (
             <a href={`https://aavegotchi.com/baazaar/erc1155/${params.value}`} target="_blank">
-              {params.value}
-            </a>
-          )
-        },
-        {
-          field: 'wearableId',
-          headerName: 'ID',
-          width: 70,
-          renderCell: (params: GridCellParams) => (
-            <a href={`/wearables/${params.value}`} target="_blank">
               {params.value}
             </a>
           )
@@ -403,7 +379,7 @@ class WearableSales extends Component {
 
       return (
         <div>
-          <h2>Wearable Sales</h2>
+          <h2>{this.state.wearable.name} Sales</h2>
           <div style={{ height: '1080px', width: '100%' }}>
             <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" disableSelectionOnClick="true" />
           </div>
@@ -484,62 +460,6 @@ class WearableSales extends Component {
     }
   }
 
-  renderPieCharts() {
-    if (this.state.rarityData && this.state.rarityData.length > 0 && this.state.slotData && this.state.slotData.length > 0) {
-      let options = {
-        chart: { type: 'pie' },
-        subtitle: { text: '' },
-        plotOptions: {
-          pie: {
-            allowPointSelect: true,
-            cursor: 'pointer',
-            dataLabels: {
-              enabled: true,
-              format: '<b>{point.name}</b>: {point.percentage:.2f} %'
-            }
-          }
-        },
-        tooltip: {
-          pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
-        },
-        credits: {
-          enabled: true,
-          href: 'https://aavegotchistats.com/wearablesales',
-          text: 'aavegotchistats.com/wearablesales'
-        }
-      };
-
-      let rarityOptions = {...options};
-      rarityOptions.title = { text: 'Wearable Sales by Rarity' };
-      rarityOptions.series = [{ name: 'Rarity', colorByPoint: true, data: this.state.rarityData }];
-
-      let slotOptions = {...options};
-      slotOptions.title = { text: 'Wearable Sales by Slot' };
-      slotOptions.series = [{ name: 'Slot', colorByPoint: true, data: this.state.slotData }];
-
-      return (
-        <div className="container">
-          <div className="row">
-            <div className="col">
-              <h2>Wearable Rarity Breakdown</h2>
-              <HighchartsReact
-                highcharts={Highcharts}
-                options={rarityOptions}
-              />
-            </div>
-            <div className="col">
-              <h2>Wearable Slot Breakdown</h2>
-              <HighchartsReact
-                highcharts={Highcharts}
-                options={slotOptions}
-              />
-            </div>
-          </div>
-        </div>
-      );
-    }
-  }
-
   handleDateChange(date, dateType) {
     let dateValue = date;
 
@@ -575,6 +495,8 @@ class WearableSales extends Component {
   renderFilters() {
     if (this.state.wearableSales && this.state.wearableSales.length > 0) {
       return(
+        <div>
+        <h2>{this.state.wearable.name} Historical Sales</h2>
         <form class="row g-3">
           <div class="col-12">
             <label>Date Sold From <DatePicker selected={this.state.dateFrom} onChange={(date) => this.handleDateChange(date, 'dateFrom')} dateFormat='MMM dd yyyy' /></label> <label> To <DatePicker selected={this.state.dateTo} onChange={(date) => this.handleDateChange(date, 'dateTo')} dateFormat='MMM dd yyyy' /></label>
@@ -593,52 +515,93 @@ class WearableSales extends Component {
             <input type="text" class="form-control" id="account" value={this.state.account} onChange={(event) => this.onInputChange(event)} />
           </div>
 
-          <div class="col-3">
-            <label for="rarity" class="form-label">Wearable Rarity</label>
-            <select id="rarity" class="form-select" onChange={(event) => this.onInputChange(event)} value={this.state.rarity}>
-              <option>Any</option>
-              <option>Common</option>
-              <option>Uncommon</option>
-              <option>Rare</option>
-              <option>Legendary</option>
-              <option>Mythical</option>
-              <option>Godlike</option>
-            </select>
-          </div>
-
-          <div class="col-3">
-            <label for="slot" class="form-label">Wearable Slot</label>
-            <select id="slot" class="form-select" onChange={(event) => this.onInputChange(event)} value={this.state.slot}>
-              <option>Any</option>
-              <option>Body</option>
-              <option>Face</option>
-              <option>Eyes</option>
-              <option>Head</option>
-              <option>Hand</option>
-              <option>Pet</option>
-              <option>Background</option>
-            </select>
-          </div>
-
-          <div class="col-6">
-            <label for="wearable" class="form-label">Wearable Name</label>
-            <input type="text" class="form-control" id="wearable" value={this.state.wearable} onChange={(event) => this.onInputChange(event)} />
-          </div>
         </form>
+        </div>
       );
     }
+  }
+
+  renderCurrentPrices() {
+    if (this.state.floorPrice) {
+      return(
+        <div>
+          <h2>{this.state.wearable.name} Open Listings</h2>
+          <p>Floor Price: <a href={this.state.floorPrice.link}>{this.state.floorPrice.floor} GHST</a> (Qty: {this.state.floorPrice.qty})</p>
+          <p>Price Range: {this.state.openListings.floor}-{this.state.openListings.ceiling} GHST, Total Listed Units: {this.state.openListings.listedQuantity}, Total Listings: {this.state.openListings.listingCount}</p>
+          {this.renderOpenListingsTable()}
+        </div>
+      );
+    }
+  }
+
+  renderOpenListingsTable() {
+    const _this = this;
+    if (this.state.openListings.listings.length > 0) {
+      const columns = [
+        {
+          field: 'id',
+          headerName: 'Listing',
+          width: 100,
+          renderCell: (params: GridCellParams) => (
+            <a href={`https://aavegotchi.com/baazaar/erc1155/${params.value}`} target="_blank">
+              {params.value}
+            </a>
+          )
+        },
+        { field: 'name', headerName: 'Name', width: 185 },
+        { field: 'seller', headerName: 'Seller', width: 450 },
+        { field: 'quantity', headerName: 'Qty', width: 80 },
+        { field: 'price', headerName: 'Unit Price', width: 120 },
+      ];
+
+      let rows = [];
+      this.state.openListings.listings.map(function(listing, index) {
+
+        let row = {
+          id: listing.id,
+          name: _this.state.wearable.name,
+          seller: listing.seller,
+          quantity: listing.quantity,
+          price: ethers.utils.formatEther(listing.priceInWei),
+        };
+
+        rows.push(row);
+      });
+
+      return (
+        <div>
+          <div style={{ height: '500px', width: '100%' }}>
+            <DataGrid rows={rows} columns={columns} pageSize={10} density="compact" disableSelectionOnClick="true" />
+          </div>
+        </div>
+      );
+    }
+  }
+
+  renderMetadata() {
+    return(
+      <div>
+        <p>ID: {this.state.wearableId}</p>
+        <p>Name: {this.state.wearable.name}</p>
+        <p>Quantity: {this.state.wearable.totalQuantity}</p>
+        <p>Rarity: {wearableRarityLabel(wearableItemTypes[this.state.wearableId])}</p>
+        <p>Slot: {wearablePositionLabel(wearableItemTypes[this.state.wearableId])}</p>
+        <p>Trait Modifiers: {wearableTraitModifiers(this.state.wearable.traitModifiers)}</p>
+      </div>
+    );
   }
 
   render() {
     return(
       <div>
-        <h1>Wearable Sales</h1>
+        <h1>{this.state.wearable.name} Wearable Analytics</h1>
+        {this.renderMetadata()}
+        {this.renderCurrentPrices()}
+        {this.renderFilters()}
         {this.state.loading &&
           <Loading message="Loading Wearable Sales from TheGraph..." />
         }
-        {this.renderFilters()}
         {this.renderSalesAvgPriceChart()}
-        {this.renderPieCharts()}
         {this.renderTopAddressesTables()}
         {this.renderSalesTable()}
       </div>
@@ -646,4 +609,4 @@ class WearableSales extends Component {
   }
 }
 
-export default WearableSales;
+export default withRouter(WearableDetails);
