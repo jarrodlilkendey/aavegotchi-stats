@@ -39,11 +39,16 @@ class GHSTOnAave extends Component {
     return (
       <div>
         <h1>GHST on AAVE</h1>
+        <ul>
+          <li><a href="https://snapshot.org/#/aave.eth/proposal/QmXtz8SHLFD2gFrHBb9QNjkVfKKtYWBkB6g2rk1BhVjzfY">Aave Snapshot Proposal is now live (VOTE!!!)</a></li>
+          <li><a href="https://aavegotchi.medium.com/the-defi-case-for-ghst-256a8653346a">The DeFi Case for GHST</a></li>
+          <li><a href="https://governance.aave.com/t/arc-list-aavegotchi-ghst-token-as-collateral-on-matic-aave-network/3619/3">ARC: List Aavegotchi $GHST token as collateral on Matic Aave network</a></li>
+        </ul>
         {this.state.blockNumber && this.state.pp &&
           <div>
           <h2>Proposition Power as of Block {this.state.blockNumber}</h2>
             <p>Coderdan's PP: {this.state.pp}</p>
-            <p>We need a total of {this.state.target} proposition power. We are {((this.state.pp/this.state.target)*100).toFixed(2)}% of the way.</p>
+            {/*<p>We need a total of {this.state.target} proposition power. We are {((this.state.pp/this.state.target)*100).toFixed(2)}% of the way.</p>*/}
           </div>
         }
         <h2>Process</h2>
@@ -59,7 +64,6 @@ class GHSTOnAave extends Component {
         </ol>
         <h2>Share it</h2>
         <p><a href="https://twitter.com/intent/tweet?button_hashtag=GHSTonAave&ref_src=twsrc%5Etfw" class="twitter-hashtag-button" data-size="large" data-text="Let&#39;s get $GHST on Aave" data-url="https://aavegotchistats.com/ghstonaave" data-related="GotchiStats" data-show-count="false">Tweet #GHSTonAave</a></p>
-        <iframe src="https://widget.taggbox.com/66640" style={{width:'100%', height:'400px', overflow:'auto', border:'none' }}></iframe>
       </div>
     );
   }
