@@ -146,13 +146,16 @@ export const retrieveAllGotchisAtBlock = async (block) => {
   return aavegotchis;
 }
 
-const portalGraphQuery = (skip, order) => {
+const h1PortalGraphQuery = (skip, order) => {
   let query = `{
     portals(
       first: 1000,
       skip: ${skip},
       orderBy: id,
       orderDirection:${order},
+      where: {
+        hauntId: "1"
+      }
     ) {
       id
       hauntId
@@ -168,14 +171,14 @@ const portalGraphQuery = (skip, order) => {
   return query;
 }
 
-export const retrieveAllPortals = async () => {
+export const retrieveH1Portals = async () => {
   let portals = [];
 
   for (let i = 0; i < 5; i++) {
     const p = await axios.post(
       'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
       {
-        query: portalGraphQuery(i * 1000, 'asc')
+        query: h1PortalGraphQuery(i * 1000, 'asc')
       }
     );
     portals.push(...p.data.data.portals);
@@ -185,7 +188,7 @@ export const retrieveAllPortals = async () => {
     const p = await axios.post(
       'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
       {
-        query: portalGraphQuery(i * 1000, 'desc')
+        query: h1PortalGraphQuery(i * 1000, 'desc')
       }
     );
     portals.push(...p.data.data.portals);
@@ -194,12 +197,57 @@ export const retrieveAllPortals = async () => {
   return portals;
 };
 
-const openPortalGraphQuery = (skip) => {
+const h2PortalGraphQuery = (skip, order, id_lte) => {
   let query = `{
     portals(
       first: 1000,
       skip: ${skip},
-      where: { status: Opened }
+      orderBy: id,
+      orderDirection:${order},
+      where: {
+        hauntId: "2"
+        id_lte: ${id_lte}
+      }
+    ) {
+      id
+      hauntId
+      boughtAt,
+      openedAt,
+      claimedAt,
+      gotchi {
+        name
+      }
+    }
+  }`;
+
+  return query;
+}
+
+export const retrieveH2Portals = async () => {
+  let portals = [];
+  let id_ltes = [14999, 19999, 24999];
+
+  for (let a = 0; a < 3; a++) {
+    for (let i = 0; i < 5; i++) {
+      const p = await axios.post(
+        'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+        {
+          query: h2PortalGraphQuery(i * 1000, 'asc', id_ltes[a])
+        }
+      );
+      portals.push(...p.data.data.portals);
+    }
+  }
+
+  return portals;
+};
+
+const h1OpenPortalGraphQuery = (skip) => {
+  let query = `{
+    portals(
+      first: 1000,
+      skip: ${skip},
+      where: { status: Opened, hauntId: "1" }
     ) {
       id
       hauntId
@@ -217,7 +265,7 @@ const openPortalGraphQuery = (skip) => {
   return query;
 }
 
-export const retrieveOpenPortals = async () => {
+export const retrieveH1OpenPortals = async () => {
   let portals = [];
   let morePortals = true;
 
@@ -225,7 +273,52 @@ export const retrieveOpenPortals = async () => {
     const p = await axios.post(
       'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
       {
-        query: openPortalGraphQuery(i * 1000)
+        query: h1OpenPortalGraphQuery(i * 1000)
+      }
+    );
+
+    if (p.data.data.portals.length > 0) {
+      portals.push(...p.data.data.portals);
+    } else {
+      morePortals = false;
+    }
+  }
+
+  return portals;
+};
+
+const h2OpenPortalGraphQuery = (skip) => {
+  let query = `{
+    portals(
+      first: 1000,
+      skip: ${skip},
+      where: { status: Opened, hauntId: "2" }
+    ) {
+      id
+      hauntId
+      status,
+      options {
+        id
+        baseRarityScore
+        numericTraits
+        minimumStake
+        collateralType
+      }
+    }
+  }`;
+
+  return query;
+}
+
+export const retrieveH2OpenPortals = async () => {
+  let portals = [];
+  let morePortals = true;
+
+  for (let i = 0; i < 5 && morePortals; i++) {
+    const p = await axios.post(
+      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      {
+        query: h2OpenPortalGraphQuery(i * 1000)
       }
     );
 
@@ -312,15 +405,17 @@ export const retrieveErc721ListingsByTokenIds = async (tokenIds) => {
   return listings.data.data.erc721Listings;
 };
 
-export const retrieveSacrificedGotchis = async () => {
+export const retrieveSacrificedGotchis = async (hauntId) => {
   let query = `{
     aavegotchis(
       first: 1000,
       where: {
-        owner: "0x0000000000000000000000000000000000000000"
+        owner: "0x0000000000000000000000000000000000000000",
+        hauntId: ${hauntId}
       }
     ) {
       id
+      hauntId
     }
   }`;
 
