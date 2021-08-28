@@ -5,7 +5,36 @@ import { ethers } from "ethers";
 const axios = require('axios');
 const _ = require('lodash');
 
-const erc721FloorPricesQuery = (category, hauntId) => {
+export const h2PortalFloor = async (category) => {
+  const h2PortalFloorQuery = `{
+    auctions(
+      first: 5,
+      where: {
+        type: "erc721"
+      },
+      orderBy: highestBid,
+      orderDirection:asc
+    ) {
+      id
+      orderId
+      type
+      tokenId
+      highestBid
+      highestBidder
+    }
+  }`;
+
+  const result = await axios.post(
+    encodeURI(`https://aavegotchi2.stakesquid-frens.gq/subgraphs/id/QmRJbPF5W1ujDUUZymmeYu4Xo7xfSP6gmi8NHDbX99pDDL/graphql?query=${h2PortalFloorQuery}`)
+    // 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-gbm-wearables',
+  );
+
+  console.log('h2PortalFloor', result)
+
+  return result; //.data.data.erc721Listings;
+};
+
+const erc721FloorPricesQuery = (category) => {
   let query = `{
     erc721Listings(
       first: 5,
@@ -14,8 +43,7 @@ const erc721FloorPricesQuery = (category, hauntId) => {
       where:{
         category: ${category},
         cancelled: false,
-        timePurchased: 0,
-        hauntId: ${hauntId}
+        timePurchased: 0
       }) {
       id
       portal {
@@ -26,7 +54,6 @@ const erc721FloorPricesQuery = (category, hauntId) => {
       }
       priceInWei
       timePurchased
-      hauntId
     }
   }`;
 
@@ -85,11 +112,11 @@ const erc1155FloorPricesByIdQuery = (category, id) => {
   return query;
 }
 
-export const erc721FloorPrice = async (category, hauntId) => {
+export const erc721FloorPrice = async (category) => {
   const result = await axios.post(
     'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
     {
-      query: erc721FloorPricesQuery(category, hauntId)
+      query: erc721FloorPricesQuery(category)
     }
   );
 
