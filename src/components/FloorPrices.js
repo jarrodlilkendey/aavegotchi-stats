@@ -22,10 +22,11 @@ class FloorPrices extends Component {
   async componentDidMount() {
     const _this = this;
 
-    const erc721Types = ['closedPortals', 'openPortals', 'aavegotchis'];
-    const erc721Indexes = [0, 2, 3];
+    const erc721Types = ['h1ClosedPortals', 'h2ClosedPortals', 'h1OpenPortals', 'h2OpenPortals', 'h1Aavegotchis', 'h2Aavegotchis'];
+    const erc721Indexes = [0, 0, 2, 2, 3, 3];
+    const haunts = [1, 2, 1, 2, 1, 2];
     erc721Indexes.map((i, index) => {
-      erc721FloorPrice(i)
+      erc721FloorPrice(i, haunts[index])
         .then((listings) => {
           let floor = 0;
           let link = 'https://aavegotchi.com/baazaar';
@@ -198,8 +199,9 @@ class FloorPrices extends Component {
 
 
   render() {
-    if (this.state.closedPortals && this.state.openPortals && this.state.aavegotchis && this.state.commonWearables
-      && this.state.uncommonWearables && this.state.rareWearables && this.state.legendaryWearables && this.state.mythicalWearables
+    if (this.state.h1ClosedPortals && this.state.h1OpenPortals && this.state.h1Aavegotchis
+      && this.state.h2ClosedPortals && this.state.h2OpenPortals && this.state.h2Aavegotchis
+      && this.state.commonWearables && this.state.uncommonWearables && this.state.rareWearables && this.state.legendaryWearables && this.state.mythicalWearables
       && this.state.godlikeWearables && this.state.commonTickets && this.state.uncommonTickets && this.state.rareTickets
       && this.state.legendaryTickets && this.state.mythicalTickets && this.state.godlikeTickets && this.state.dropTickets
       && this.state.kinship && this.state.greaterKinship && this.state.xp && this.state.greaterXp && this.state.mythEyes
@@ -210,13 +212,16 @@ class FloorPrices extends Component {
           <div className="row">
             <div className="col">
               <h3>Portals and Aavegotchis</h3>
-              <p><img src='/portals/closedportal.svg' height='35px' /> Closed Portal Floor Price: <a href={this.state.closedPortals.link}>{this.state.closedPortals.floor} GHST</a> (#{this.state.closedPortals.tokenId})</p>
-              <p><img src='/portals/openportal.svg' height='35px' /> Open Portal Floor Price: <a href={this.state.openPortals.link}>{this.state.openPortals.floor} GHST</a> (#{this.state.openPortals.tokenId})</p>
-              <p><img src='/portals/aavegotchi.png' height='35px' /> Aavegotchi Floor Price: <a href={this.state.aavegotchis.link}>{this.state.aavegotchis.floor} GHST</a> (#{this.state.aavegotchis.tokenId})</p>
-              <p><img src='/portals/aavegotchi.png' height='35px' /> Myth Eyes Aavegotchi Floor Price: <a href={this.state.mythEyes.link}>{this.state.mythEyes.floor} GHST</a> (#{this.state.mythEyes.tokenId})</p>
-              <p><img src='/portals/aavegotchi.png' height='35px' /> Aavegotchi with Godlike Floor Price: <a href={this.state.aavegotchiGodlike.link}>{this.state.aavegotchiGodlike.floor} GHST</a> ({this.state.aavegotchiGodlike.tokenId})</p>
-              <p><img src='/portals/aavegotchi.png' height='35px' /> Aavegotchi with Mythical Floor Price: <a href={this.state.aavegotchiMythical.link}>{this.state.aavegotchiMythical.floor} GHST</a> ({this.state.aavegotchiMythical.tokenId})</p>
-              <p><img src='/portals/aavegotchi.png' height='35px' /> Aavegotchi with Legendary Floor Price: <a href={this.state.aavegotchiLegendary.link}>{this.state.aavegotchiLegendary.floor} GHST</a> ({this.state.aavegotchiLegendary.tokenId})</p>
+              <p><img src='/portals/h1closedportal.gif' height='30px' /> H1 Closed Portal Floor Price: <a href={this.state.h1ClosedPortals.link}>{this.state.h1ClosedPortals.floor} GHST</a> (#{this.state.h1ClosedPortals.tokenId})</p>
+              <p><img src='/portals/h2closedportal.gif' height='30px' /> H2 Closed Portal Floor Price: <a href={this.state.h2ClosedPortals.link}>{this.state.h2ClosedPortals.floor} GHST</a> (#{this.state.h2ClosedPortals.tokenId})</p>
+              <p><img src='/portals/h1openportal.gif' height='30px' /> H1 Open Portal Floor Price: <a href={this.state.h1OpenPortals.link}>{this.state.h1OpenPortals.floor} GHST</a> (#{this.state.h1OpenPortals.tokenId})</p>
+              <p><img src='/portals/h2openportal.gif' height='30px' /> H2 Open Portal Floor Price: <a href={this.state.h2OpenPortals.link}>{this.state.h2OpenPortals.floor} GHST</a> (#{this.state.h2OpenPortals.tokenId})</p>
+              <p><img src='/portals/aavegotchi.png' height='30px' /> H1 Aavegotchi Floor Price: <a href={this.state.h1Aavegotchis.link}>{this.state.h1Aavegotchis.floor} GHST</a> (#{this.state.h1Aavegotchis.tokenId})</p>
+              <p><img src='/portals/aavegotchi.png' height='30px' /> H2 Aavegotchi Floor Price: <a href={this.state.h2Aavegotchis.link}>{this.state.h2Aavegotchis.floor} GHST</a> (#{this.state.h2Aavegotchis.tokenId})</p>
+              <p><img src='/portals/aavegotchi.png' height='30px' /> Myth Eyes Aavegotchi Floor Price: <a href={this.state.mythEyes.link}>{this.state.mythEyes.floor} GHST</a> (#{this.state.mythEyes.tokenId})</p>
+              <p><img src='/portals/aavegotchi.png' height='30px' /> Aavegotchi with Godlike Floor Price: <a href={this.state.aavegotchiGodlike.link}>{this.state.aavegotchiGodlike.floor} GHST</a> ({this.state.aavegotchiGodlike.tokenId})</p>
+              <p><img src='/portals/aavegotchi.png' height='30px' /> Aavegotchi with Mythical Floor Price: <a href={this.state.aavegotchiMythical.link}>{this.state.aavegotchiMythical.floor} GHST</a> ({this.state.aavegotchiMythical.tokenId})</p>
+              <p><img src='/portals/aavegotchi.png' height='30px' /> Aavegotchi with Legendary Floor Price: <a href={this.state.aavegotchiLegendary.link}>{this.state.aavegotchiLegendary.floor} GHST</a> ({this.state.aavegotchiLegendary.tokenId})</p>
               <h3>Wearables</h3>
               <p><img src='/tickets/godlike.png' height='30px' /> Godlike Wearable Floor Price: <a href={this.state.godlikeWearables.link}>{this.state.godlikeWearables.floor} GHST</a> ({this.state.godlikeWearables.name})</p>
               <p><img src='/tickets/mythical.png' height='30px' /> Mythical Wearable Floor Price: <a href={this.state.mythicalWearables.link}>{this.state.mythicalWearables.floor} GHST</a> ({this.state.mythicalWearables.name})</p>
@@ -227,12 +232,12 @@ class FloorPrices extends Component {
             </div>
             <div className="col">
               <h3>Consumables</h3>
-              <p><img src='/consumables/xp.svg' height='35px' /> XP Potion Floor Price: <a href={this.state.xp.link}>{this.state.xp.floor} GHST {this.state.xp.unit}</a></p>
-              <p><img src='/consumables/greaterxp.svg' height='35px' /> Greater XP Potion Floor Price: <a href={this.state.greaterXp.link}>{this.state.greaterXp.floor} GHST {this.state.greaterXp.unit}</a></p>
-              <p><img src='/portals/aavegotchi.png' height='35px' /> Cheapest Aavegotchi by XP: <a href={this.state.aavegotchiXP.link}>{this.state.aavegotchiXP.floor} GHST {this.state.aavegotchiXP.unit}</a> ({this.state.aavegotchiXP.tokenId})</p>
-              <p><img src='/consumables/kinship.svg' height='35px' /> KINSHIP Potion Floor Price: <a href={this.state.kinship.link}>{this.state.kinship.floor} GHST {this.state.kinship.unit}</a></p>
-              <p><img src='/consumables/greaterkinship.svg' height='35px' /> Greater KINSHIP Potion Floor Price: <a href={this.state.greaterKinship.link}>{this.state.greaterKinship.floor} GHST {this.state.greaterKinship.unit}</a></p>
-              <p><img src='/portals/aavegotchi.png' height='35px' /> Cheapest Aavegotchi by KINSHIP: <a href={this.state.aavegotchiKinship.link}>{this.state.aavegotchiKinship.floor} GHST {this.state.aavegotchiKinship.unit}</a> ({this.state.aavegotchiKinship.tokenId})</p>
+              <p><img src='/consumables/xp.svg' height='30px' /> XP Potion Floor Price: <a href={this.state.xp.link}>{this.state.xp.floor} GHST {this.state.xp.unit}</a></p>
+              <p><img src='/consumables/greaterxp.svg' height='30px' /> Greater XP Potion Floor Price: <a href={this.state.greaterXp.link}>{this.state.greaterXp.floor} GHST {this.state.greaterXp.unit}</a></p>
+              <p><img src='/portals/aavegotchi.png' height='30px' /> Cheapest Aavegotchi by XP: <a href={this.state.aavegotchiXP.link}>{this.state.aavegotchiXP.floor} GHST {this.state.aavegotchiXP.unit}</a> ({this.state.aavegotchiXP.tokenId})</p>
+              <p><img src='/consumables/kinship.svg' height='30px' /> KINSHIP Potion Floor Price: <a href={this.state.kinship.link}>{this.state.kinship.floor} GHST {this.state.kinship.unit}</a></p>
+              <p><img src='/consumables/greaterkinship.svg' height='30px' /> Greater KINSHIP Potion Floor Price: <a href={this.state.greaterKinship.link}>{this.state.greaterKinship.floor} GHST {this.state.greaterKinship.unit}</a></p>
+              <p><img src='/portals/aavegotchi.png' height='30px' /> Cheapest Aavegotchi by KINSHIP: <a href={this.state.aavegotchiKinship.link}>{this.state.aavegotchiKinship.floor} GHST {this.state.aavegotchiKinship.unit}</a> ({this.state.aavegotchiKinship.tokenId})</p>
               <h3>Tickets</h3>
               <p><img src='/tickets/godlike.png' height='30px' /> Godlike Ticket Floor Price: <a href={this.state.godlikeTickets.link}>{this.state.godlikeTickets.floor} GHST ({this.state.godlikeTickets.perFren} GHST/fren)</a></p>
               <p><img src='/tickets/drop.png' height='30px' /> Drop Ticket Floor Price: <a href={this.state.dropTickets.link}>{this.state.dropTickets.floor} GHST ({this.state.dropTickets.perFren} GHST/fren)</a></p>

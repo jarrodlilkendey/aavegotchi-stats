@@ -93,6 +93,8 @@ export const erc721FloorPrice = async (category, hauntId) => {
     }
   );
 
+  console.log('erc721FloorPrice', category, hauntId, result);
+
   return result.data.data.erc721Listings;
 };
 
