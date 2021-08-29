@@ -98,7 +98,7 @@ class FloorPrices extends Component {
         });
     });
 
-    erc721CheapestMythEyes()
+    erc721CheapestMythEyes(1)
       .then((listings) => {
         let floor = 0;
         let link = 'https://aavegotchi.com/baazaar';
@@ -108,7 +108,20 @@ class FloorPrices extends Component {
           link = `https://aavegotchi.com/baazaar/erc721/${listings[0].id}`;
           tokenId = listings[0].gotchi.id;
         }
-        _this.setState({ mythEyes: { listings, floor, link, tokenId  } });
+        _this.setState({ h1MythEyes: { listings, floor, link, tokenId  } });
+      });
+
+    erc721CheapestMythEyes(2)
+      .then((listings) => {
+        let floor = 0;
+        let link = 'https://aavegotchi.com/baazaar';
+        let tokenId = '';
+        if (listings.length > 0) {
+          floor = ethers.utils.formatEther(listings[0].priceInWei);
+          link = `https://aavegotchi.com/baazaar/erc721/${listings[0].id}`;
+          tokenId = listings[0].gotchi.id;
+        }
+        _this.setState({ h2MythEyes: { listings, floor, link, tokenId  } });
       });
 
     erc721CheapestGodlike()
@@ -204,7 +217,7 @@ class FloorPrices extends Component {
       && this.state.commonWearables && this.state.uncommonWearables && this.state.rareWearables && this.state.legendaryWearables && this.state.mythicalWearables
       && this.state.godlikeWearables && this.state.commonTickets && this.state.uncommonTickets && this.state.rareTickets
       && this.state.legendaryTickets && this.state.mythicalTickets && this.state.godlikeTickets && this.state.dropTickets
-      && this.state.kinship && this.state.greaterKinship && this.state.xp && this.state.greaterXp && this.state.mythEyes
+      && this.state.kinship && this.state.greaterKinship && this.state.xp && this.state.greaterXp && this.state.h1MythEyes && this.state.h2MythEyes
       && this.state.aavegotchiGodlike && this.state.aavegotchiMythical && this.state.aavegotchiLegendary && this.state.aavegotchiXP && this.state.aavegotchiKinship) {
       return(
         <div className="container">
@@ -218,7 +231,8 @@ class FloorPrices extends Component {
               <p><img src='/portals/h2openportal.gif' height='30px' /> H2 Open Portal Floor Price: <a href={this.state.h2OpenPortals.link}>{this.state.h2OpenPortals.floor} GHST</a> (#{this.state.h2OpenPortals.tokenId})</p>
               <p><img src='/portals/aavegotchi.png' height='30px' /> H1 Aavegotchi Floor Price: <a href={this.state.h1Aavegotchis.link}>{this.state.h1Aavegotchis.floor} GHST</a> (#{this.state.h1Aavegotchis.tokenId})</p>
               <p><img src='/portals/aavegotchi.png' height='30px' /> H2 Aavegotchi Floor Price: <a href={this.state.h2Aavegotchis.link}>{this.state.h2Aavegotchis.floor} GHST</a> (#{this.state.h2Aavegotchis.tokenId})</p>
-              <p><img src='/portals/aavegotchi.png' height='30px' /> Myth Eyes Aavegotchi Floor Price: <a href={this.state.mythEyes.link}>{this.state.mythEyes.floor} GHST</a> (#{this.state.mythEyes.tokenId})</p>
+              <p><img src='/portals/aavegotchi.png' height='30px' /> H1 Myth Eyes Aavegotchi Floor Price: <a href={this.state.h1MythEyes.link}>{this.state.h1MythEyes.floor} GHST</a> (#{this.state.h1MythEyes.tokenId})</p>
+              <p><img src='/portals/aavegotchi.png' height='30px' /> H2 Myth Eyes Aavegotchi Floor Price: <a href={this.state.h2MythEyes.link}>{this.state.h2MythEyes.floor} GHST</a> (#{this.state.h2MythEyes.tokenId})</p>
               <p><img src='/portals/aavegotchi.png' height='30px' /> Aavegotchi with Godlike Floor Price: <a href={this.state.aavegotchiGodlike.link}>{this.state.aavegotchiGodlike.floor} GHST</a> ({this.state.aavegotchiGodlike.tokenId})</p>
               <p><img src='/portals/aavegotchi.png' height='30px' /> Aavegotchi with Mythical Floor Price: <a href={this.state.aavegotchiMythical.link}>{this.state.aavegotchiMythical.floor} GHST</a> ({this.state.aavegotchiMythical.tokenId})</p>
               <p><img src='/portals/aavegotchi.png' height='30px' /> Aavegotchi with Legendary Floor Price: <a href={this.state.aavegotchiLegendary.link}>{this.state.aavegotchiLegendary.floor} GHST</a> ({this.state.aavegotchiLegendary.tokenId})</p>

@@ -118,14 +118,14 @@ export const erc1155FloorPriceById = async (category, id) => {
   return result.data.data.erc1155Listings;
 };
 
-export const erc721CheapestMythEyes = async () => {
+export const erc721CheapestMythEyes = async (hauntId) => {
   let query = `{
     erc721Listings(
       first: 1000,
       orderBy: priceInWei,
       orderDirection: asc,
       where:{
-        category: 3, cancelled: false, timePurchased: 0
+        category: 3, cancelled: false, timePurchased: 0, hauntId: ${hauntId}
       }) {
       id
       gotchi {
@@ -133,6 +133,7 @@ export const erc721CheapestMythEyes = async () => {
         numericTraits
       }
       priceInWei
+      hauntId
     }
   }`;
 
