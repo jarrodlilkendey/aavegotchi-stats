@@ -89,6 +89,7 @@ class AavegotchiRarityDistributions extends Component {
           }
         });
 
+        console.log('setState h2Aavegotchis', aavegotchis, Object.keys(aavegotchis).length);
         this.setState({ h2Aavegotchis: aavegotchis, h2MinBrs: minBrs, h2MaxBrs: maxBrs, loading: false });
       });
   }

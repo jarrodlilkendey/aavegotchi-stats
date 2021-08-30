@@ -23,9 +23,9 @@ class AavegotchiTraitDistributions extends Component {
     this.state = {
       gotchisByTraitValue: [],
       traits: ['Energy', 'Aggression', 'Spookiness', 'Brain Size', 'Eye Shape', 'Eye Color'],
-      h1Aavegotchis: {},
-      h2Aavegotchis: {},
       aavegotchis: {},
+      h1Count: 0,
+      h2Count: 0,
       loading: true,
     };
   }
@@ -33,38 +33,19 @@ class AavegotchiTraitDistributions extends Component {
   async componentDidMount() {
     retrieveAllGotchis()
       .then((gotchis) => {
-        console.log('all gotchis', gotchis);
+        console.log('all gotchis', gotchis, _.uniqBy(gotchis, 'id').length);
 
         let aavegotchis = {};
         for (var a = 0; a < gotchis.length; a++) {
           aavegotchis[gotchis[a].id] = gotchis[a];
         }
 
-        this.setState({ aavegotchis, loading: false });
-      });
-
-    retrieveH1Gotchis()
-      .then((gotchis) => {
-        console.log('h1 gotchis', gotchis);
-
-        let aavegotchis = {};
-        for (var a = 0; a < gotchis.length; a++) {
-          aavegotchis[gotchis[a].id] = gotchis[a];
-        }
-
-        this.setState({ h1Aavegotchis: aavegotchis, loading: false });
-      });
-
-    retrieveH2Gotchis()
-      .then((gotchis) => {
-        console.log('h2 gotchis', gotchis);
-
-        let aavegotchis = {};
-        for (var a = 0; a < gotchis.length; a++) {
-          aavegotchis[gotchis[a].id] = gotchis[a];
-        }
-
-        this.setState({ h2Aavegotchis: aavegotchis, loading: false });
+        this.setState({
+          aavegotchis,
+          h1Count: _.filter(gotchis, ['hauntId', '1']).length,
+          h2Count: _.filter(gotchis, ['hauntId', '2']).length,
+          loading: false
+        });
       });
   }
 
@@ -198,17 +179,15 @@ class AavegotchiTraitDistributions extends Component {
   renderTraitsDistribution() {
     const _this = this;
 
-    let h1Summoned = Object.keys(this.state.h1Aavegotchis).length;
-    let h2Summoned = Object.keys(this.state.h2Aavegotchis).length;
-    let totalSummoned = h1Summoned + h2Summoned;
+    if (Object.keys(this.state.aavegotchis).length > 0) {
+      let totalSummoned = this.state.h1Count + this.state.h2Count;
 
-    if (Object.keys(this.state.aavegotchis).length > 0 && Object.keys(this.state.h1Aavegotchis).length > 0 && Object.keys(this.state.h2Aavegotchis).length > 0) {
       const options = {
         title: {
           text: 'Summoned Aavegotchis Base Traits Distribution',
         },
         subtitle: {
-          text: `Summoned Aavegotchis: ${h1Summoned} (H1), ${h2Summoned} (H2), ${totalSummoned} (TOTAL)`
+          text: `Summoned Aavegotchis: ${this.state.h1Count} (H1), ${this.state.h2Count} (H2), ${totalSummoned} (TOTAL)`
         },
         series: [
           { data: this.calculateData(0), name: 'Energy' },

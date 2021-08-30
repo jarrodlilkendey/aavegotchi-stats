@@ -31,14 +31,14 @@ const h1AavegotchiGraphQuery = (skip, order) => {
   return query;
 }
 
-const h2AavegotchiGraphQuery = (skip, order, id_lte) => {
+const h2AavegotchiGraphQuery = (skip, order, id_gte) => {
   let query = `{
     aavegotchis(
       first: 1000,
       skip: ${skip},
       orderBy: id,
       orderDirection: ${order},
-      where:{ status: 3, owner_not: "0x0000000000000000000000000000000000000000", hauntId: "2", id_lte: ${id_lte} }
+      where:{ status: 3, owner_not: "0x0000000000000000000000000000000000000000", hauntId: "2", id_gte: ${id_gte} }
     ) {
       id
       hauntId
@@ -136,7 +136,7 @@ export const retrieveH1Gotchis = async () => {
     }
   }
 
-  return aavegotchis;
+  return _.uniqBy(aavegotchis, 'id');
 };
 
 export const retrieveH2Gotchis = async () => {
@@ -144,14 +144,14 @@ export const retrieveH2Gotchis = async () => {
   let gotchiIds = [];
   let stop = false;
 
-  let id_ltes = [14999, 19999, 24999];
+  let id_gtes = [10000, 15000, 20000];
 
   for (let a = 0; a < 3; a++) {
     for (let i = 0; i < 5; i++) {
       const g = await axios.post(
         'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
         {
-          query: h2AavegotchiGraphQuery(i * 1000, 'asc', id_ltes[a])
+          query: h2AavegotchiGraphQuery(i * 1000, 'asc', id_gtes[a])
         }
       );
 
@@ -164,7 +164,7 @@ export const retrieveH2Gotchis = async () => {
     }
   }
 
-  return aavegotchis;
+  return _.uniqBy(aavegotchis, 'id');
 };
 
 export const retrieveAllGotchis = async () => {
@@ -276,7 +276,7 @@ const h2PortalGraphQuery = (skip, order, id_lte) => {
       orderDirection:${order},
       where: {
         hauntId: "2"
-        id_lte: ${id_lte}
+        id_gte: ${id_lte}
       }
     ) {
       id
@@ -295,7 +295,7 @@ const h2PortalGraphQuery = (skip, order, id_lte) => {
 
 export const retrieveH2Portals = async () => {
   let portals = [];
-  let id_ltes = [14999, 19999, 24999];
+  let id_ltes = [10000, 15000, 20000];
 
   for (let a = 0; a < 3; a++) {
     for (let i = 0; i < 5; i++) {
