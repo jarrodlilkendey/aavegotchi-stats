@@ -1,14 +1,14 @@
 const axios = require('axios');
 const _ = require('lodash');
 
-const aavegotchiGraphQuery = (skip, order) => {
+const h1AavegotchiGraphQuery = (skip, order) => {
   let query = `{
     aavegotchis(
       first: 1000,
       skip: ${skip},
       orderBy: id,
       orderDirection: ${order},
-      where:{ status: 3, owner_not: "0x0000000000000000000000000000000000000000" }
+      where:{ status: 3, owner_not: "0x0000000000000000000000000000000000000000", hauntId: "1" }
     ) {
       id
       hauntId
@@ -30,6 +30,37 @@ const aavegotchiGraphQuery = (skip, order) => {
 
   return query;
 }
+
+const h2AavegotchiGraphQuery = (skip, order, id_lte) => {
+  let query = `{
+    aavegotchis(
+      first: 1000,
+      skip: ${skip},
+      orderBy: id,
+      orderDirection: ${order},
+      where:{ status: 3, owner_not: "0x0000000000000000000000000000000000000000", hauntId: "2", id_lte: ${id_lte} }
+    ) {
+      id
+      hauntId
+      name
+      numericTraits
+      modifiedNumericTraits
+      withSetsNumericTraits
+      baseRarityScore
+      modifiedRarityScore
+      withSetsRarityScore
+      kinship
+      experience
+      equippedWearables
+      owner {
+        id
+      }
+    }
+  }`;
+
+  return query;
+}
+
 
 const aavegotchiGraphQueryAtBlock = (skip, order, block) => {
   let query = `{
@@ -62,7 +93,7 @@ const aavegotchiGraphQueryAtBlock = (skip, order, block) => {
   return query;
 }
 
-export const retrieveAllGotchis = async () => {
+export const retrieveH1Gotchis = async () => {
   let aavegotchis = [];
   let gotchiIds = [];
   let stop = false;
@@ -71,37 +102,76 @@ export const retrieveAllGotchis = async () => {
     const g = await axios.post(
       'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
       {
-        query: aavegotchiGraphQuery(i * 1000, 'asc')
+        query: h1AavegotchiGraphQuery(i * 1000, 'asc')
       }
     );
 
-    g.data.data.aavegotchis.map(function(gotchi, index) {
-      aavegotchis.push(gotchi);
-      gotchiIds.push(gotchi.id);
-    });
+    if (g.data.data.aavegotchis.length > 0) {
+      g.data.data.aavegotchis.map(function(gotchi, index) {
+        aavegotchis.push(gotchi);
+        gotchiIds.push(gotchi.id);
+      });
+    }
   }
 
   for (let i = 0; i < 5 && !stop; i++) {
     const g = await axios.post(
       'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
       {
-        query: aavegotchiGraphQuery(i * 1000, 'desc')
+        query: h1AavegotchiGraphQuery(i * 1000, 'desc')
       }
     );
 
-    g.data.data.aavegotchis.map(function(gotchi, index) {
-      if (!stop) {
-        if (!_.includes(gotchiIds, gotchi.id)) {
-          aavegotchis.push(gotchi);
-          gotchiIds.push(gotchi.id);
-        } else {
-          stop = true;
+    if (g.data.data.aavegotchis.length > 0) {
+      g.data.data.aavegotchis.map(function(gotchi, index) {
+        if (!stop) {
+          if (!_.includes(gotchiIds, gotchi.id)) {
+            aavegotchis.push(gotchi);
+            gotchiIds.push(gotchi.id);
+          } else {
+            stop = true;
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   return aavegotchis;
+};
+
+export const retrieveH2Gotchis = async () => {
+  let aavegotchis = [];
+  let gotchiIds = [];
+  let stop = false;
+
+  let id_ltes = [14999, 19999, 24999];
+
+  for (let a = 0; a < 3; a++) {
+    for (let i = 0; i < 5; i++) {
+      const g = await axios.post(
+        'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+        {
+          query: h2AavegotchiGraphQuery(i * 1000, 'asc', id_ltes[a])
+        }
+      );
+
+      if (g.data.data.aavegotchis.length > 0) {
+        g.data.data.aavegotchis.map(function(gotchi, index) {
+          aavegotchis.push(gotchi);
+          gotchiIds.push(gotchi.id);
+        });
+      }
+    }
+  }
+
+  return aavegotchis;
+};
+
+export const retrieveAllGotchis = async () => {
+  let h1Gotchis = await retrieveH1Gotchis();
+  let h2Gotchis = await retrieveH2Gotchis();
+
+  return [...h1Gotchis, ...h2Gotchis];
 };
 
 export const retrieveAllGotchisAtBlock = async (block) => {

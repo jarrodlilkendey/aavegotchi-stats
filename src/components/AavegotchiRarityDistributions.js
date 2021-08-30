@@ -5,7 +5,7 @@ import HighchartsReact from 'highcharts-react-official';
 
 import { DataGrid } from '@material-ui/data-grid';
 
-import { retrieveAllGotchis, retrieveErc721ListingsByTokenIds } from '../util/Graph';
+import { retrieveH1Gotchis, retrieveH2Gotchis, retrieveErc721ListingsByTokenIds } from '../util/Graph';
 import { formatGhst } from '../util/AavegotchiMath';
 
 import Loading from './Loading';
@@ -23,14 +23,14 @@ class AavegotchiRarityDistributions extends Component {
 
     this.state = {
       gotchisByBRS: [],
-      aavegotchis: {},
-      minBrs: 0, maxBrs: 0,
+      h1Aavegotchis: {}, h1MinBrs: 0, h1MaxBrs: 0,
+      h2Aavegotchis: {}, h2MinBrs: 0, h2MaxBrs: 0,
       loading: true,
     };
   }
 
   async componentDidMount() {
-    retrieveAllGotchis()
+    retrieveH1Gotchis()
       .then((gotchis) => {
         console.log(gotchis);
 
@@ -58,24 +58,76 @@ class AavegotchiRarityDistributions extends Component {
           }
         });
 
-        this.setState({ aavegotchis: aavegotchis, summonedGotchis: Object.keys(aavegotchis).length, minBrs, maxBrs, loading: false });
+        this.setState({ h1Aavegotchis: aavegotchis, h1MinBrs: minBrs, h1MaxBrs: maxBrs, loading: false });
+      });
+
+    retrieveH2Gotchis()
+      .then((gotchis) => {
+        console.log(gotchis);
+
+        let aavegotchis = {};
+        let minBrs = 0;
+        let maxBrs = 0;
+
+        for (var a = 0; a < gotchis.length; a++) {
+          let brs = parseInt(gotchis[a].baseRarityScore)
+
+          aavegotchis[gotchis[a].id] = gotchis[a];
+          aavegotchis[gotchis[a].id].brs = brs;
+        }
+
+        Object.keys(aavegotchis).map(function(id, index) {
+          let aavegotchi = aavegotchis[id];
+
+          if (index == 0) {
+            minBrs = aavegotchi.brs;
+            maxBrs = aavegotchi.brs;
+          } else if (aavegotchi.brs < minBrs) {
+            minBrs = aavegotchi.brs;
+          } else if (aavegotchi.brs > maxBrs) {
+            maxBrs = aavegotchi.brs;
+          }
+        });
+
+        this.setState({ h2Aavegotchis: aavegotchis, h2MinBrs: minBrs, h2MaxBrs: maxBrs, loading: false });
       });
   }
 
-  calculateData() {
+  calculateData(haunt) {
     let data = [];
-    for (let brs = this.state.minBrs; brs < this.state.maxBrs+1; brs++) {
-      let filteredAavegotchis = _.filter(this.state.aavegotchis, ['brs', brs]);
+
+    let minBrs = this.state.h1MinBrs;
+    let maxBrs = this.state.h1MaxBrs;
+
+    if (haunt == 2) {
+      minBrs = this.state.h2MinBrs;
+      maxBrs = this.state.h2MaxBrs;
+    }
+
+    for (let brs = minBrs; brs < maxBrs+1; brs++) {
+      let filteredAavegotchis = [];
+      if (haunt == 1) {
+        filteredAavegotchis = _.filter(this.state.h1Aavegotchis, ['brs', brs]);
+      } else if (haunt == 2) {
+        filteredAavegotchis = _.filter(this.state.h2Aavegotchis, ['brs', brs]);
+      }
+
       let countBrs = filteredAavegotchis.length;
       // console.log(this.state.aavegotchis, brs, filteredAavegotchis, countBrs);
       data.push([brs, countBrs]);
     }
+
     return data;
   }
 
-  async retrieveGotchis(brsValue) {
-    console.log('retrieveGotchis', 'brsValue', brsValue);
-    const gotchisByBRS = _.filter(this.state.aavegotchis, ['baseRarityScore', brsValue.toString()]);
+  async retrieveGotchis(brsValue, haunt) {
+    console.log('retrieveGotchis', 'brsValue', brsValue, haunt);
+
+    let gotchisByBRS = _.filter(this.state.h1Aavegotchis, ['baseRarityScore', brsValue.toString()]);
+    if (haunt == 2) {
+      gotchisByBRS = _.filter(this.state.h2Aavegotchis, ['baseRarityScore', brsValue.toString()]);
+    }
+
     console.log(gotchisByBRS);
     this.setState({ gotchisByBRS: gotchisByBRS, brsValue: brsValue });
 
@@ -96,6 +148,7 @@ class AavegotchiRarityDistributions extends Component {
     if (this.state.gotchisByBRS.length > 0) {
       const columns = [
         { field: 'id', headerName: 'ID', width: 80 },
+        { field: 'hauntId', headerName: 'Haunt', width: 100 },
         { field: 'name', headerName: 'Name', width: 220 },
         { field: 'brs', headerName: 'BRS', width: 80 },
         { field: 'mrs', headerName: 'MRS', width: 85 },
@@ -123,6 +176,7 @@ class AavegotchiRarityDistributions extends Component {
       _this.state.gotchisByBRS.map(function(a, index) {
         let row = {
           id: a.id,
+          hauntId: a.hauntId,
           name: a.name,
           nrg: a.numericTraits[0],
           agg: a.numericTraits[1],
@@ -166,16 +220,21 @@ class AavegotchiRarityDistributions extends Component {
   renderRarityDistribution() {
     const _this = this;
 
-    if (Object.keys(this.state.aavegotchis).length > 0) {
+    let h1Summoned = Object.keys(this.state.h1Aavegotchis).length;
+    let h2Summoned = Object.keys(this.state.h2Aavegotchis).length;
+    let totalSummoned = h1Summoned + h2Summoned;
+
+    if (Object.keys(this.state.h1Aavegotchis).length > 0 && Object.keys(this.state.h2Aavegotchis).length > 0) {
       const options = {
         title: {
           text: 'Summoned Aavegotchis Base Rarity Score Distribution',
         },
         subtitle: {
-          text: `${this.state.summonedGotchis} Summoned Gotchis`
+          text: `Summoned Aavegotchis: ${h1Summoned} (H1), ${h2Summoned} (H2), ${totalSummoned} (TOTAL)`
         },
         series: [
-          { data: this.calculateData(), name: 'BRS' },
+          { data: this.calculateData(1), name: 'Haunt 1 Aavegotchis' },
+          { data: this.calculateData(2), name: 'Haunt 2 Aavegotchis' },
         ],
         plotOptions: {
           series: {
@@ -183,7 +242,7 @@ class AavegotchiRarityDistributions extends Component {
             point: {
               events: {
                 click: function () {
-                  _this.retrieveGotchis(this.x);
+                  _this.retrieveGotchis(this.x, this.colorIndex + 1);
                 }
               }
             }

@@ -5,7 +5,7 @@ import HighchartsReact from 'highcharts-react-official';
 
 import { DataGrid } from '@material-ui/data-grid';
 
-import { retrieveAllGotchis } from '../util/Graph';
+import { retrieveAllGotchis, retrieveH1Gotchis, retrieveH2Gotchis } from '../util/Graph';
 
 import Loading from './Loading';
 
@@ -23,6 +23,8 @@ class AavegotchiTraitDistributions extends Component {
     this.state = {
       gotchisByTraitValue: [],
       traits: ['Energy', 'Aggression', 'Spookiness', 'Brain Size', 'Eye Shape', 'Eye Color'],
+      h1Aavegotchis: {},
+      h2Aavegotchis: {},
       aavegotchis: {},
       loading: true,
     };
@@ -31,14 +33,38 @@ class AavegotchiTraitDistributions extends Component {
   async componentDidMount() {
     retrieveAllGotchis()
       .then((gotchis) => {
-        console.log(gotchis);
+        console.log('all gotchis', gotchis);
 
         let aavegotchis = {};
         for (var a = 0; a < gotchis.length; a++) {
           aavegotchis[gotchis[a].id] = gotchis[a];
         }
 
-        this.setState({ aavegotchis: aavegotchis, summonedGotchis: Object.keys(aavegotchis).length, loading: false });
+        this.setState({ aavegotchis, loading: false });
+      });
+
+    retrieveH1Gotchis()
+      .then((gotchis) => {
+        console.log('h1 gotchis', gotchis);
+
+        let aavegotchis = {};
+        for (var a = 0; a < gotchis.length; a++) {
+          aavegotchis[gotchis[a].id] = gotchis[a];
+        }
+
+        this.setState({ h1Aavegotchis: aavegotchis, loading: false });
+      });
+
+    retrieveH2Gotchis()
+      .then((gotchis) => {
+        console.log('h2 gotchis', gotchis);
+
+        let aavegotchis = {};
+        for (var a = 0; a < gotchis.length; a++) {
+          aavegotchis[gotchis[a].id] = gotchis[a];
+        }
+
+        this.setState({ h2Aavegotchis: aavegotchis, loading: false });
       });
   }
 
@@ -100,6 +126,7 @@ class AavegotchiTraitDistributions extends Component {
     if (this.state.gotchisByTraitValue.length > 0) {
       const columns = [
         { field: 'id', headerName: 'ID', width: 80 },
+        { field: 'hauntId', headerName: 'Haunt', width: 100 },
         { field: 'name', headerName: 'Name', width: 220 },
         { field: 'brs', headerName: 'BRS', width: 80 },
         { field: 'mrs', headerName: 'MRS', width: 85 },
@@ -127,6 +154,7 @@ class AavegotchiTraitDistributions extends Component {
       this.state.gotchisByTraitValue.map(function(a, index) {
         let row = {
           id: a.id,
+          hauntId: a.hauntId,
           name: a.name,
           nrg: a.numericTraits[0],
           agg: a.numericTraits[1],
@@ -170,13 +198,17 @@ class AavegotchiTraitDistributions extends Component {
   renderTraitsDistribution() {
     const _this = this;
 
-    if (Object.keys(this.state.aavegotchis).length > 0) {
+    let h1Summoned = Object.keys(this.state.h1Aavegotchis).length;
+    let h2Summoned = Object.keys(this.state.h2Aavegotchis).length;
+    let totalSummoned = h1Summoned + h2Summoned;
+
+    if (Object.keys(this.state.aavegotchis).length > 0 && Object.keys(this.state.h1Aavegotchis).length > 0 && Object.keys(this.state.h2Aavegotchis).length > 0) {
       const options = {
         title: {
           text: 'Summoned Aavegotchis Base Traits Distribution',
         },
         subtitle: {
-          text: `${this.state.summonedGotchis} Summoned Gotchis`
+          text: `Summoned Aavegotchis: ${h1Summoned} (H1), ${h2Summoned} (H2), ${totalSummoned} (TOTAL)`
         },
         series: [
           { data: this.calculateData(0), name: 'Energy' },
