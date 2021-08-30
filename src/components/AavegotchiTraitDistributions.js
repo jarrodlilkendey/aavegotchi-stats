@@ -51,7 +51,7 @@ class AavegotchiTraitDistributions extends Component {
 
   calculateData(trait) {
     let data = [];
-    for (let tv = -1; tv < 101; tv++) {
+    for (let tv = -1; tv < 102; tv++) {
       let filteredAavegotchis = _.filter(this.state.aavegotchis, [`numericTraits[${trait}]`, tv]);
       let countTv = filteredAavegotchis.length;
       // console.log(tv, filteredAavegotchis, countTv);
