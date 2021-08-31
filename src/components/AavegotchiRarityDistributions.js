@@ -221,21 +221,21 @@ class AavegotchiRarityDistributions extends Component {
   renderRarityDistribution() {
     const _this = this;
 
-    let h1Summoned = Object.keys(this.state.h1Aavegotchis).length;
-    let h2Summoned = Object.keys(this.state.h2Aavegotchis).length;
-    let totalSummoned = h1Summoned + h2Summoned;
+    let h1Claimed = Object.keys(this.state.h1Aavegotchis).length;
+    let h2Claimed = Object.keys(this.state.h2Aavegotchis).length;
+    let totalClaimed = h1Claimed + h2Claimed;
 
     if (Object.keys(this.state.h1Aavegotchis).length > 0 && Object.keys(this.state.h2Aavegotchis).length > 0) {
       const options = {
         title: {
-          text: 'Summoned Aavegotchis Base Rarity Score Distribution',
+          text: 'Claimed Aavegotchis Base Rarity Score Distribution',
         },
         subtitle: {
-          text: `Summoned Aavegotchis: ${h1Summoned} (H1), ${h2Summoned} (H2), ${totalSummoned} (TOTAL)`
+          text: `Claimed Aavegotchis: ${h1Claimed} (H1), ${h2Claimed} (H2), ${totalClaimed} (TOTAL)`
         },
         series: [
-          { data: this.calculateData(1), name: 'Haunt 1 Aavegotchis' },
-          { data: this.calculateData(2), name: 'Haunt 2 Aavegotchis' },
+          { data: this.calculateData(1), name: 'Claimed Haunt 1 Aavegotchis' },
+          { data: this.calculateData(2), name: 'Claimed Haunt 2 Aavegotchis' },
         ],
         plotOptions: {
           series: {
@@ -272,10 +272,13 @@ class AavegotchiRarityDistributions extends Component {
       }
 
       return (
-        <HighchartsReact
-          highcharts={Highcharts}
-          options={options}
-        />
+        <div>
+          <p>Note: this chart only contains Aavegotchis that have been claimed from portals and excludes Aavegotchis that have been sacrificed.</p>
+          <HighchartsReact
+            highcharts={Highcharts}
+            options={options}
+          />
+        </div>
       );
     }
   }
