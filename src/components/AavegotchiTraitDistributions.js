@@ -180,14 +180,14 @@ class AavegotchiTraitDistributions extends Component {
     const _this = this;
 
     if (Object.keys(this.state.aavegotchis).length > 0) {
-      let totalSummoned = this.state.h1Count + this.state.h2Count;
+      let totalClaimed = this.state.h1Count + this.state.h2Count;
 
       const options = {
         title: {
-          text: 'Summoned Aavegotchis Base Traits Distribution',
+          text: 'Claimed Aavegotchis Base Traits Distribution',
         },
         subtitle: {
-          text: `Summoned Aavegotchis: ${this.state.h1Count} (H1), ${this.state.h2Count} (H2), ${totalSummoned} (TOTAL)`
+          text: `Claimed Aavegotchis: ${this.state.h1Count} (H1), ${this.state.h2Count} (H2), ${totalClaimed} (TOTAL)`
         },
         series: [
           { data: this.calculateData(0), name: 'Energy' },
@@ -232,10 +232,13 @@ class AavegotchiTraitDistributions extends Component {
       }
 
       return (
-        <HighchartsReact
-          highcharts={Highcharts}
-          options={options}
-        />
+        <div>
+          <p>Note: this chart only contains Aavegotchis that have been claimed from portals and excludes Aavegotchis that have been sacrificed.</p>
+          <HighchartsReact
+            highcharts={Highcharts}
+            options={options}
+          />
+        </div>
       );
     }
   }
