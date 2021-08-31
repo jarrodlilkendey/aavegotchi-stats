@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { erc721FloorPrice, erc1155FloorPrice, erc1155FloorPriceById, erc721CheapestMythEyes, erc721CheapestGodlike, erc721CheapestMythical, erc721CheapestLegendary, cheapestXP, cheapestKIN } from '../util/FloorPricesUtil';
+import { erc721FloorPrice, erc1155FloorPrice, erc1155FloorPriceById, erc721CheapestMythEyes, erc721CheapestByWearableRarity, cheapestXP, cheapestKIN, portalOptionCheapestMythEyes } from '../util/FloorPricesUtil';
 
 import { ethers } from "ethers";
 
@@ -124,58 +124,57 @@ class FloorPrices extends Component {
         _this.setState({ h2MythEyes: { listings, floor, link, tokenId  } });
       });
 
-    erc721CheapestGodlike()
+    erc721CheapestByWearableRarity()
       .then((listings) => {
-        let floor = 0;
-        let link = 'https://aavegotchi.com/baazaar';
-        let tokenId = 'No Listings';
-        if (listings.length > 0) {
-          floor = ethers.utils.formatEther(listings[0].priceInWei);
-          link = `https://aavegotchi.com/baazaar/erc721/${listings[0].id}`;
-          tokenId = `#${listings[0].gotchi.id}`;
+
+        console.log('erc721CheapestByWearableRarity', listings);
+
+        let godlikeFloor = 0;
+        let mythicalFloor = 0;
+        let legendaryFloor = 0;
+
+        let godlikeLink = 'https://aavegotchi.com/baazaar';
+        let mythicalLink = 'https://aavegotchi.com/baazaar';
+        let legendaryLink = 'https://aavegotchi.com/baazaar';
+
+        let godlikeTokenId = 'No Listings';
+        let mythicalTokenId = 'No Listings';
+        let legendaryTokenId = 'No Listings';
+
+        if (listings.aavegotchiGodlikes.length > 0) {
+          godlikeFloor = ethers.utils.formatEther(listings.aavegotchiGodlikes[0].priceInWei);
+          godlikeLink = `https://aavegotchi.com/baazaar/erc721/${listings.aavegotchiGodlikes[0].id}`;
+          godlikeTokenId = `#${listings.aavegotchiGodlikes[0].gotchi.id}`;
         }
-        _this.setState({ aavegotchiGodlike: { listings, floor, link, tokenId  } });
+
+        if (listings.aavegotchiMythicals.length > 0) {
+          mythicalFloor = ethers.utils.formatEther(listings.aavegotchiMythicals[0].priceInWei);
+          mythicalLink = `https://aavegotchi.com/baazaar/erc721/${listings.aavegotchiMythicals[0].id}`;
+          mythicalTokenId = `#${listings.aavegotchiMythicals[0].gotchi.id}`;
+        }
+
+        if (listings.aavegotchiLegendaries.length > 0) {
+          legendaryFloor = ethers.utils.formatEther(listings.aavegotchiLegendaries[0].priceInWei);
+          legendaryLink = `https://aavegotchi.com/baazaar/erc721/${listings.aavegotchiLegendaries[0].id}`;
+          legendaryTokenId = `#${listings.aavegotchiLegendaries[0].gotchi.id}`;
+        }
+
+        _this.setState({
+            aavegotchiGodlike: { listings: listings.aavegotchiGodlikes, floor: godlikeFloor, link: godlikeLink, tokenId: godlikeTokenId  },
+            aavegotchiMythical: { listings: listings.aavegotchiMythicals, floor: mythicalFloor, link: mythicalLink, tokenId: mythicalTokenId  },
+            aavegotchiLegendary: { listings: listings.aavegotchiLegendaries, floor: legendaryFloor, link: legendaryLink, tokenId: legendaryTokenId  },
+        });
       });
 
-      erc721CheapestMythical()
+      portalOptionCheapestMythEyes(1)
         .then((listings) => {
-          let floor = 0;
-          let link = 'https://aavegotchi.com/baazaar';
-          let tokenId = 'No Listings';
-          if (listings.length > 0) {
-            floor = ethers.utils.formatEther(listings[0].priceInWei);
-            link = `https://aavegotchi.com/baazaar/erc721/${listings[0].id}`;
-            tokenId = `#${listings[0].gotchi.id}`;
-          }
-          _this.setState({ aavegotchiMythical: { listings, floor, link, tokenId  } });
+          console.log('h1 open portal myth eyes', listings);
         });
 
-      erc721CheapestLegendary()
+      portalOptionCheapestMythEyes(2)
         .then((listings) => {
-          let floor = 0;
-          let link = 'https://aavegotchi.com/baazaar';
-          let tokenId = 'No Listings';
-          if (listings.length > 0) {
-            floor = ethers.utils.formatEther(listings[0].priceInWei);
-            link = `https://aavegotchi.com/baazaar/erc721/${listings[0].id}`;
-            tokenId = `#${listings[0].gotchi.id}`;
-          }
-          _this.setState({ aavegotchiLegendary: { listings, floor, link, tokenId  } });
+          console.log('h2 open portal myth eyes', listings);
         });
-
-      // portalOptionCheapestMythEyes()
-      //   .then((listings) => {
-      //     console.log(listings);
-      //     // let floor = 0;
-      //     // let link = 'https://aavegotchi.com/baazaar';
-      //     // let tokenId = '';
-      //     // if (listings.length > 0) {
-      //     //   floor = ethers.utils.formatEther(listings[0].priceInWei);
-      //     //   link = `https://aavegotchi.com/baazaar/erc721/${listings[0].id}`;
-      //     //   tokenId = listings[0].gotchi.id;
-      //     // }
-      //     // _this.setState({ mythEyes: { listings, floor, link, tokenId  } });
-      //   });
 
       cheapestXP()
         .then((listings) => {

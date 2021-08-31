@@ -156,63 +156,82 @@ export const erc721CheapestMythEyes = async (hauntId) => {
   return mythEyes;
 };
 
-export const erc721CheapestGodlike = async () => {
-  let query = `{
-    erc721Listings(
-      first: 1000,
-      orderBy: priceInWei,
-      orderDirection: asc,
-      where:{
-        category: 3, cancelled: false, timePurchased: 0
-      }) {
-      id
-      gotchi {
-        id
-        numericTraits
+export const erc721CheapestByWearableRarity = async () => {
+  let results = [];
+
+  for (var i = 0; i < 3; i++) {
+    const result = await axios.post(
+      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      {
+        query: `{
+          erc721Listings(
+            first: 1000,
+            skip: ${i * 1000},
+            orderBy: priceInWei,
+            orderDirection: asc,
+            where:{
+              category: 3, cancelled: false, timePurchased: 0
+            }) {
+            id
+            gotchi {
+              id
+              numericTraits
+            }
+            priceInWei
+            equippedWearables
+          }
+        }`
       }
-      priceInWei
-      equippedWearables
-    }
-  }`;
+    );
 
-  const result = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
-    {
-      query: query
-    }
-  );
+    results.push(...result.data.data.erc721Listings);
+  }
 
+  let aavegotchiLegendaries = [];
+  let aavegotchiMythicals = [];
   let aavegotchiGodlikes = [];
 
-  result.data.data.erc721Listings.map((listing) => {
+  results.map((listing) => {
     listing.equippedWearables.map((w) => {
       if (w != 0) {
-        if (wearableItemTypes[w].rarityScoreModifier == "50") {
+        if (wearableItemTypes[w].rarityScoreModifier == "10") {
+          aavegotchiLegendaries.push(listing);
+        } else if (wearableItemTypes[w].rarityScoreModifier == "20") {
+          aavegotchiMythicals.push(listing);
+        } else if (wearableItemTypes[w].rarityScoreModifier == "50") {
           aavegotchiGodlikes.push(listing);
         }
       }
     });
   });
 
-  return aavegotchiGodlikes;
+  let listedGotchisWithWearables = {
+    aavegotchiLegendaries: aavegotchiLegendaries,
+    aavegotchiMythicals: aavegotchiMythicals,
+    aavegotchiGodlikes: aavegotchiGodlikes
+  };
+
+  return listedGotchisWithWearables;
 };
 
-export const erc721CheapestMythical = async () => {
+export const portalOptionCheapestMythEyes = async (hauntId) => {
   let query = `{
     erc721Listings(
       first: 1000,
       orderBy: priceInWei,
       orderDirection: asc,
       where:{
-        category: 3, cancelled: false, timePurchased: 0
+        category: 2, cancelled: false, timePurchased: 0, hauntId: ${hauntId}
       }) {
       id
-      gotchi {
-        id
-        numericTraits
-      }
       priceInWei
-      equippedWearables
+    	portal {
+        options{
+          id
+          numericTraits
+          baseRarityScore
+        }
+      }
     }
   }`;
 
@@ -223,109 +242,25 @@ export const erc721CheapestMythical = async () => {
     }
   );
 
-  let aavegotchiMythicals = [];
+  console.log(result.data.data.erc721Listings.length);
 
+  let mythEyes = [];
   result.data.data.erc721Listings.map((listing) => {
-    listing.equippedWearables.map((w) => {
-      if (w != 0) {
-        if (wearableItemTypes[w].rarityScoreModifier == "20") {
-          aavegotchiMythicals.push(listing);
-        }
+    listing.portal.options.map((option) => {
+      let eyeShape = option.numericTraits[4];
+      let eyeColor = option.numericTraits[5];
+      if ((eyeShape <= 1 || eyeShape >= 98) && (eyeColor <= 1 || eyeColor >= 98)) {
+        mythEyes.push(listing);
+        console.log('push', listing);
       }
+      // if (option.baseRarityScore > 530) {
+      //    mythEyes.push(listing);
+      // }
     });
   });
 
-  return aavegotchiMythicals;
+  return mythEyes;
 };
-
-export const erc721CheapestLegendary = async () => {
-  let query = `{
-    erc721Listings(
-      first: 1000,
-      orderBy: priceInWei,
-      orderDirection: asc,
-      where:{
-        category: 3, cancelled: false, timePurchased: 0
-      }) {
-      id
-      gotchi {
-        id
-        numericTraits
-      }
-      priceInWei
-      equippedWearables
-    }
-  }`;
-
-  const result = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
-    {
-      query: query
-    }
-  );
-
-  let aavegotchiLegendaries = [];
-
-  result.data.data.erc721Listings.map((listing) => {
-    listing.equippedWearables.map((w) => {
-      if (w != 0) {
-        if (wearableItemTypes[w].rarityScoreModifier == "10") {
-          aavegotchiLegendaries.push(listing);
-        }
-      }
-    });
-  });
-
-  return aavegotchiLegendaries;
-};
-
-// export const portalOptionCheapestMythEyes = async () => {
-//   let query = `{
-//     erc721Listings(
-//       first: 1000,
-//       orderBy: priceInWei,
-//       orderDirection: asc,
-//       where:{
-//         category: 2, cancelled: false, timePurchased: 0
-//       }) {
-//       id
-//       priceInWei
-//     	portal {
-//         options{
-//           id
-//           numericTraits
-//           baseRarityScore
-//         }
-//       }
-//     }
-//   }`;
-//
-//   const result = await axios.post(
-//     'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
-//     {
-//       query: query
-//     }
-//   );
-//
-//   console.log(result.data.data.erc721Listings.length);
-//
-//   let mythEyes = [];
-//   result.data.data.erc721Listings.map((listing) => {
-//     listing.portal.options.map((option) => {
-//       // let eyeShape = option.numericTraits[4];
-//       // let eyeColor = option.numericTraits[5];
-//       // if ((eyeShape <= 1 || eyeShape >= 98) && (eyeColor <= 1 || eyeColor >= 98)) {
-//       //   mythEyes.push(listing);
-//       //   console.log('push', listing);
-//       // }
-//       if (option.baseRarityScore > 530) {
-//          mythEyes.push(listing);
-//       }
-//     });
-//   });
-//
-//   return mythEyes;
-// };
 
 export const cheapestXP = async () => {
   let query = `{
