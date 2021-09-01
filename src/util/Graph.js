@@ -267,6 +267,76 @@ export const retrieveH1Portals = async () => {
   return portals;
 };
 
+const h1PortalOptionsGraphQuery = (skip, order) => {
+  let query= `{
+    portals(
+      first: 1000,
+      skip: ${skip},
+      orderBy: id,
+      orderDirection:${order},
+      where: {
+        hauntId: "1",
+      }
+    ) {
+      id
+      hauntId
+      boughtAt,
+      openedAt,
+      claimedAt,
+    	options {
+        id
+        randomNumber
+        numericTraits
+        baseRarityScore
+      }
+    }
+  }`;
+
+  return query;
+}
+
+export const retrieveH1PortalOptions = async () => {
+  let portalOptions = [];
+
+  for (let i = 0; i < 5; i++) {
+    const portals = await axios.post(
+      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      {
+        query: h1PortalOptionsGraphQuery(i * 1000, 'asc')
+      }
+    );
+
+    for (let p = 0; p < portals.data.data.portals.length; p++) {
+      let portal = portals.data.data.portals[p];
+      if (portal.openedAt != null) {
+        for (let o = 0; o < portal.options.length; o++) {
+          portalOptions.push(portal.options[o]);
+        }
+      }
+    }
+  }
+
+  for (let i = 0; i < 5; i++) {
+    const portals = await axios.post(
+      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      {
+        query: h1PortalOptionsGraphQuery(i * 1000, 'desc')
+      }
+    );
+
+    for (let p = 0; p < portals.data.data.portals.length; p++) {
+      let portal = portals.data.data.portals[p];
+      if (portal.openedAt != null) {
+        for (let o = 0; o < portal.options.length; o++) {
+          portalOptions.push(portal.options[o]);
+        }
+      }
+    }
+  }
+
+  return portalOptions;
+};
+
 const h2PortalGraphQuery = (skip, order, id_lte) => {
   let query = `{
     portals(
@@ -310,6 +380,62 @@ export const retrieveH2Portals = async () => {
   }
 
   return portals;
+};
+
+const h2PortalOptionsGraphQuery = (skip, order, id_lte) => {
+  let query = `{
+    portals(
+      first: 1000,
+      skip: ${skip},
+      orderBy: id,
+      orderDirection:${order},
+      where: {
+        hauntId: "2"
+        id_gte: ${id_lte}
+      }
+    ) {
+      id
+      hauntId
+      boughtAt,
+      openedAt,
+      claimedAt,
+      options {
+        id
+        randomNumber
+        numericTraits
+        baseRarityScore
+      }
+    }
+  }`;
+
+  return query;
+}
+
+export const retrieveH2PortalOptions = async () => {
+  let portalOptions = [];
+  let id_ltes = [10000, 15000, 20000];
+
+  for (let a = 0; a < 3; a++) {
+    for (let i = 0; i < 5; i++) {
+      const portals = await axios.post(
+        'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+        {
+          query: h2PortalOptionsGraphQuery(i * 1000, 'asc', id_ltes[a])
+        }
+      );
+
+      for (let p = 0; p < portals.data.data.portals.length; p++) {
+        let portal = portals.data.data.portals[p];
+        if (portal.openedAt != null) {
+          for (let o = 0; o < portal.options.length; o++) {
+            portalOptions.push(portal.options[o]);
+          }
+        }
+      }
+    }
+  }
+
+  return portalOptions;
 };
 
 const h1OpenPortalGraphQuery = (skip) => {

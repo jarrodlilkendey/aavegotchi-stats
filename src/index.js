@@ -26,6 +26,7 @@ import WearableDetails from './components/WearableDetails';
 import WearablesList from './components/WearablesList';
 // import Frens from './components/Frens';
 import Tools from './components/Tools';
+import AavegotchiPortalRarityDistributions from './components/AavegotchiPortalRarityDistributions';
 
 // import Timeline from './components/Timeline';
 // import AavegotchiNetworth from './components/AavegotchiNetworth';
@@ -90,6 +91,11 @@ ReactDOM.render(
           <Route path="/rarity">
             <AavegotchiRarityDistributions title="Distribution of Rarity Scores in Aavegotchi" />
           </Route>
+
+          <Route path="/portalrarity">
+            <AavegotchiPortalRarityDistributions title="Distribution of Rarity Scores in Portal Options" />
+          </Route>
+
 
           <Route path="/wearablesales">
             <WearableSales title="Aavegotchi Wearable Sales" />
