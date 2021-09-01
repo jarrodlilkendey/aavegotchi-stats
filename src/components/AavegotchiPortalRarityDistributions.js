@@ -12,6 +12,7 @@ import Loading from './Loading';
 
 const _ = require('lodash');
 const axios = require('axios');
+const ss = require('simple-statistics')
 
 class AavegotchiPortalRarityDistributions extends Component {
   constructor(props) {
@@ -37,12 +38,14 @@ class AavegotchiPortalRarityDistributions extends Component {
         let aavegotchis = {};
         let minBrs = 0;
         let maxBrs = 0;
+        let h1Brs = [];
 
         for (var a = 0; a < gotchis.length; a++) {
           let brs = parseInt(gotchis[a].baseRarityScore)
 
           aavegotchis[gotchis[a].id] = gotchis[a];
           aavegotchis[gotchis[a].id].brs = brs;
+          h1Brs.push(brs);
         }
 
         Object.keys(aavegotchis).map(function(id, index) {
@@ -58,7 +61,17 @@ class AavegotchiPortalRarityDistributions extends Component {
           }
         });
 
-        this.setState({ h1Aavegotchis: aavegotchis, h1MinBrs: minBrs, h1MaxBrs: maxBrs, loading: false });
+        let h1Stats = { };
+        h1Stats.min = ss.min(h1Brs);
+        h1Stats.max = ss.max(h1Brs);
+        h1Stats.mean = ss.mean(h1Brs);
+        h1Stats.median = ss.median(h1Brs);
+        h1Stats.mode = ss.mode(h1Brs);
+        h1Stats.variance = ss.variance(h1Brs);
+        h1Stats.stddev = ss.standardDeviation(h1Brs);
+        console.log('h1Stats', h1Stats);
+
+        this.setState({ h1Aavegotchis: aavegotchis, h1MinBrs: minBrs, h1MaxBrs: maxBrs, h1Stats, loading: false });
       });
 
     retrieveH2PortalOptions()
@@ -68,12 +81,14 @@ class AavegotchiPortalRarityDistributions extends Component {
         let aavegotchis = {};
         let minBrs = 0;
         let maxBrs = 0;
+        let h2Brs = [];
 
         for (var a = 0; a < gotchis.length; a++) {
           let brs = parseInt(gotchis[a].baseRarityScore)
 
           aavegotchis[gotchis[a].id] = gotchis[a];
           aavegotchis[gotchis[a].id].brs = brs;
+          h2Brs.push(brs);
         }
 
         Object.keys(aavegotchis).map(function(id, index) {
@@ -89,8 +104,18 @@ class AavegotchiPortalRarityDistributions extends Component {
           }
         });
 
+        let h2Stats = { };
+        h2Stats.min = ss.min(h2Brs);
+        h2Stats.max = ss.max(h2Brs);
+        h2Stats.mean = ss.mean(h2Brs);
+        h2Stats.median = ss.median(h2Brs);
+        h2Stats.mode = ss.mode(h2Brs);
+        h2Stats.variance = ss.variance(h2Brs);
+        h2Stats.stddev = ss.standardDeviation(h2Brs);
+        console.log('h2Stats', h2Stats);
+
         console.log('setState h2Aavegotchis', aavegotchis, Object.keys(aavegotchis).length);
-        this.setState({ h2Aavegotchis: aavegotchis, h2MinBrs: minBrs, h2MaxBrs: maxBrs, loading: false });
+        this.setState({ h2Aavegotchis: aavegotchis, h2MinBrs: minBrs, h2MaxBrs: maxBrs, h2Stats, loading: false });
       });
   }
 
@@ -177,6 +202,39 @@ class AavegotchiPortalRarityDistributions extends Component {
     }
   }
 
+  renderStats() {
+    if (this.state.h1Stats && this.state.h2Stats) {
+      return(
+        <div className="container">
+          <div className="row">
+            <div className="col">
+              <h3>Haunt 1 Options Stats</h3>
+              <ul>
+                <li>Min: {this.state.h1Stats.min}</li>
+                <li>Max: {this.state.h1Stats.max}</li>
+                <li>Mean: {this.state.h1Stats.mean}</li>
+                <li>Median: {this.state.h1Stats.median}</li>
+                <li>Mode: {this.state.h1Stats.mode}</li>
+                <li>Variance: {this.state.h1Stats.variance}</li>
+                <li>Standard Deviation: {this.state.h1Stats.stddev}</li>
+              </ul>
+            </div>
+            <div className="col">
+              <h3>Haunt 2 Options Stats</h3>
+              <li>Min: {this.state.h2Stats.min}</li>
+              <li>Max: {this.state.h2Stats.max}</li>
+              <li>Mean: {this.state.h2Stats.mean}</li>
+              <li>Median: {this.state.h2Stats.median}</li>
+              <li>Mode: {this.state.h2Stats.mode}</li>
+              <li>Variance: {this.state.h2Stats.variance}</li>
+              <li>Standard Deviation: {this.state.h2Stats.stddev}</li>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  }
+
   render() {
     return (
       <div>
@@ -185,6 +243,7 @@ class AavegotchiPortalRarityDistributions extends Component {
           <Loading message="Loading Aavegotchis from TheGraph..." />
         }
         {this.renderRarityDistribution()}
+        {this.renderStats()}
       </div>
     );
   }
