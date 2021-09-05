@@ -28,6 +28,9 @@ import WearablesList from './components/WearablesList';
 import Tools from './components/Tools';
 import AavegotchiPortalRarityDistributions from './components/AavegotchiPortalRarityDistributions';
 
+import PromotedListings from './components/PromotedListings';
+import AddPromotedListing from './components/AddPromotedListing';
+
 // import Timeline from './components/Timeline';
 // import AavegotchiNetworth from './components/AavegotchiNetworth';
 // import CheapestSets from './components/CheapestSets';
@@ -70,6 +73,8 @@ ReactDOM.render(
     <Router>
       <div className="container">
         <NavBar pages={navBarPages} />
+
+        <PromotedListings />
 
         <Switch>
           <Route path="/recommendations">
@@ -154,9 +159,14 @@ ReactDOM.render(
             <Tools title="Recommended Tools" />
           </Route>
 
+          <Route path="/promote">
+            <AddPromotedListing />
+          </Route>
+
           <Route path="/">
             <Home title="What is AavegotchiStats?" />
           </Route>
+
          </Switch>
 
          <Credits />

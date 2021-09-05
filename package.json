@@ -46,6 +46,7 @@
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "react-svg": "^14.0.11",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.3",
     "sharp": "^0.28.2",

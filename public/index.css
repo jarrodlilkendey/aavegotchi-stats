@@ -86,3 +86,12 @@ select.form-select:focus {
   font-weight:400;
   font-weight:normal;
 }
+
+.card-img-top {
+}
+
+.card-img-top svg {
+  width: 100px;
+  height: 100px;
+  padding: 10px;
+}
