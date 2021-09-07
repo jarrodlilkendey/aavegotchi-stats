@@ -34,7 +34,7 @@ class PortalStats extends Component {
   async componentDidMount() {
     retrieveH1Portals()
       .then((h1Portals) => {
-        console.log('h1 portals', h1Portals, _.uniqBy(h1Portals, 'id').length);
+        console.log('h1 portals', h1Portals, h1Portals.length, _.uniqBy(h1Portals, 'id').length);
 
         this.calculateH1SummaryStats(h1Portals);
         this.setState({ h1Portals, loading: false });
@@ -42,7 +42,7 @@ class PortalStats extends Component {
 
     retrieveH2Portals()
       .then((h2Portals) => {
-        console.log('h2 portals', h2Portals, _.uniqBy(h2Portals, 'id').length);
+        console.log('h2 portals', h2Portals, h2Portals.length, _.uniqBy(h2Portals, 'id').length);
 
         this.calculateH2SummaryStats(h2Portals);
         this.setState({ h2Portals, loading: false });
@@ -70,6 +70,7 @@ class PortalStats extends Component {
     h1SummaryStats.portalsCount = portals.length;
     h1SummaryStats.openedCount =  _.reject(portals, ['openedAt', null]).length;
     h1SummaryStats.claimedCount =  _.reject(portals, ['claimedAt', null]).length;
+    h1SummaryStats.uniqueOwners =  _.uniqBy(_.reject(portals, ['owner.id', '0x0000000000000000000000000000000000000000']), 'owner.id').length;
     this.setState({ h1SummaryStats });
   }
 
@@ -78,6 +79,7 @@ class PortalStats extends Component {
     h2SummaryStats.portalsCount = portals.length;
     h2SummaryStats.openedCount =  _.reject(portals, ['openedAt', null]).length;
     h2SummaryStats.claimedCount =  _.reject(portals, ['claimedAt', null]).length;
+    h2SummaryStats.uniqueOwners =  _.uniqBy(_.reject(portals, ['owner.id', '0x0000000000000000000000000000000000000000']), 'owner.id').length;
     this.setState({ h2SummaryStats });
   }
 
@@ -89,6 +91,9 @@ class PortalStats extends Component {
       let totalSacrificedGotchis = this.state.h1SacrificedGotchis.length + this.state.h2SacrificedGotchis.length;
       let totalLiveGotchis = totalPortalsClaimed - totalSacrificedGotchis;
 
+      let allPortals = [...this.state.h1Portals, ...this.state.h2Portals];
+      let totalUniqueOwners =  _.uniqBy(_.reject(allPortals, ['owner.id', '0x0000000000000000000000000000000000000000']), 'owner.id').length;
+
       return (
         <div>
           <h2>Summary</h2>
@@ -97,17 +102,20 @@ class PortalStats extends Component {
           <p>Total H1 Portals Opened: {this.state.h1SummaryStats.openedCount}</p>
           <p>Total H1 Portals Claimed: {this.state.h1SummaryStats.claimedCount}</p>
           <p>Total H1 Aavegotchis Sacrificed: <a href='https://polygonscan.com/token/0x86935f11c86623dec8a25696e1c19a8659cbf95d?a=0x0000000000000000000000000000000000000000#inventory'>{this.state.h1SacrificedGotchis.length}</a></p>
+          <p>Total H1 Unique Owners: {this.state.h1SummaryStats.uniqueOwners}</p>
           <h3>Haunt 2 Summary</h3>
           <p>Total H2 Portals: {this.state.h2SummaryStats.portalsCount}</p>
           <p>Total H2 Portals Opened: {this.state.h2SummaryStats.openedCount}</p>
           <p>Total H2 Portals Claimed: {this.state.h2SummaryStats.claimedCount}</p>
           <p>Total H2 Aavegotchis Sacrificed: <a href='https://polygonscan.com/token/0x86935f11c86623dec8a25696e1c19a8659cbf95d?a=0x0000000000000000000000000000000000000000#inventory'>{this.state.h2SacrificedGotchis.length}</a></p>
+          <p>Total H2 Unique Owners: {this.state.h2SummaryStats.uniqueOwners}</p>
           <h3>Overall Summary</h3>
           <p>Total Portals: {totalPortals}</p>
           <p>Total Portals Opened: {totalPortalsOpened}</p>
           <p>Total Portals Claimed: {totalPortalsClaimed}</p>
           <p>Total Aavegotchis Sacrificed: {totalSacrificedGotchis}</p>
           <p>Total Live Aavegotchis: {totalLiveGotchis}</p>
+          <p>Total Unique Owners: {totalUniqueOwners}</p>
         </div>
       )
     }

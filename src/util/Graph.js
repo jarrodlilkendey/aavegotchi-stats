@@ -235,6 +235,9 @@ const h1PortalGraphQuery = (skip, order) => {
       gotchi {
         name
       }
+      owner {
+        id
+      }
     }
   }`;
 
@@ -356,6 +359,9 @@ const h2PortalGraphQuery = (skip, order, id_lte) => {
       claimedAt,
       gotchi {
         name
+      }
+      owner {
+        id
       }
     }
   }`;
