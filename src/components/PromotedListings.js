@@ -11,6 +11,7 @@ import promos from '../data/promos/promos.json';
 import aavegotchiContractAbi from '../abi/diamond.json';
 import contract from '../config/aavegotchiContract.json';
 import { connectToMatic } from '../util/MaticClient';
+import { generateGotchiUrl } from '../util/AavegotchiSvg';
 
 class PromotedListings extends Component {
   constructor(props) {
@@ -137,24 +138,28 @@ class PromotedListings extends Component {
 
     if (this.state.promoted.length > 0) {
       let promoCards = this.state.promoted.map((l, index) => {
-        let svgElement = {__html: this.state.mySvgObjects[l.tokenId]};
-        let info = this.state.listingInfo[l.listingId];
-        return (
-          <div className="col d-flex align-items-stretch" key={`svgcard${l.listingId}`}>
-            <div className="card" style={ { width: '10.5rem', 'margin-bottom': '5px', fontSize: '11px', cursor: 'pointer'} } onClick={() => this.selectListing(l.tokenType, l.listingId)}>
-              <div className="card-img-top" dangerouslySetInnerHTML={svgElement} style={{ display: 'flex', 'align-items': 'center', 'justify-content': 'center' }}>
-              </div>
-              <div className="card-body">
-                <p><b className="card-title">{info.title}</b></p>
-                <p className="card-text">{info.description}</p>
-                {info.extra &&
-                  <p className="card-text">{info.extra}</p>
-                }
-                <p className="card-text">{info.price}</p>
+        if (this.state.mySvgObjects[l.tokenId]) {
+          let blobUrl = generateGotchiUrl(this.state.mySvgObjects[l.tokenId]);;
+
+          let info = this.state.listingInfo[l.listingId];
+          return (
+            <div className="col d-flex align-items-stretch" key={`svgcard${l.listingId}`}>
+              <div className="card" style={ { width: '10.5rem', 'margin-bottom': '5px', fontSize: '11px', cursor: 'pointer'} } onClick={() => this.selectListing(l.tokenType, l.listingId)}>
+                <div className="card-img-top" style={{ display: 'flex', 'align-items': 'center', 'justify-content': 'center' }}>
+                  <img src={blobUrl} />
+                </div>
+                <div className="card-body">
+                  <p><b className="card-title">{info.title}</b></p>
+                  <p className="card-text">{info.description}</p>
+                  {info.extra &&
+                    <p className="card-text">{info.extra}</p>
+                  }
+                  <p className="card-text">{info.price}</p>
+                </div>
               </div>
             </div>
-          </div>
-        );
+          );
+        }
       }, this);
 
       return(

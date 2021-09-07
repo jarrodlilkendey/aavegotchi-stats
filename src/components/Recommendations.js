@@ -8,6 +8,7 @@ import contract from '../config/aavegotchiContract.json';
 import { connectToMatic } from '../util/MaticClient';
 import { scoreWearable, wearablePositionLabel, wearableTraitModifiers, wearableBRSModifierLabel, wearableBySlot, formatGhst } from '../util/AavegotchiMath';
 import { retrieveGraphWearableListings, retrieveUserAssets } from '../util/Graph';
+import { generateGotchiUrl } from '../util/AavegotchiSvg';
 
 import Loading from './Loading';
 
@@ -360,11 +361,12 @@ class Recommendations extends Component {
     if (this.state.mySvgObjects && Object.keys(this.state.mySvgObjects).length > 0) {
       let myAavegotchiCards = Object.keys(this.state.mySvgObjects).map(function(key, index){
         let aavegotchi =_.find(this.state.myAavegotchis, ['id', key]);
-        let svgElement = {__html: this.state.mySvgObjects[key]};
+        let gotchiUrl = generateGotchiUrl(this.state.mySvgObjects[key]);
         return (
           <div className="col d-flex align-items-stretch" key={`svgcard${key}`}>
             <div className="card" style={ { width: '12rem', margin: '10px'} }>
-              <div className="card-img-top" dangerouslySetInnerHTML={svgElement}>
+              <div className="card-img-top">
+                <img src={gotchiUrl} />
               </div>
               <div className="card-body">
                 <h5 className="card-title">{aavegotchi.name} ({aavegotchi.id})</h5>

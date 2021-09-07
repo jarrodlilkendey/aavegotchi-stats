@@ -95,3 +95,9 @@ select.form-select:focus {
   height: 100px;
   padding: 10px;
 }
+
+.card-img-top img {
+  width: 100px;
+  height: 100px;
+  padding: 10px;
+}
