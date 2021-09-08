@@ -27,6 +27,7 @@ import WearablesList from './components/WearablesList';
 // import Frens from './components/Frens';
 import Tools from './components/Tools';
 import AavegotchiPortalRarityDistributions from './components/AavegotchiPortalRarityDistributions';
+import Ownership from './components/Ownership';
 
 import PromotedListings from './components/PromotedListings';
 import AddPromotedListing from './components/AddPromotedListing';
@@ -161,6 +162,10 @@ ReactDOM.render(
 
           <Route path="/promote">
             <AddPromotedListing />
+          </Route>
+
+          <Route path="/owners">
+            <Ownership title="Aavegotchi Ownership Statistics" />
           </Route>
 
           <Route path="/">
