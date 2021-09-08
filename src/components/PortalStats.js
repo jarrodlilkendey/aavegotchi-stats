@@ -99,22 +99,22 @@ class PortalStats extends Component {
           <h2>Summary</h2>
           <h3>Haunt 1 Summary</h3>
           <p>Total H1 Portals: {this.state.h1SummaryStats.portalsCount}</p>
-          <p>Total H1 Portals Opened: {this.state.h1SummaryStats.openedCount}</p>
-          <p>Total H1 Portals Claimed: {this.state.h1SummaryStats.claimedCount}</p>
-          <p>Total H1 Aavegotchis Sacrificed: <a href='https://polygonscan.com/token/0x86935f11c86623dec8a25696e1c19a8659cbf95d?a=0x0000000000000000000000000000000000000000#inventory'>{this.state.h1SacrificedGotchis.length}</a></p>
+          <p>Total H1 Portals Opened: {this.state.h1SummaryStats.openedCount} {`(${(this.state.h1SummaryStats.openedCount/this.state.h1SummaryStats.portalsCount) * 100}% of Total H1 Portals)`}</p>
+          <p>Total H1 Portals Claimed: {this.state.h1SummaryStats.claimedCount} {`(${(this.state.h1SummaryStats.claimedCount/this.state.h1SummaryStats.portalsCount) * 100}% of Total H1 Portals)`}</p>
+          <p>Total H1 Aavegotchis Sacrificed: <a href='https://polygonscan.com/token/0x86935f11c86623dec8a25696e1c19a8659cbf95d?a=0x0000000000000000000000000000000000000000#inventory'>{this.state.h1SacrificedGotchis.length}</a> {`(${(this.state.h1SacrificedGotchis.length/this.state.h1SummaryStats.portalsCount) * 100}% of Total H1 Portals)`}</p>
           <p>Total H1 Unique Owners: {this.state.h1SummaryStats.uniqueOwners}</p>
           <h3>Haunt 2 Summary</h3>
           <p>Total H2 Portals: {this.state.h2SummaryStats.portalsCount}</p>
-          <p>Total H2 Portals Opened: {this.state.h2SummaryStats.openedCount}</p>
-          <p>Total H2 Portals Claimed: {this.state.h2SummaryStats.claimedCount}</p>
-          <p>Total H2 Aavegotchis Sacrificed: <a href='https://polygonscan.com/token/0x86935f11c86623dec8a25696e1c19a8659cbf95d?a=0x0000000000000000000000000000000000000000#inventory'>{this.state.h2SacrificedGotchis.length}</a></p>
+          <p>Total H2 Portals Opened: {this.state.h2SummaryStats.openedCount} {`(${((this.state.h2SummaryStats.openedCount/this.state.h2SummaryStats.portalsCount) * 100).toFixed(2)}% of Total H2 Portals)`}</p>
+          <p>Total H2 Portals Claimed: {this.state.h2SummaryStats.claimedCount} {`(${((this.state.h2SummaryStats.claimedCount/this.state.h2SummaryStats.portalsCount) * 100).toFixed(2)}% of Total H2 Portals)`}</p>
+          <p>Total H2 Aavegotchis Sacrificed: <a href='https://polygonscan.com/token/0x86935f11c86623dec8a25696e1c19a8659cbf95d?a=0x0000000000000000000000000000000000000000#inventory'>{this.state.h2SacrificedGotchis.length}</a> {`(${((this.state.h2SacrificedGotchis.length/this.state.h2SummaryStats.portalsCount) * 100).toFixed(2)}% of Total H2 Portals)`}</p>
           <p>Total H2 Unique Owners: {this.state.h2SummaryStats.uniqueOwners}</p>
           <h3>Overall Summary</h3>
           <p>Total Portals: {totalPortals}</p>
-          <p>Total Portals Opened: {totalPortalsOpened}</p>
-          <p>Total Portals Claimed: {totalPortalsClaimed}</p>
-          <p>Total Aavegotchis Sacrificed: {totalSacrificedGotchis}</p>
-          <p>Total Live Aavegotchis: {totalLiveGotchis}</p>
+          <p>Total Portals Opened: {totalPortalsOpened} {`(${((totalPortalsOpened/totalPortals) * 100).toFixed(2)}% of Total Portals)`}</p>
+          <p>Total Portals Claimed: {totalPortalsClaimed} {`(${((totalPortalsClaimed/totalPortals) * 100).toFixed(2)}% of Total Portals)`}</p>
+          <p>Total Aavegotchis Sacrificed: {totalSacrificedGotchis} {`(${((totalSacrificedGotchis/totalPortals) * 100).toFixed(2)}% of Total Portals)`}</p>
+          <p>Total Live Aavegotchis: {totalLiveGotchis} {`(${((totalLiveGotchis/totalPortals) * 100).toFixed(2)}% of Total Portals)`}</p>
           <p>Total Unique Owners: {totalUniqueOwners}</p>
         </div>
       )
