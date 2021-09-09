@@ -234,6 +234,8 @@ const h1PortalGraphQuery = (skip, order) => {
       claimedAt,
       gotchi {
         name
+        kinship
+        experience
       }
       owner {
         id
@@ -359,6 +361,8 @@ const h2PortalGraphQuery = (skip, order, id_lte) => {
       claimedAt,
       gotchi {
         name
+        kinship
+        experience
       }
       owner {
         id

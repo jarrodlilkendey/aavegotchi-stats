@@ -39,6 +39,8 @@ class Ownership extends Component {
       h2Portals: [],
       h2SacrificedGotchis: [],
 
+      owners: [],
+
       loading: true,
     };
   }
@@ -51,6 +53,8 @@ class Ownership extends Component {
             let h1UniqueOwners = {};
             let h2UniqueOwners = {};
             let allUniqueOwners = {};
+            let kinshipUniqueOwners = {};
+            let experienceUniqueOwners = {};
             _.reject(h1Portals, ['owner.id', '0x0000000000000000000000000000000000000000']).map((portal) => {
               if (h1UniqueOwners[portal.owner.id]) {
                 h1UniqueOwners[portal.owner.id]++;
@@ -62,6 +66,20 @@ class Ownership extends Component {
                 allUniqueOwners[portal.owner.id]++;
               } else {
                 allUniqueOwners[portal.owner.id] = 1;
+              }
+
+              if (portal.gotchi != null) {
+                if (kinshipUniqueOwners[portal.owner.id]) {
+                  kinshipUniqueOwners[portal.owner.id] += parseInt(portal.gotchi.kinship);
+                } else {
+                  kinshipUniqueOwners[portal.owner.id] = parseInt(portal.gotchi.kinship);
+                }
+
+                if (experienceUniqueOwners[portal.owner.id]) {
+                  experienceUniqueOwners[portal.owner.id] += parseInt(portal.gotchi.experience);
+                } else {
+                  experienceUniqueOwners[portal.owner.id] = parseInt(portal.gotchi.experience);
+                }
               }
             });
 
@@ -77,60 +95,92 @@ class Ownership extends Component {
               } else {
                 allUniqueOwners[portal.owner.id] = 1;
               }
+
+              if (portal.gotchi != null) {
+                if (kinshipUniqueOwners[portal.owner.id]) {
+                  kinshipUniqueOwners[portal.owner.id] += parseInt(portal.gotchi.kinship);
+                } else {
+                  kinshipUniqueOwners[portal.owner.id] = parseInt(portal.gotchi.kinship);
+                }
+
+                if (experienceUniqueOwners[portal.owner.id]) {
+                  experienceUniqueOwners[portal.owner.id] += parseInt(portal.gotchi.experience);
+                } else {
+                  experienceUniqueOwners[portal.owner.id] = parseInt(portal.gotchi.experience);
+                }
+              }
             });
 
-            let h1Owners = Object.keys(h1UniqueOwners).map(key => ({ key, portalCount: h1UniqueOwners[key] }));
+            let owners = Object.keys(allUniqueOwners).map((id) => ({
+              id,
+              portalCount: allUniqueOwners[id],
+              h1PortalCount: h1UniqueOwners[id] ? h1UniqueOwners[id] : 0,
+              h2PortalCount: h2UniqueOwners[id] ? h2UniqueOwners[id] : 0,
+              kinship: kinshipUniqueOwners[id] ? kinshipUniqueOwners[id] : 0,
+              experience: experienceUniqueOwners[id] ? experienceUniqueOwners[id] : 0,
+            }));
+
+            owners = _.orderBy(owners, ['portalCount'], ['desc']);
+
+            console.log('owners', owners);
+
+
+            let h1Owners = Object.keys(h1UniqueOwners).map(id => ({ id, portalCount: h1UniqueOwners[id] }));
             h1Owners = _.orderBy(h1Owners, ['portalCount'], ['desc']);
             console.log('h1Owners', h1Owners);
 
-            let h2Owners = Object.keys(h2UniqueOwners).map(key => ({ key, portalCount: h2UniqueOwners[key] }));
+            let h2Owners = Object.keys(h2UniqueOwners).map(id => ({ id, portalCount: h2UniqueOwners[id] }));
             h2Owners = _.orderBy(h2Owners, ['portalCount'], ['desc']);
             console.log('h2Owners', h2Owners);
 
-            let allOwners = Object.keys(allUniqueOwners).map(key => ({ key, portalCount: allUniqueOwners[key] }));
+            let allOwners = Object.keys(allUniqueOwners).map(id => ({ id, portalCount: allUniqueOwners[id] }));
             allOwners = _.orderBy(allOwners, ['portalCount'], ['desc']);
             console.log('allOwners', allOwners);
 
-            this.setState({ h1Portals, h2Portals, loading: false });
+            let kinshipOwners = Object.keys(kinshipUniqueOwners).map(id => ({ id, kinship: kinshipUniqueOwners[id] }));
+            kinshipOwners = _.orderBy(kinshipOwners, ['kinship'], ['desc']);
+            console.log('kinshipOwners', kinshipOwners);
+
+            let experienceOwners = Object.keys(experienceUniqueOwners).map(id => ({ id, experience: experienceUniqueOwners[id] }));
+            experienceOwners = _.orderBy(experienceOwners, ['experience'], ['desc']);
+            console.log('experienceOwners', experienceOwners);
+
+            console.log('h1Portals', h1Portals, 'h2Portals', h2Portals );
+            console.log('allOwners', allOwners);
+
+            this.setState({ h1Portals, h2Portals, owners, loading: false });
           });
       });
   }
 
-  renderSummary() {
-    if (this.state.h1SummaryStats && this.state.h2SummaryStats) {
-      let totalPortals = this.state.h1SummaryStats.portalsCount + this.state.h2SummaryStats.portalsCount;
-      let totalPortalsOpened = this.state.h1SummaryStats.openedCount + this.state.h2SummaryStats.openedCount;
-      let totalPortalsClaimed = this.state.h1SummaryStats.claimedCount + this.state.h2SummaryStats.claimedCount;
-      let totalSacrificedGotchis = this.state.h1SacrificedGotchis.length + this.state.h2SacrificedGotchis.length;
-      let totalLiveGotchis = totalPortalsClaimed - totalSacrificedGotchis;
-
-      let allPortals = [...this.state.h1Portals, ...this.state.h2Portals];
-      let totalUniqueOwners =  _.uniqBy(_.reject(allPortals, ['owner.id', '0x0000000000000000000000000000000000000000']), 'owner.id').length;
+  renderOwners() {
+    if (this.state.owners.length > 0) {
+      const columns = [
+        {
+          field: 'id',
+          headerName: 'Owner',
+          width: 360,
+          renderCell: (params: GridCellParams) => (
+            <a href={`https://aavegotchi.com/aavegotchis/${params.value}`} target="_blank">
+              {params.value}
+            </a>
+          )
+        },
+        { field: 'portalCount', headerName: 'Owned Portals', width: 160 },
+        { field: 'h1PortalCount', headerName: 'H1 Portals', width: 160 },
+        { field: 'h2PortalCount', headerName: 'H2 Portals', width: 160 },
+        { field: 'kinship', headerName: 'Total Kinship', width: 160 },
+        { field: 'experience', headerName: 'Total Experience', width: 160 },
+      ];
 
       return (
         <div>
-          <h2>Summary</h2>
-          <h3>Haunt 1 Summary</h3>
-          <p>Total H1 Portals: {this.state.h1SummaryStats.portalsCount}</p>
-          <p>Total H1 Portals Opened: {this.state.h1SummaryStats.openedCount}</p>
-          <p>Total H1 Portals Claimed: {this.state.h1SummaryStats.claimedCount}</p>
-          <p>Total H1 Aavegotchis Sacrificed: <a href='https://polygonscan.com/token/0x86935f11c86623dec8a25696e1c19a8659cbf95d?a=0x0000000000000000000000000000000000000000#inventory'>{this.state.h1SacrificedGotchis.length}</a></p>
-          <p>Total H1 Unique Owners: {this.state.h1SummaryStats.uniqueOwners}</p>
-          <h3>Haunt 2 Summary</h3>
-          <p>Total H2 Portals: {this.state.h2SummaryStats.portalsCount}</p>
-          <p>Total H2 Portals Opened: {this.state.h2SummaryStats.openedCount}</p>
-          <p>Total H2 Portals Claimed: {this.state.h2SummaryStats.claimedCount}</p>
-          <p>Total H2 Aavegotchis Sacrificed: <a href='https://polygonscan.com/token/0x86935f11c86623dec8a25696e1c19a8659cbf95d?a=0x0000000000000000000000000000000000000000#inventory'>{this.state.h2SacrificedGotchis.length}</a></p>
-          <p>Total H2 Unique Owners: {this.state.h2SummaryStats.uniqueOwners}</p>
-          <h3>Overall Summary</h3>
-          <p>Total Portals: {totalPortals}</p>
-          <p>Total Portals Opened: {totalPortalsOpened}</p>
-          <p>Total Portals Claimed: {totalPortalsClaimed}</p>
-          <p>Total Aavegotchis Sacrificed: {totalSacrificedGotchis}</p>
-          <p>Total Live Aavegotchis: {totalLiveGotchis}</p>
-          <p>Total Unique Owners: {totalUniqueOwners}</p>
+          <h2>Top Owners</h2>
+          <div style={{ height: '1080px', width: '100%' }}>
+            <DataGrid rows={this.state.owners} columns={columns} pageSize={100} density="compact" disableSelectionOnClick="true" />
+          </div>
         </div>
-      )
+      );
     }
   }
 
@@ -141,7 +191,7 @@ class Ownership extends Component {
         {this.state.loading &&
           <Loading message="Loading Portals from TheGraph..." />
         }
-        {this.renderSummary()}
+        {this.renderOwners()}
       </div>
     )
   }
