@@ -18,8 +18,6 @@ import HighchartsReact from 'highcharts-react-official';
 import { DataGrid } from '@material-ui/data-grid';
 
 import { retrieveH1Portals, retrieveH2Portals, retrieveH1OpenPortals, retrieveH2OpenPortals, retrieveSacrificedGotchis, retrieveErc721ListingsByTokenIds } from '../util/Graph';
-import { graphAddressToCollateral } from '../util/Collateral';
-import { formatGhst } from '../util/AavegotchiMath';
 
 import Loading from './Loading';
 
