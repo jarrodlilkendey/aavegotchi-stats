@@ -69,6 +69,9 @@ class AavegotchiPortalRarityDistributions extends Component {
         h1Stats.mode = ss.mode(h1Brs);
         h1Stats.variance = ss.variance(h1Brs);
         h1Stats.stddev = ss.standardDeviation(h1Brs);
+        h1Stats.skewness1 = (h1Stats.mean - h1Stats.mode) / h1Stats.stddev;
+        h1Stats.skewness2 = (3 * (h1Stats.mean - h1Stats.median)) / h1Stats.stddev;
+        h1Stats.nonParametricSkew = (h1Stats.mean - h1Stats.median) / h1Stats.stddev;
         console.log('h1Stats', h1Stats);
 
         this.setState({ h1Aavegotchis: aavegotchis, h1MinBrs: minBrs, h1MaxBrs: maxBrs, h1Stats, loading: false });
@@ -112,6 +115,9 @@ class AavegotchiPortalRarityDistributions extends Component {
         h2Stats.mode = ss.mode(h2Brs);
         h2Stats.variance = ss.variance(h2Brs);
         h2Stats.stddev = ss.standardDeviation(h2Brs);
+        h2Stats.skewness1 = (h2Stats.mean - h2Stats.mode) / h2Stats.stddev;
+        h2Stats.skewness2 = (3 * (h2Stats.mean - h2Stats.median)) / h2Stats.stddev;
+        h2Stats.nonParametricSkew = (h2Stats.mean - h2Stats.median) / h2Stats.stddev;
         console.log('h2Stats', h2Stats);
 
         console.log('setState h2Aavegotchis', aavegotchis, Object.keys(aavegotchis).length);
@@ -217,6 +223,9 @@ class AavegotchiPortalRarityDistributions extends Component {
                 <li>Mode: {this.state.h1Stats.mode}</li>
                 <li>Variance: {this.state.h1Stats.variance}</li>
                 <li>Standard Deviation: {this.state.h1Stats.stddev}</li>
+                <li><a href='https://en.wikipedia.org/wiki/Skewness'>Pearson Skewness 1:</a> {this.state.h1Stats.skewness1}</li>
+                <li><a href='https://en.wikipedia.org/wiki/Skewness'>Pearson Skewness 2:</a> {this.state.h1Stats.skewness2}</li>
+                <li><a href='https://en.wikipedia.org/wiki/Nonparametric_skew'>Nonparametric Skew:</a> {this.state.h1Stats.nonParametricSkew}</li>
               </ul>
             </div>
             <div className="col">
@@ -228,6 +237,9 @@ class AavegotchiPortalRarityDistributions extends Component {
               <li>Mode: {this.state.h2Stats.mode}</li>
               <li>Variance: {this.state.h2Stats.variance}</li>
               <li>Standard Deviation: {this.state.h2Stats.stddev}</li>
+              <li><a href='https://en.wikipedia.org/wiki/Skewness'>Pearson Skewness 1:</a> {this.state.h2Stats.skewness1}</li>
+              <li><a href='https://en.wikipedia.org/wiki/Skewness'>Pearson Skewness 2:</a> {this.state.h2Stats.skewness2}</li>
+              <li><a href='https://en.wikipedia.org/wiki/Nonparametric_skew'>Nonparametric Skew:</a> {this.state.h2Stats.nonParametricSkew}</li>
             </div>
           </div>
         </div>
