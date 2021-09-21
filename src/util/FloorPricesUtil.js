@@ -44,7 +44,7 @@ const erc1155FloorPricesQuery = (category, rarity) => {
         rarityLevel: ${rarity},
         cancelled: false,
         sold: false,
-        id_not_in: [126114, 125427, 131410, 124729, 124657, 123839]
+        id_not_in: [126114, 125427, 131410, 124729, 124657, 123839, 121753]
       }) {
       id
       priceInWei
