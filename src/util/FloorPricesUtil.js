@@ -346,3 +346,99 @@ export const cheapestKIN = async () => {
 
   return aavegotchiListings;
 };
+
+const listedAavegotchisQuery = (skip) => {
+  let query = `{
+    erc721Listings(
+      first: 1000,
+      skip: ${skip}
+      orderBy: priceInWei,
+      orderDirection: asc,
+      where:{
+        category: 3,
+        cancelled: false,
+        timePurchased: "0",
+      }) {
+      id
+      gotchi {
+        id
+        baseRarityScore
+        numericTraits
+        collateral
+      }
+      priceInWei
+      timePurchased
+      hauntId
+    }
+  }`;
+
+  return query;
+}
+
+const retrieveListedAavegotchis = async () => {
+  const result = await axios.post(
+    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    {
+      query: listedAavegotchisQuery(0)
+    }
+  );
+
+  const result2 = await axios.post(
+    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    {
+      query: listedAavegotchisQuery(1000)
+    }
+  );
+
+  const result3 = await axios.post(
+    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    {
+      query: listedAavegotchisQuery(2000)
+    }
+  );
+
+  return [...result.data.data.erc721Listings, ...result2.data.data.erc721Listings, ...result3.data.data.erc721Listings];
+};
+
+export const floorByBRS = async () => {
+  let gotchis = await retrieveListedAavegotchis();
+
+  let aavegotchiListings = [];
+
+  gotchis.map((listing) => {
+    let baseRarityScoreInteger = parseInt(listing.gotchi.baseRarityScore);
+    aavegotchiListings.push({...listing, baseRarityScoreInteger })
+  });
+
+  aavegotchiListings = _.orderBy(aavegotchiListings, ['baseRarityScoreInteger', 'asc']);
+
+  let brsFloors = {};
+  let brsList = [500, 510, 520, 530, 540, 550, 560, 570, 575];
+
+  brsList.map((brs) => {
+    let filtered = _.filter(
+      aavegotchiListings,
+      function(g) {
+        return g.baseRarityScoreInteger >= brs;
+      }
+    );
+
+    if (filtered.length > 0) {
+      let floor = filtered[0];
+      brsFloors[brs.toString()] = {};
+      brsFloors[brs.toString()].floor = ethers.utils.formatEther(floor.priceInWei);
+      brsFloors[brs.toString()].link = `https://aavegotchi.com/baazaar/erc721/${floor.id}`;
+      brsFloors[brs.toString()].tokenId = '#' + floor.gotchi.id;
+      brsFloors[brs.toString()].brs = floor.baseRarityScoreInteger;
+    } else {
+      brsFloors[brs.toString()] = {
+        floor: 0,
+        link: 'https://aavegotchi.com/baazaar',
+        tokenId: 'No Listings',
+        brs: 0
+      };
+    }
+  });
+
+  return brsFloors;
+};
