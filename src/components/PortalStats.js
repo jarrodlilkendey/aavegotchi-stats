@@ -115,7 +115,7 @@ class PortalStats extends Component {
           <p>Total Portals Claimed: {totalPortalsClaimed} {`(${((totalPortalsClaimed/totalPortals) * 100).toFixed(2)}% of Total Portals)`}</p>
           <p>Total Aavegotchis Sacrificed: {totalSacrificedGotchis} {`(${((totalSacrificedGotchis/totalPortals) * 100).toFixed(2)}% of Total Portals)`}</p>
           <p>Total Live Aavegotchis: {totalLiveGotchis} {`(${((totalLiveGotchis/totalPortals) * 100).toFixed(2)}% of Total Portals)`}</p>
-          <p>Total Unique Owners: {totalUniqueOwners}</p>
+          <p>Total Unique Owners: <a href='/owners'>{totalUniqueOwners}</a></p>
         </div>
       )
     }
