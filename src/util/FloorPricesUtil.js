@@ -407,7 +407,8 @@ export const floorByBRS = async () => {
 
   gotchis.map((listing) => {
     let baseRarityScoreInteger = parseInt(listing.gotchi.baseRarityScore);
-    aavegotchiListings.push({...listing, baseRarityScoreInteger })
+    let priceInEth = parseFloat(ethers.utils.formatEther(listing.priceInWei));
+    aavegotchiListings.push({...listing, baseRarityScoreInteger, priceInEth })
   });
 
   aavegotchiListings = _.orderBy(aavegotchiListings, ['baseRarityScoreInteger', 'asc']);
@@ -422,6 +423,10 @@ export const floorByBRS = async () => {
         return g.baseRarityScoreInteger >= brs;
       }
     );
+
+    filtered = _.orderBy(filtered, ['priceInEth', 'asc']);
+
+    console.log('list', brs, filtered);
 
     if (filtered.length > 0) {
       let floor = filtered[0];
