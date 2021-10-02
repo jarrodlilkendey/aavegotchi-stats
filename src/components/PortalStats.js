@@ -5,7 +5,7 @@ import HighchartsReact from 'highcharts-react-official';
 
 import { DataGrid } from '@material-ui/data-grid';
 
-import { retrieveH1Portals, retrieveH2Portals, retrieveH1OpenPortals, retrieveH2OpenPortals, retrieveSacrificedGotchis, retrieveErc721ListingsByTokenIds } from '../util/Graph';
+import { retrieveH1Portals, retrieveH2Portals, retrieveH1OpenPortals, retrieveH2OpenPortals, retrieveSacrificedGotchis, retrieveErc721ListingsByTokenIds, retrieveBridgedGotchis } from '../util/Graph';
 import { graphAddressToCollateral } from '../util/Collateral';
 import { formatGhst } from '../util/AavegotchiMath';
 
@@ -63,6 +63,12 @@ class PortalStats extends Component {
         console.log('h2SacrificedGotchis', h2SacrificedGotchis);
         this.setState({ h2SacrificedGotchis });
       });
+
+    retrieveBridgedGotchis()
+      .then((bridgedGotchis) => {
+        console.log('bridgedGotchis', bridgedGotchis);
+        this.setState({ bridgedGotchis });
+      });
   }
 
   calculateH1SummaryStats(portals) {
@@ -84,7 +90,7 @@ class PortalStats extends Component {
   }
 
   renderSummary() {
-    if (this.state.h1SummaryStats && this.state.h2SummaryStats) {
+    if (this.state.h1SummaryStats && this.state.h2SummaryStats && this.state.bridgedGotchis) {
       let totalPortals = this.state.h1SummaryStats.portalsCount + this.state.h2SummaryStats.portalsCount;
       let totalPortalsOpened = this.state.h1SummaryStats.openedCount + this.state.h2SummaryStats.openedCount;
       let totalPortalsClaimed = this.state.h1SummaryStats.claimedCount + this.state.h2SummaryStats.claimedCount;
@@ -116,6 +122,7 @@ class PortalStats extends Component {
           <p>Total Aavegotchis Sacrificed: {totalSacrificedGotchis} {`(${((totalSacrificedGotchis/totalPortals) * 100).toFixed(2)}% of Total Portals)`}</p>
           <p>Total Live Aavegotchis: {totalLiveGotchis} {`(${((totalLiveGotchis/totalPortals) * 100).toFixed(2)}% of Total Portals)`}</p>
           <p>Total Unique Owners: <a href='/owners'>{totalUniqueOwners}</a></p>
+          <p>Total Bridged Gotchis: {this.state.bridgedGotchis.length}</p>
         </div>
       )
     }

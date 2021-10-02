@@ -876,3 +876,26 @@ export const retrieveSoldTicketListings = async () => {
 
   return listings;
 };
+
+// bridged gotchis
+export const retrieveBridgedGotchis = async () => {
+  let query = `{
+    aavegotchis(
+      first: 1000,
+      where: {
+        owner: "0x86935f11c86623dec8a25696e1c19a8659cbf95d",
+      }
+    ) {
+      id
+    }
+  }`;
+
+  const gotchis = await axios.post(
+    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    {
+      query: query
+    }
+  );
+
+  return gotchis.data.data.aavegotchis;
+};
