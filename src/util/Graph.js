@@ -877,25 +877,103 @@ export const retrieveSoldTicketListings = async () => {
   return listings;
 };
 
-// bridged gotchis
-export const retrieveBridgedGotchis = async () => {
+const bridgedH1PortalGraphQuery = (skip, order) => {
   let query = `{
-    aavegotchis(
+    portals(
       first: 1000,
+      skip: ${skip},
+      orderBy: id,
+      orderDirection:"asc",
       where: {
+        hauntId: "1",
         owner: "0x86935f11c86623dec8a25696e1c19a8659cbf95d",
       }
     ) {
       id
+      hauntId
+      boughtAt,
+      openedAt,
+      claimedAt,
+      gotchi {
+        name
+        kinship
+        experience
+      }
+      owner {
+        id
+      }
     }
   }`;
 
-  const gotchis = await axios.post(
+  return query;
+}
+
+export const retrieveBridgedH1Portals = async () => {
+  let portals = [];
+  let stop = false;
+  let i = 0;
+
+  while (!stop) {
+    const p = await axios.post(
+      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      {
+        query: bridgedH1PortalGraphQuery(i * 1000, 'asc')
+      }
+    );
+    portals.push(...p.data.data.portals);
+
+    if (p.data.data.portals.length != 1000) {
+      stop = true;
+    } else {
+      i++;
+    }
+  }
+
+
+  return portals;
+};
+
+const bridgedH2PortalGraphQuery = (skip) => {
+  let query = `{
+    portals(
+      first: 1000,
+      skip: ${skip},
+      orderBy: id,
+      orderDirection:"asc",
+      where: {
+        hauntId: "2"
+        owner: "0x86935f11c86623dec8a25696e1c19a8659cbf95d",
+      }
+    ) {
+      id
+      hauntId
+      boughtAt,
+      openedAt,
+      claimedAt,
+      gotchi {
+        name
+        kinship
+        experience
+      }
+      owner {
+        id
+      }
+    }
+  }`;
+
+  return query;
+}
+
+export const retrieveBridgedH2Portals = async () => {
+  let portals = [];
+
+  const p = await axios.post(
     'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
     {
-      query: query
+      query: bridgedH2PortalGraphQuery(1000)
     }
   );
+  portals.push(...p.data.data.portals);
 
-  return gotchis.data.data.aavegotchis;
+  return portals;
 };

@@ -5,7 +5,9 @@ import HighchartsReact from 'highcharts-react-official';
 
 import { DataGrid } from '@material-ui/data-grid';
 
-import { retrieveH1Portals, retrieveH2Portals, retrieveH1OpenPortals, retrieveH2OpenPortals, retrieveSacrificedGotchis, retrieveErc721ListingsByTokenIds, retrieveBridgedGotchis } from '../util/Graph';
+import { retrieveH1Portals, retrieveH2Portals, retrieveH1OpenPortals, retrieveH2OpenPortals, retrieveSacrificedGotchis, retrieveErc721ListingsByTokenIds  } from '../util/Graph';
+import { retrieveBridgedH1Portals, retrieveBridgedH2Portals } from '../util/Graph';
+
 import { graphAddressToCollateral } from '../util/Collateral';
 import { formatGhst } from '../util/AavegotchiMath';
 
@@ -64,10 +66,13 @@ class PortalStats extends Component {
         this.setState({ h2SacrificedGotchis });
       });
 
-    retrieveBridgedGotchis()
-      .then((bridgedGotchis) => {
-        console.log('bridgedGotchis', bridgedGotchis);
-        this.setState({ bridgedGotchis });
+    retrieveBridgedH1Portals()
+      .then((bridgedH1Portals) => {
+        retrieveBridgedH2Portals()
+          .then((bridgedH2Portals) => {
+            console.log('bridgedPortals', bridgedH1Portals, bridgedH2Portals);
+            this.setState({ bridgedH1Portals, bridgedH2Portals });
+          });
       });
   }
 
@@ -90,7 +95,7 @@ class PortalStats extends Component {
   }
 
   renderSummary() {
-    if (this.state.h1SummaryStats && this.state.h2SummaryStats && this.state.bridgedGotchis) {
+    if (this.state.h1SummaryStats && this.state.h2SummaryStats && this.state.bridgedH1Portals && this.state.bridgedH2Portals) {
       let totalPortals = this.state.h1SummaryStats.portalsCount + this.state.h2SummaryStats.portalsCount;
       let totalPortalsOpened = this.state.h1SummaryStats.openedCount + this.state.h2SummaryStats.openedCount;
       let totalPortalsClaimed = this.state.h1SummaryStats.claimedCount + this.state.h2SummaryStats.claimedCount;
@@ -100,21 +105,25 @@ class PortalStats extends Component {
       let allPortals = [...this.state.h1Portals, ...this.state.h2Portals];
       let totalUniqueOwners =  _.uniqBy(_.reject(allPortals, ['owner.id', '0x0000000000000000000000000000000000000000']), 'owner.id').length;
 
+      let totalBridged = this.state.bridgedH1Portals.length + this.state.bridgedH2Portals.length;
+
       return (
         <div>
           <h2>Summary</h2>
           <h3>Haunt 1 Summary</h3>
           <p>Total H1 Portals: {this.state.h1SummaryStats.portalsCount}</p>
-          <p>Total H1 Portals Opened: {this.state.h1SummaryStats.openedCount} {`(${(this.state.h1SummaryStats.openedCount/this.state.h1SummaryStats.portalsCount) * 100}% of Total H1 Portals)`}</p>
-          <p>Total H1 Portals Claimed: {this.state.h1SummaryStats.claimedCount} {`(${(this.state.h1SummaryStats.claimedCount/this.state.h1SummaryStats.portalsCount) * 100}% of Total H1 Portals)`}</p>
+          <p>Total H1 Portals Opened: {this.state.h1SummaryStats.openedCount} {`(${((this.state.h1SummaryStats.openedCount/this.state.h1SummaryStats.portalsCount) * 100).toFixed(2)}% of Total H1 Portals)`}</p>
+          <p>Total H1 Portals Claimed: {this.state.h1SummaryStats.claimedCount} {`(${((this.state.h1SummaryStats.claimedCount/this.state.h1SummaryStats.portalsCount) * 100).toFixed(2)}% of Total H1 Portals)`}</p>
           <p>Total H1 Aavegotchis Sacrificed: <a href='https://polygonscan.com/token/0x86935f11c86623dec8a25696e1c19a8659cbf95d?a=0x0000000000000000000000000000000000000000#inventory'>{this.state.h1SacrificedGotchis.length}</a> {`(${(this.state.h1SacrificedGotchis.length/this.state.h1SummaryStats.portalsCount) * 100}% of Total H1 Portals)`}</p>
           <p>Total H1 Unique Owners: {this.state.h1SummaryStats.uniqueOwners}</p>
+          <p>Total H1 Aavegotchis Bridged: {this.state.bridgedH1Portals.length}</p>
           <h3>Haunt 2 Summary</h3>
           <p>Total H2 Portals: {this.state.h2SummaryStats.portalsCount}</p>
           <p>Total H2 Portals Opened: {this.state.h2SummaryStats.openedCount} {`(${((this.state.h2SummaryStats.openedCount/this.state.h2SummaryStats.portalsCount) * 100).toFixed(2)}% of Total H2 Portals)`}</p>
           <p>Total H2 Portals Claimed: {this.state.h2SummaryStats.claimedCount} {`(${((this.state.h2SummaryStats.claimedCount/this.state.h2SummaryStats.portalsCount) * 100).toFixed(2)}% of Total H2 Portals)`}</p>
           <p>Total H2 Aavegotchis Sacrificed: <a href='https://polygonscan.com/token/0x86935f11c86623dec8a25696e1c19a8659cbf95d?a=0x0000000000000000000000000000000000000000#inventory'>{this.state.h2SacrificedGotchis.length}</a> {`(${((this.state.h2SacrificedGotchis.length/this.state.h2SummaryStats.portalsCount) * 100).toFixed(2)}% of Total H2 Portals)`}</p>
           <p>Total H2 Unique Owners: {this.state.h2SummaryStats.uniqueOwners}</p>
+          <p>Total H2 Aavegotchis Bridged: {this.state.bridgedH2Portals.length}</p>
           <h3>Overall Summary</h3>
           <p>Total Portals: {totalPortals}</p>
           <p>Total Portals Opened: {totalPortalsOpened} {`(${((totalPortalsOpened/totalPortals) * 100).toFixed(2)}% of Total Portals)`}</p>
@@ -122,7 +131,7 @@ class PortalStats extends Component {
           <p>Total Aavegotchis Sacrificed: {totalSacrificedGotchis} {`(${((totalSacrificedGotchis/totalPortals) * 100).toFixed(2)}% of Total Portals)`}</p>
           <p>Total Live Aavegotchis: {totalLiveGotchis} {`(${((totalLiveGotchis/totalPortals) * 100).toFixed(2)}% of Total Portals)`}</p>
           <p>Total Unique Owners: <a href='/owners'>{totalUniqueOwners}</a></p>
-          <p>Total Bridged Gotchis: {this.state.bridgedGotchis.length}</p>
+          <p>Total Bridged Gotchis: <a href='https://aavegotchi.com/aavegotchis/0x86935f11c86623dec8a25696e1c19a8659cbf95d'>{totalBridged}</a></p>
         </div>
       )
     }
