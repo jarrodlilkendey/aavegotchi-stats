@@ -970,7 +970,7 @@ export const retrieveBridgedH2Portals = async () => {
   const p = await axios.post(
     'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
     {
-      query: bridgedH2PortalGraphQuery(1000)
+      query: bridgedH2PortalGraphQuery(0)
     }
   );
   portals.push(...p.data.data.portals);
