@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { DataGrid } from '@material-ui/data-grid';
 
-import { retrieveAllGotchis } from '../util/Graph';
+import { retrieveH1Gotchis, retrieveH2Gotchis, retrieveAllGotchisAtBlock } from '../util/Graph';
 import { calculateSeason1Reward } from '../util/AavegotchiMath';
 
 import Loading from './Loading';
@@ -32,7 +32,9 @@ class Leaderboards extends Component {
   }
 
   async componentDidMount() {
-    retrieveAllGotchis()
+    retrieveH1Gotchis()
+    // retrieveAllGotchisAtBlock(14645055)
+    // retrieveAllGotchisAtBlock(14082019)
       .then((gotchis) => {
         for (var g = 0; g < gotchis.length; g++) {
           gotchis[g].brs = parseInt(gotchis[g].baseRarityScore);
@@ -328,6 +330,7 @@ class Leaderboards extends Component {
       <div>
         <h1>Aavegotchi Leaderboards</h1>
         <h2>{this.state.modes[this.state.selectedMode]} Leaderboard</h2>
+        <p>NOTE: this page has not been updated for season 2 rewards, it will be updated when rewards structure is confirmed.</p>
         <div style={{margin: "10px"}}>
           <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(0)}>Rarity Leaderboard</button> <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(1)}>Kinship Leaderboard</button> <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(2)}>Experience Leaderboard</button> <button className="btn btn-primary btn-sm" onClick={() => this.handleRoundToggle()}>Tie Breaker Trait: Round {this.state.round} {this.state.roundTraits[this.state.round-1].toUpperCase()}</button>
         </div>
@@ -337,12 +340,12 @@ class Leaderboards extends Component {
             <input type="text" id="filter" className="form-control" value={this.state.filter} onChange={this.onFilterChange} placeholder="Filter by Owner, Name or Gotchi Id" /><br />
           </div>
         </div>
-        {this.state.loading &&
+        {/*this.state.loading &&
           <Loading message="Loading Aavegotchis from TheGraph..." />
-        }
-        {this.renderLeaderboard()}
-        {this.renderTopGotchis()}
-        {this.renderTopOwners()}
+        */}
+        {/*this.renderLeaderboard()*/}
+        {/*this.renderTopGotchis()*/}
+        {/*this.renderTopOwners()*/}
       </div>
     );
   }
