@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { DataGrid } from '@material-ui/data-grid';
 
 import { retrieveH1Gotchis, retrieveH2Gotchis, retrieveAllGotchisAtBlock } from '../util/Graph';
-import { calculateSeason1Reward } from '../util/AavegotchiMath';
+import { calculateSeason2Reward } from '../util/AavegotchiMath';
 
 import Loading from './Loading';
 
@@ -17,11 +17,12 @@ class Leaderboards extends Component {
     document.title = this.props.title;
 
     this.state = {
-      modes: ['Rarity', 'Kinship', 'Experience' ], selectedMode: 0,
-      rarityLeaders: [], kinshipLeaders: [], xpLeaders: [],
+      modes: ['Rarity', 'Kinship', 'Experience', 'Rookie Kinship', 'Rookie Experience' ], selectedMode: 0,
+      rarityLeaders: [], kinshipLeaders: [], xpLeaders: [], rookieKinshipLeaders: [], rookieXpLeaders: [],
       loading: true,
       filter: '',
       round: 1, roundTraits: ['nrg', 'agg', 'spk', 'brn'],
+      gotchis: [], h2Gotchis: [], topGotchis: []
     };
 
     this.handleLeaderboardSelect = this.handleLeaderboardSelect.bind(this);
@@ -33,24 +34,39 @@ class Leaderboards extends Component {
 
   async componentDidMount() {
     retrieveH1Gotchis()
-    // retrieveAllGotchisAtBlock(14645055)
-    // retrieveAllGotchisAtBlock(14082019)
-      .then((gotchis) => {
-        for (var g = 0; g < gotchis.length; g++) {
-          gotchis[g].brs = parseInt(gotchis[g].baseRarityScore);
-          gotchis[g].mrs = parseInt(gotchis[g].modifiedRarityScore);
-          gotchis[g].srs = parseInt(gotchis[g].withSetsRarityScore);
-          gotchis[g].kins = parseInt(gotchis[g].kinship);
-          gotchis[g].xp = parseInt(gotchis[g].experience);
-          gotchis[g].nrg = parseInt(gotchis[g].numericTraits[0]);
-          gotchis[g].agg = parseInt(gotchis[g].numericTraits[1]);
-          gotchis[g].spk = parseInt(gotchis[g].numericTraits[2]);
-          gotchis[g].brn = parseInt(gotchis[g].numericTraits[3]);
-        }
+      .then((h1Gotchis) => {
+        retrieveH2Gotchis()
+          .then((h2Gotchis) => {
+            let gotchis = [...h1Gotchis, ...h2Gotchis];
 
-        this.setState({ gotchis, loading: false });
-        this.calculateLeaders();
-        this.calculateTopGotchisAndOwners();
+            for (var g = 0; g < gotchis.length; g++) {
+              gotchis[g].brs = parseInt(gotchis[g].baseRarityScore);
+              gotchis[g].mrs = parseInt(gotchis[g].modifiedRarityScore);
+              gotchis[g].srs = parseInt(gotchis[g].withSetsRarityScore);
+              gotchis[g].kins = parseInt(gotchis[g].kinship);
+              gotchis[g].xp = parseInt(gotchis[g].experience);
+              gotchis[g].nrg = parseInt(gotchis[g].numericTraits[0]);
+              gotchis[g].agg = parseInt(gotchis[g].numericTraits[1]);
+              gotchis[g].spk = parseInt(gotchis[g].numericTraits[2]);
+              gotchis[g].brn = parseInt(gotchis[g].numericTraits[3]);
+            }
+
+            for (var g = 0; g < h2Gotchis.length; g++) {
+              h2Gotchis[g].brs = parseInt(h2Gotchis[g].baseRarityScore);
+              h2Gotchis[g].mrs = parseInt(h2Gotchis[g].modifiedRarityScore);
+              h2Gotchis[g].srs = parseInt(h2Gotchis[g].withSetsRarityScore);
+              h2Gotchis[g].kins = parseInt(h2Gotchis[g].kinship);
+              h2Gotchis[g].xp = parseInt(h2Gotchis[g].experience);
+              h2Gotchis[g].nrg = parseInt(h2Gotchis[g].numericTraits[0]);
+              h2Gotchis[g].agg = parseInt(h2Gotchis[g].numericTraits[1]);
+              h2Gotchis[g].spk = parseInt(h2Gotchis[g].numericTraits[2]);
+              h2Gotchis[g].brn = parseInt(h2Gotchis[g].numericTraits[3]);
+            }
+
+            this.setState({ gotchis, h2Gotchis, loading: false });
+            this.calculateLeaders();
+            this.calculateTopGotchisAndOwners();
+          });
       });
   }
 
@@ -78,12 +94,16 @@ class Leaderboards extends Component {
     let kinshipLeaders = _.orderBy(this.state.gotchis, ['kins', 'xp'], ['desc', 'desc']);
     let roundTrait = Math.abs(50 - this.state.roundTraits[this.state.round - 1]); // roundTrait is difference from 50
     let experienceLeaders = _.orderBy(this.state.gotchis, ['xp', roundTrait], ['desc', 'desc']);
+    let rookieKinshipLeaders = _.orderBy(this.state.h2Gotchis, ['kins', 'xp'], ['desc', 'desc']);
+    let rookieExperienceLeaders = _.orderBy(this.state.h2Gotchis, ['xp', roundTrait], ['desc', 'desc']);
 
     console.log('rarity', rarityLeaders);
     console.log('kinship', kinshipLeaders);
     console.log('experience', experienceLeaders);
+    console.log('rookie kinship', rookieKinshipLeaders);
+    console.log('rookie experience', rookieExperienceLeaders);
 
-    this.setState({ rarityLeaders, kinshipLeaders, experienceLeaders });
+    this.setState({ rarityLeaders, kinshipLeaders, experienceLeaders, rookieKinshipLeaders, rookieExperienceLeaders });
   }
 
   filterGotchi(aavegotchi) {
@@ -126,22 +146,39 @@ class Leaderboards extends Component {
 
     this.state.gotchis.map(function(gotchi, index){
       let rarityReward = parseFloat(
-        calculateSeason1Reward(
+        calculateSeason2Reward(
           0, _.findIndex(_this.state.rarityLeaders, ['id', gotchi.id]) + 1
         ).toFixed(2)
       );
 
       let kinshipReward = parseFloat(
-        calculateSeason1Reward(
+        calculateSeason2Reward(
           1, _.findIndex(_this.state.kinshipLeaders, ['id', gotchi.id]) + 1
         ).toFixed(2)
       );
 
       let experienceReward = parseFloat(
-        calculateSeason1Reward(
+        calculateSeason2Reward(
           2, _.findIndex(_this.state.experienceLeaders, ['id', gotchi.id]) + 1
         ).toFixed(2)
       );
+
+      let rookieKinshipReward = 0;
+      let rookieExperiencReward = 0;
+
+      if (_.findIndex(_this.state.h2Gotchis, ['id', gotchi.id]) != -1) {
+        rookieKinshipReward = parseFloat(
+          calculateSeason2Reward(
+            3, _.findIndex(_this.state.rookieKinshipLeaders, ['id', gotchi.id]) + 1
+          ).toFixed(2)
+        );
+
+        rookieExperiencReward = parseFloat(
+          calculateSeason2Reward(
+            4, _.findIndex(_this.state.rookieExperienceLeaders, ['id', gotchi.id]) + 1
+          ).toFixed(2)
+        );
+      }
 
       topGotchis.push({
         id: gotchi.id,
@@ -149,7 +186,9 @@ class Leaderboards extends Component {
         rarityReward: rarityReward,
         kinshipReward: kinshipReward,
         experienceReward: experienceReward,
-        totalReward: parseFloat((rarityReward+kinshipReward+experienceReward).toFixed(2)),
+        rookieKinshipReward: rookieKinshipReward,
+        rookieExperiencReward: rookieExperiencReward,
+        totalReward: parseFloat((rarityReward+kinshipReward+experienceReward+rookieKinshipReward+rookieExperiencReward).toFixed(2)),
         owner: gotchi.owner.id
       });
     });
@@ -198,10 +237,12 @@ class Leaderboards extends Component {
           )
         },
         { field: 'name', headerName: 'Name', width: 240 },
-        { field: 'rarityReward', headerName: 'SZN 1 Rarity Reward', width: 220 },
-        { field: 'kinshipReward', headerName: 'SZN 1 Kinship Reward', width: 220 },
-        { field: 'experienceReward', headerName: 'SZN 1 Experience Reward', width: 220 },
-        { field: 'totalReward', headerName: 'SZN 1 Total Rewards', width: 220 },
+        { field: 'rarityReward', headerName: 'SZN2 RARITY', width: 140 },
+        { field: 'kinshipReward', headerName: 'SZN2 KIN', width: 140 },
+        { field: 'experienceReward', headerName: 'SZN2 XP', width: 140 },
+        { field: 'rookieKinshipReward', headerName: 'SZN2 H2 KIN', width: 140 },
+        { field: 'rookieExperiencReward', headerName: 'SZN2 H2 XP', width: 140 },
+        { field: 'totalReward', headerName: 'SZN2 Total', width: 140 },
       ];
 
       let rows = [];
@@ -213,7 +254,9 @@ class Leaderboards extends Component {
 
       return (
         <div>
-          <h2>Top Gotchis By Total Projected Rewards</h2>
+          <div>
+            <h2>Top Gotchis By Total Projected SZN2 Rewards</h2>
+          </div>
           <div style={{ height: '1080px', width: '100%' }}>
             <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" disableSelectionOnClick="true" />
           </div>
@@ -228,7 +271,7 @@ class Leaderboards extends Component {
         { field: 'rank', headerName: 'Rank', width: 90 },
         { field: 'id', headerName: 'Owner', width: 420 },
         { field: 'gotchiCount', headerName: 'Aavegotchi Count', width: 180 },
-        { field: 'totalReward', headerName: 'SZN 1 Total Rewards', width: 220 },
+        { field: 'totalReward', headerName: 'SZN 2 Total Rewards', width: 220 },
       ];
 
       let rows = [];
@@ -240,7 +283,7 @@ class Leaderboards extends Component {
 
       return (
         <div>
-          <h2>Top Owners By Total Projected Rewards</h2>
+          <h2>Top Owners By Total Projected SZN2 Rewards</h2>
           <div style={{ height: '1080px', width: '100%' }}>
             <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" disableSelectionOnClick="true" />
           </div>
@@ -255,7 +298,8 @@ class Leaderboards extends Component {
     let leaders = [];
     let columns = [
       { field: 'rank', headerName: 'Rank', width: 90 },
-      { field: 'reward', headerName: 'SZN 1 Reward', width: 150 },
+      { field: 'reward', headerName: 'SZN 2 Reward', width: 150 },
+      { field: 'roundReward', headerName: 'Round Reward', width: 150 },
       {
         field: 'id',
         headerName: 'Gotchi ID',
@@ -267,11 +311,11 @@ class Leaderboards extends Component {
         )
       },
       { field: 'name', headerName: 'Name', width: 240 },
-      { field: 'brs', headerName: 'Base Rarity Score', width: 200 },
-      { field: 'modifiedRarityScore', headerName: 'Modified Rarity Score', width: 200 },
-      { field: 'wrs', headerName: 'With Sets Rarity Score', width: 200 },
-      { field: 'kinship', headerName: 'Kinship', width: 160 },
-      { field: 'experience', headerName: 'Experience', width: 160 },
+      { field: 'brs', headerName: 'BRS', width: 110 },
+      { field: 'modifiedRarityScore', headerName: 'MRS', width: 110 },
+      { field: 'wrs', headerName: 'WSRS', width: 110 },
+      { field: 'kinship', headerName: 'KIN', width: 110 },
+      { field: 'experience', headerName: 'XP', width: 110 },
     ];
 
     switch (this.state.selectedMode) {
@@ -284,6 +328,12 @@ class Leaderboards extends Component {
       case 2:
         leaders = this.state.experienceLeaders;
         break;
+      case 3:
+        leaders = this.state.rookieKinshipLeaders;
+        break;
+      case 4:
+        leaders = this.state.rookieExperienceLeaders;
+        break;
       default:
         break;
     }
@@ -294,10 +344,12 @@ class Leaderboards extends Component {
       let rows = [];
       leaders.map(function(aavegotchi, index){
         if (_this.filterGotchi(aavegotchi)) {
+          let reward = parseFloat(calculateSeason2Reward(_this.state.selectedMode, index + 1));
           let row = {
             rank: index + 1,
             id: aavegotchi.id,
-            reward: parseFloat(calculateSeason1Reward(_this.state.selectedMode, index + 1).toFixed(2)),
+            reward: reward.toFixed(2),
+            roundReward: (reward/4).toFixed(2),
             name: aavegotchi.name,
             nrg: aavegotchi.numericTraits[0],
             agg: aavegotchi.numericTraits[1],
@@ -319,7 +371,21 @@ class Leaderboards extends Component {
 
       return (
         <div style={{ height: '1080px', width: '100%' }}>
-          <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" disableSelectionOnClick="true" />
+        <p>BRS = Base Rarity, MRS = Rarity Factoring in Wearables, WSRS = Rarity Factoring in Wearables and Wearable Sets</p>
+        <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" disableSelectionOnClick="true" />
+        </div>
+      );
+    }
+  }
+
+  renderFilter() {
+    if (this.state.gotchis.length > 0) {
+      return(
+        <div>
+          <p><b>Filter Aavegotchis in Leaderboard</b></p>
+          <div className="form-group">
+            <input type="text" id="filter" className="form-control" value={this.state.filter} onChange={this.onFilterChange} placeholder="Filter by Owner, Name or Gotchi Id" /><br />
+          </div>
         </div>
       );
     }
@@ -329,23 +395,24 @@ class Leaderboards extends Component {
     return(
       <div>
         <h1>Aavegotchi Leaderboards</h1>
+        <p>NOTE: there are some discrepencies between these leaderboards and the <a href='https://aavegotchi.com/leaderboard'>official SZN2 rarity farming leaderboard</a>. Please treat the official leaderboard as the source of truth.</p>
         <h2>{this.state.modes[this.state.selectedMode]} Leaderboard</h2>
-        <p>NOTE: this page has not been updated for season 2 rewards, it will be updated when rewards structure is confirmed.</p>
-        <div style={{margin: "10px"}}>
-          <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(0)}>Rarity Leaderboard</button> <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(1)}>Kinship Leaderboard</button> <button className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(2)}>Experience Leaderboard</button> <button className="btn btn-primary btn-sm" onClick={() => this.handleRoundToggle()}>Tie Breaker Trait: Round {this.state.round} {this.state.roundTraits[this.state.round-1].toUpperCase()}</button>
-        </div>
         <div>
-          <p><b>Filter Aavegotchis in Leaderboard</b></p>
-          <div className="form-group">
-            <input type="text" id="filter" className="form-control" value={this.state.filter} onChange={this.onFilterChange} placeholder="Filter by Owner, Name or Gotchi Id" /><br />
-          </div>
+          <button style={{margin: "2px"}} className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(0)}>Rarity</button>
+          <button style={{margin: "2px"}} className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(1)}>Kinship</button>
+          <button style={{margin: "2px"}} className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(2)}>Experience</button>
+          <button style={{margin: "2px"}} className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(3)}>Rookie Kinship</button>
+          <button style={{margin: "2px"}} className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(4)}>Rookie Experience</button>
+          <button style={{margin: "2px"}} className="btn btn-primary btn-sm" onClick={() => this.handleRoundToggle()}>Tie Breaker Trait: Round {this.state.round} {this.state.roundTraits[this.state.round-1].toUpperCase()}</button>
         </div>
-        {/*this.state.loading &&
+        {this.state.loading &&
           <Loading message="Loading Aavegotchis from TheGraph..." />
-        */}
-        {/*this.renderLeaderboard()*/}
-        {/*this.renderTopGotchis()*/}
-        {/*this.renderTopOwners()*/}
+        }
+        {this.renderFilter()}
+        {this.renderLeaderboard()}
+        {this.renderTopGotchis()}
+        {this.renderTopOwners()}
+        <p>Important Links: <a href='https://aavegotchi.com/leaderboard'>Official leaderboard</a> <a href='https://aavegotchi.medium.com/rarity-farming-season-2-is-coming-dates-announced-7047896eb3ab'>SZN2 rarity farming rewards structure</a></p>
       </div>
     );
   }

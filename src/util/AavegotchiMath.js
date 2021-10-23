@@ -272,6 +272,27 @@ export const calculateSeason1Reward = (mode, modeRank) => {
   return reward;
 }
 
+const rewardCalculation = (rank, y, k) => {
+  let weight = Math.pow(1 / rank, y);
+  let reward = weight * k;
+  return reward;
+}
+
+export const calculateSeason2Reward = (mode, modeRank) => {
+  if (modeRank > 5000) {
+    return 0;
+  }
+
+  let yValues = [0.94, 0.76, 0.65, 0.76, 0.65];
+  let kValues = [102656.27, 7000.66, 3703.69, 7000.66, 3703.69];
+
+  if (mode >= 0 && mode <= 4) {
+    return rewardCalculation(modeRank, yValues[mode], kValues[mode]);
+  }
+
+  return 0;
+}
+
 export const formatGhst = (ghstInWeiUnits) => {
   let ghstInEtherUnits = ethers.utils.formatEther(ghstInWeiUnits);
   return parseFloat(ghstInEtherUnits);
