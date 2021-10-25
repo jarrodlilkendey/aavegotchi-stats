@@ -612,18 +612,38 @@ export const retrieveErc721ListingsByTokenIds = async (tokenIds) => {
 };
 
 export const retrieveSacrificedGotchis = async (hauntId) => {
-  let query = `{
+  let h1Query = `{
     aavegotchis(
       first: 1000,
       where: {
         owner: "0x0000000000000000000000000000000000000000",
-        hauntId: ${hauntId}
+        gotchiId_lt: 10001
       }
     ) {
       id
       hauntId
+      gotchiId
     }
   }`;
+
+  let h2Query = `{
+    aavegotchis(
+      first: 1000,
+      where: {
+        owner: "0x0000000000000000000000000000000000000000",
+        gotchiId_gt: 10000
+      }
+    ) {
+      id
+      hauntId
+      gotchiId
+    }
+  }`;
+
+  let query = h1Query;
+  if (hauntId == 2) {
+    query = h2Query;
+  }
 
   const gotchis = await axios.post(
     'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',

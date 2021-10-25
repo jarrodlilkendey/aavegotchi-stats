@@ -50,17 +50,13 @@ class PortalStats extends Component {
         this.setState({ h2Portals, loading: false });
       });
 
-    retrieveSacrificedGotchis("0")
-      .then((h0) => {
-        retrieveSacrificedGotchis("1")
-          .then((h1) => {
-            let h1SacrificedGotchis = [...h0, ...h1];
-            console.log('h1SacrificedGotchis', h1SacrificedGotchis);
-            this.setState({ h1SacrificedGotchis });
-          });
+    retrieveSacrificedGotchis(1)
+      .then((h1SacrificedGotchis) => {
+        console.log('h1SacrificedGotchis', h1SacrificedGotchis);
+        this.setState({ h1SacrificedGotchis });
       });
 
-    retrieveSacrificedGotchis("2")
+    retrieveSacrificedGotchis(2)
       .then((h2SacrificedGotchis) => {
         console.log('h2SacrificedGotchis', h2SacrificedGotchis);
         this.setState({ h2SacrificedGotchis });
