@@ -28,6 +28,7 @@ import WearablesList from './components/WearablesList';
 import Tools from './components/Tools';
 import AavegotchiPortalRarityDistributions from './components/AavegotchiPortalRarityDistributions';
 import Ownership from './components/Ownership';
+// import BaazaarERC721Listings from './components/BaazaarERC721Listings';
 
 import PromotedListings from './components/PromotedListings';
 import AddPromotedListing from './components/AddPromotedListing';
@@ -75,7 +76,7 @@ ReactDOM.render(
       <div className="container">
         <NavBar pages={navBarPages} />
 
-        <PromotedListings />
+        {/*<PromotedListings />*/}
 
         <Switch>
           <Route path="/recommendations">
@@ -167,6 +168,10 @@ ReactDOM.render(
           <Route path="/owners">
             <Ownership title="Aavegotchi Ownership Statistics" />
           </Route>
+
+          {/*<Route path="/erc721">
+            <BaazaarERC721Listings title="Baazaar ERC721 Listings" />
+          </Route>*/}
 
           <Route path="/">
             <Home title="What is AavegotchiStats?" />
