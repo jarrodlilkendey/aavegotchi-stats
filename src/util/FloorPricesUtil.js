@@ -263,10 +263,11 @@ export const portalOptionCheapestMythEyes = async (hauntId) => {
   return mythEyes;
 };
 
-export const cheapestXP = async () => {
+const getXPQuery = (skip) => {
   let query = `{
     erc721Listings(
       first: 1000,
+      skip: ${skip},
       orderBy: priceInWei,
       orderDirection: asc,
       where:{
@@ -282,33 +283,50 @@ export const cheapestXP = async () => {
     }
   }`;
 
-  const result = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
-    {
-      query: query
-    }
-  );
+  return query;
+}
 
+export const cheapestXP = async () => {
+  let i = 0;
+  let done = false;
   let aavegotchiListings = [];
 
-  result.data.data.erc721Listings.map((listing) => {
-    let xp = parseInt(listing.gotchi.experience);
-    if (xp > 0) {
-      let ghst = parseInt(ethers.utils.formatEther(listing.priceInWei));
-      let ghstPerXp = ghst / xp;
-      aavegotchiListings.push({...listing, ghstPerXp, ghst })
+  while (done != true) {
+    let query = getXPQuery(i);
+
+    const result = await axios.post(
+      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      {
+        query: query
+      }
+    );
+
+    result.data.data.erc721Listings.map((listing) => {
+      let xp = parseInt(listing.gotchi.experience);
+      if (xp > 0) {
+        let ghst = parseInt(ethers.utils.formatEther(listing.priceInWei));
+        let ghstPerXp = ghst / xp;
+        aavegotchiListings.push({...listing, ghstPerXp, ghst })
+      }
+    });
+
+    if (result.data.data.erc721Listings.length == 1000 && i < 5000) {
+      i += 1000;
+    } else {
+      done = true;
     }
-  });
+  }
 
   aavegotchiListings = _.orderBy(aavegotchiListings, ['ghstPerXp', 'asc']);
 
   return aavegotchiListings;
 };
 
-export const cheapestKIN = async () => {
+const getKinshipQuery = (skip) => {
   let query = `{
     erc721Listings(
       first: 1000,
+      skip: ${skip},
       orderBy: priceInWei,
       orderDirection: asc,
       where:{
@@ -324,23 +342,39 @@ export const cheapestKIN = async () => {
     }
   }`;
 
-  const result = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
-    {
-      query: query
-    }
-  );
+  return query;
+}
 
+export const cheapestKIN = async () => {
+  let i = 0;
+  let done = false;
   let aavegotchiListings = [];
 
-  result.data.data.erc721Listings.map((listing) => {
-    let kinship = parseInt(listing.gotchi.kinship);
-    if (kinship > 0) {
-      let ghst = parseInt(ethers.utils.formatEther(listing.priceInWei));
-      let ghstPerKinship = ghst / kinship;
-      aavegotchiListings.push({...listing, ghstPerKinship, ghst })
+  while (done != true) {
+    let query = getKinshipQuery(i);
+
+    const result = await axios.post(
+      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      {
+        query: query
+      }
+    );
+
+    result.data.data.erc721Listings.map((listing) => {
+      let kinship = parseInt(listing.gotchi.kinship);
+      if (kinship > 0) {
+        let ghst = parseInt(ethers.utils.formatEther(listing.priceInWei));
+        let ghstPerKinship = ghst / kinship;
+        aavegotchiListings.push({...listing, ghstPerKinship, ghst })
+      }
+    });
+
+    if (result.data.data.erc721Listings.length == 1000 && i < 5000) {
+      i += 1000;
+    } else {
+      done = true;
     }
-  });
+  }
 
   aavegotchiListings = _.orderBy(aavegotchiListings, ['ghstPerKinship', 'asc']);
 
