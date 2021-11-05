@@ -173,15 +173,15 @@ class Ownership extends Component {
             </a>
           )
         },
-        { field: 'portalCount', headerName: 'All Portals', width: 120 },
-        { field: 'h1PortalCount', headerName: 'H1 Portals', width: 120 },
-        { field: 'h2PortalCount', headerName: 'H2 Portals', width: 120 },
+        { field: 'portalCount', headerName: 'All Portals', width: 130 },
+        { field: 'h1PortalCount', headerName: 'H1 Portals', width: 130 },
+        { field: 'h2PortalCount', headerName: 'H2 Portals', width: 130 },
         { field: 'humbleCount', headerName: 'Humble', width: 130 },
         { field: 'reasonableCount', headerName: 'Reasonable', width: 130 },
         { field: 'spaciousCount', headerName: 'Spacious', width: 130 },
         { field: 'parcelCount', headerName: 'Parcels', width: 130 },
-        { field: 'kinship', headerName: 'Total KIN', width: 120 },
-        { field: 'experience', headerName: 'Total XP', width: 120 },
+        { field: 'kinship', headerName: 'Total KIN', width: 130 },
+        { field: 'experience', headerName: 'Total XP', width: 130 },
       ];
 
       return (
