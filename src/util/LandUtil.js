@@ -12,6 +12,7 @@ const parcelQuery = (c1, c2, c3, c4) => {
     ) {
       id
       owner { id }
+      size
     }
     chunk2: parcels(
       first: 1000, where:{
@@ -20,6 +21,7 @@ const parcelQuery = (c1, c2, c3, c4) => {
     ) {
       id
       owner { id }
+      size
     }
     chunk3: parcels(
       first: 1000, where:{
@@ -28,6 +30,7 @@ const parcelQuery = (c1, c2, c3, c4) => {
     ) {
       id
       owner { id }
+      size
     }
     chunk4: parcels(
       first: 1000, where:{
@@ -36,6 +39,7 @@ const parcelQuery = (c1, c2, c3, c4) => {
     ) {
       id
       owner { id }
+      size
     }
   }`;
 
@@ -44,8 +48,6 @@ const parcelQuery = (c1, c2, c3, c4) => {
 
 export const retrieveParcels = async () => {
   const parcelChunks = _.chunk(parcelTokens, 1000)
-
-  console.log(parcelChunks.length);
 
   let parcels = [];
 
@@ -79,7 +81,26 @@ export const retrieveParcels = async () => {
     });
   }
 
+
+  let humbleByOwner = _.groupBy(_.filter(parcels, ['size', '0']), 'owner.id');
+  let reasonableByOwner = _.groupBy(_.filter(parcels, ['size', '1']), 'owner.id');
+  let spaciousByOwner = _.groupBy(
+    _.filter(parcels, function(p) {
+      if (p.size == '2' || p.size == '3') {
+        return true;
+      }
+      return false;
+    }), 'owner.id'
+  );
+
   let parcelsByOwner = _.groupBy(parcels, 'owner.id');
 
-  return parcelsByOwner;
+  let data = {
+    humble: humbleByOwner,
+    reasonable: reasonableByOwner,
+    spacious: spaciousByOwner,
+    all: parcelsByOwner
+  };
+
+  return data;
 };

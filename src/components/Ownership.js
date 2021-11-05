@@ -120,7 +120,10 @@ class Ownership extends Component {
                 h2PortalCount: h2UniqueOwners[id] ? h2UniqueOwners[id] : 0,
                 kinship: kinshipUniqueOwners[id] ? kinshipUniqueOwners[id] : 0,
                 experience: experienceUniqueOwners[id] ? experienceUniqueOwners[id] : 0,
-                parcelCount: parcels[id] ? parcels[id].length : 0,
+                humbleCount: parcels.humble[id] ? parcels.humble[id].length : 0,
+                reasonableCount: parcels.reasonable[id] ? parcels.reasonable[id].length : 0,
+                spaciousCount: parcels.spacious[id] ? parcels.spacious[id].length : 0,
+                parcelCount: parcels.all[id] ? parcels.all[id].length : 0,
               }));
 
               owners = _.orderBy(owners, ['portalCount'], ['desc']);
@@ -170,12 +173,15 @@ class Ownership extends Component {
             </a>
           )
         },
-        { field: 'portalCount', headerName: 'Owned Portals', width: 160 },
-        { field: 'h1PortalCount', headerName: 'H1 Portals', width: 160 },
-        { field: 'h2PortalCount', headerName: 'H2 Portals', width: 160 },
-        { field: 'kinship', headerName: 'Total Kinship', width: 160 },
-        { field: 'experience', headerName: 'Total Experience', width: 160 },
-        { field: 'parcelCount', headerName: 'Parcels', width: 160 },
+        { field: 'portalCount', headerName: 'All Portals', width: 120 },
+        { field: 'h1PortalCount', headerName: 'H1 Portals', width: 120 },
+        { field: 'h2PortalCount', headerName: 'H2 Portals', width: 120 },
+        { field: 'humbleCount', headerName: 'Humble', width: 130 },
+        { field: 'reasonableCount', headerName: 'Reasonable', width: 130 },
+        { field: 'spaciousCount', headerName: 'Spacious', width: 130 },
+        { field: 'parcelCount', headerName: 'Parcels', width: 130 },
+        { field: 'kinship', headerName: 'Total KIN', width: 120 },
+        { field: 'experience', headerName: 'Total XP', width: 120 },
       ];
 
       return (
