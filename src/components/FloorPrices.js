@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
 
-import { erc721FloorPrice, erc1155FloorPrice, erc1155FloorPriceById, erc721CheapestMythEyes, erc721CheapestByWearableRarity, cheapestXP, cheapestKIN, portalOptionCheapestMythEyes, floorByBRS } from '../util/FloorPricesUtil';
+import {
+  erc721FloorPrice, erc721CheapestMythEyes, erc721CheapestByWearableRarity,
+  erc1155FloorPrice, erc1155FloorPriceById,
+  cheapestXP, cheapestKIN,
+  portalOptionCheapestMythEyes,
+  floorByBRS,
+  floorParcels
+} from '../util/FloorPricesUtil';
 
 import { ethers } from "ethers";
 
@@ -213,6 +220,12 @@ class FloorPrices extends Component {
           console.log('floorByBRS', floorByBRS);
           _this.setState({ floorByBRS });
         });
+
+      floorParcels()
+        .then((floorParcels) => {
+          console.log('floorParcels', floorParcels);
+          _this.setState({ floorParcels });
+        });
   }
 
   renderFloorByBRS() {
@@ -242,12 +255,17 @@ class FloorPrices extends Component {
       && this.state.godlikeWearables && this.state.commonTickets && this.state.uncommonTickets && this.state.rareTickets
       && this.state.legendaryTickets && this.state.mythicalTickets && this.state.godlikeTickets && this.state.dropTickets
       && this.state.kinship && this.state.greaterKinship && this.state.xp && this.state.greaterXp && this.state.h1MythEyes && this.state.h2MythEyes
-      && this.state.aavegotchiGodlike && this.state.aavegotchiMythical && this.state.aavegotchiLegendary && this.state.aavegotchiXP && this.state.aavegotchiKinship) {
+      && this.state.aavegotchiGodlike && this.state.aavegotchiMythical && this.state.aavegotchiLegendary && this.state.aavegotchiXP && this.state.aavegotchiKinship
+      && this.state.floorParcels) {
       return(
         <div className="container">
           <h2>Aavegotchi Baazaar Floor Prices</h2>
           <div className="row">
             <div className="col">
+              <h3>Gotchiverse Land</h3>
+              <p><img src='/portals/realmland.png' height='30px' /> Humble (8x8) Parcel Floor Price: <a href={this.state.floorParcels.humble.link}>{this.state.floorParcels.humble.floor} GHST</a> (#{this.state.floorParcels.humble.tokenId}, D{this.state.floorParcels.humble.district})</p>
+              <p><img src='/portals/realmland.png' height='30px' /> Reasonable (16x16) Floor Price: <a href={this.state.floorParcels.reasonable.link}>{this.state.floorParcels.reasonable.floor} GHST</a> (#{this.state.floorParcels.reasonable.tokenId}, D{this.state.floorParcels.reasonable.district})</p>
+              <p><img src='/portals/realmland.png' height='30px' /> Spacious (32x64) Floor Price: <a href={this.state.floorParcels.spacious.link}>{this.state.floorParcels.spacious.floor} GHST</a> (#{this.state.floorParcels.spacious.tokenId}, D{this.state.floorParcels.spacious.district})</p>
               <h3>Portals</h3>
               <p><img src='/portals/h1closedportal.gif' height='30px' /> H1 Closed Portal Floor Price: <a href={this.state.h1ClosedPortals.link}>{this.state.h1ClosedPortals.floor} GHST</a> (#{this.state.h1ClosedPortals.tokenId})</p>
               <p><img src='/portals/h2closedportal.gif' height='30px' /> H2 Closed Portal Floor Price: <a href={this.state.h2ClosedPortals.link}>{this.state.h2ClosedPortals.floor} GHST</a> (#{this.state.h2ClosedPortals.tokenId})</p>

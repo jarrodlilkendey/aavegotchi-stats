@@ -481,3 +481,91 @@ export const floorByBRS = async () => {
 
   return brsFloors;
 };
+
+export const floorParcels = async () => {
+  let query = `{
+    humbleFloor: erc721Listings(
+      first: 1,
+      where: {
+      	category: 4
+        cancelled: false
+        timePurchased: 0,
+  			size: 0
+    	}
+      orderBy:priceInWei
+      orderDirection: asc
+    ) {
+      id
+      tokenId
+      district
+      size
+      priceInWei
+    }
+    reasonableFloor: erc721Listings(
+      first: 1,
+      where: {
+      	category: 4
+        cancelled: false
+        timePurchased: 0,
+  			size: 1
+    	}
+      orderBy:priceInWei
+      orderDirection: asc
+    ) {
+      id
+      tokenId
+      district
+      size
+      priceInWei
+    }
+    spaciousFloor: erc721Listings(
+      first: 1,
+      where: {
+      	category: 4
+        cancelled: false
+        timePurchased: 0,
+  			size: 2
+    	}
+      orderBy:priceInWei
+      orderDirection: asc
+    ) {
+      id
+      tokenId
+      district
+      size
+      priceInWei
+    }
+  }`;
+
+  const result = await axios.post(
+    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    {
+      query: query
+    }
+  );
+
+  console.log(result);
+
+  let data = {
+    humble: {
+      floor: ethers.utils.formatEther(result.data.data.humbleFloor[0].priceInWei),
+      link: `https://aavegotchi.com/baazaar/erc721/${result.data.data.humbleFloor[0].id}`,
+      tokenId: result.data.data.humbleFloor[0].tokenId,
+      district: result.data.data.humbleFloor[0].district
+    },
+    reasonable: {
+      floor: ethers.utils.formatEther(result.data.data.reasonableFloor[0].priceInWei),
+      link: `https://aavegotchi.com/baazaar/erc721/${result.data.data.reasonableFloor[0].id}`,
+      tokenId: result.data.data.reasonableFloor[0].tokenId,
+      district: result.data.data.reasonableFloor[0].district
+    },
+    spacious: {
+      floor: ethers.utils.formatEther(result.data.data.spaciousFloor[0].priceInWei),
+      link: `https://aavegotchi.com/baazaar/erc721/${result.data.data.spaciousFloor[0].id}`,
+      tokenId: result.data.data.spaciousFloor[0].tokenId,
+      district: result.data.data.spaciousFloor[0].district
+    },
+  };
+
+  return data;
+};
