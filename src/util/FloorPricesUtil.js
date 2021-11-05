@@ -524,7 +524,7 @@ export const floorParcels = async () => {
       	category: 4
         cancelled: false
         timePurchased: 0,
-  			size: 2
+  			size_gte: 2
     	}
       orderBy:priceInWei
       orderDirection: asc
