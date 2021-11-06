@@ -271,7 +271,7 @@ const getXPQuery = (skip) => {
       orderBy: priceInWei,
       orderDirection: asc,
       where:{
-        category: 3, cancelled: false, timePurchased: 0
+        category: 3, cancelled: false, timePurchased: 0, id_not: 94815
       }) {
       id
       gotchi {
