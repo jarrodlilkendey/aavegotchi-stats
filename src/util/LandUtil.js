@@ -51,7 +51,7 @@ export const retrieveParcels = async () => {
 
   let parcels = [];
 
-  for (let i = 0; i < 16; i+=4) {
+  for (let i = 0; i < 20; i+=4) {
     const result = await axios.post(
       'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
       {
