@@ -15,7 +15,8 @@ const erc721FloorPricesQuery = (category, hauntId) => {
         category: ${category},
         cancelled: false,
         timePurchased: 0,
-        hauntId: ${hauntId}
+        hauntId: ${hauntId},
+        id_not_in: [83938, 81349]
       }) {
       id
       portal {
@@ -44,7 +45,7 @@ const erc1155FloorPricesQuery = (category, rarity) => {
         rarityLevel: ${rarity},
         cancelled: false,
         sold: false,
-        id_not_in: [126114, 125427, 131410, 124729, 124657, 123839, 121753]
+        id_not_in: [126114, 125427, 131410, 124729, 124657, 123839, 121753, 115818, 226056]
       }) {
       id
       priceInWei
