@@ -3,7 +3,7 @@ import parcelTokens from '../data/parcels/tokens.json';
 const axios = require('axios');
 const _ = require('lodash');
 
-const parcelQuery = (c1, c2, c3, c4) => {
+const parcelQuery = (c1, c2, c3, c4, c5) => {
   let query = `{
     chunk1: parcels(
       first: 1000, where:{
@@ -41,6 +41,15 @@ const parcelQuery = (c1, c2, c3, c4) => {
       owner { id }
       size
     }
+    chunk5: parcels(
+      first: 1000, where:{
+        id_in:[${c5.join()}]
+      }
+    ) {
+      id
+      owner { id }
+      size
+    }
   }`;
 
   return query;
@@ -51,7 +60,7 @@ export const retrieveParcels = async () => {
 
   let parcels = [];
 
-  for (let i = 0; i < 20; i+=4) {
+  for (let i = 0; i < 30; i+=5) {
     const result = await axios.post(
       'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
       {
@@ -59,7 +68,8 @@ export const retrieveParcels = async () => {
           parcelChunks[i],
           parcelChunks[i+1],
           parcelChunks[i+2],
-          parcelChunks[i+3]
+          parcelChunks[i+3],
+          parcelChunks[i+4]
         )
       }
     );
@@ -77,6 +87,10 @@ export const retrieveParcels = async () => {
     });
 
     result.data.data.chunk4.map((p) => {
+      parcels.push(p);
+    });
+
+    result.data.data.chunk5.map((p) => {
       parcels.push(p);
     });
   }
