@@ -266,6 +266,7 @@ class FloorPrices extends Component {
               <p><img src='/portals/realmland.png' height='30px' /> Humble (8x8) Parcel Floor Price: <a href={this.state.floorParcels.humble.link}>{this.state.floorParcels.humble.floor} GHST</a> (#{this.state.floorParcels.humble.tokenId}, D{this.state.floorParcels.humble.district})</p>
               <p><img src='/portals/realmland.png' height='30px' /> Reasonable (16x16) Floor Price: <a href={this.state.floorParcels.reasonable.link}>{this.state.floorParcels.reasonable.floor} GHST</a> (#{this.state.floorParcels.reasonable.tokenId}, D{this.state.floorParcels.reasonable.district})</p>
               <p><img src='/portals/realmland.png' height='30px' /> Spacious (32x64) Floor Price: <a href={this.state.floorParcels.spacious.link}>{this.state.floorParcels.spacious.floor} GHST</a> (#{this.state.floorParcels.spacious.tokenId}, D{this.state.floorParcels.spacious.district})</p>
+              <p><img src='/portals/realmland.png' height='30px' /> <a href="/land">More Land Stats</a></p>
               <h3>Portals</h3>
               <p><img src='/portals/h1closedportal.gif' height='30px' /> H1 Closed Portal Floor Price: <a href={this.state.h1ClosedPortals.link}>{this.state.h1ClosedPortals.floor} GHST</a> (#{this.state.h1ClosedPortals.tokenId})</p>
               <p><img src='/portals/h2closedportal.gif' height='30px' /> H2 Closed Portal Floor Price: <a href={this.state.h2ClosedPortals.link}>{this.state.h2ClosedPortals.floor} GHST</a> (#{this.state.h2ClosedPortals.tokenId})</p>
