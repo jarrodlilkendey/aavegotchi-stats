@@ -29,6 +29,7 @@ import Tools from './components/Tools';
 import AavegotchiPortalRarityDistributions from './components/AavegotchiPortalRarityDistributions';
 import Ownership from './components/Ownership';
 // import BaazaarERC721Listings from './components/BaazaarERC721Listings';
+import Land from './components/Land';
 
 import PromotedListings from './components/PromotedListings';
 import AddPromotedListing from './components/AddPromotedListing';
@@ -169,9 +170,11 @@ ReactDOM.render(
             <Ownership title="Aavegotchi Ownership Statistics" />
           </Route>
 
-          {/*<Route path="/erc721">
-            <BaazaarERC721Listings title="Baazaar ERC721 Listings" />
-          </Route>*/}
+          <Route path="/land">
+            <Land title="Aavegotchi Land Statistics" />
+          </Route>
+
+
 
           <Route path="/">
             <Home title="What is AavegotchiStats?" />
