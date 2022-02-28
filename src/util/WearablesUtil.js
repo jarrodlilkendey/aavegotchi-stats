@@ -85,3 +85,26 @@ export const erc1155PricesById = async (category, id) => {
   );
   return result.data.data.erc1155Listings;
 };
+
+export const gotchisWithEquippedWearable = async (id) => {
+  const result = await axios.post(
+    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    {
+      query: `{
+        aavegotchis(
+          first: 1000
+          where: {
+            equippedWearables_contains: [${id}]
+          }
+        ) {
+          gotchiId
+          owner {
+            id
+          }
+          equippedWearables
+        }
+      }`
+    }
+  );
+  return result.data.data.aavegotchis;
+};

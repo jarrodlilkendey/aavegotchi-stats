@@ -8,7 +8,7 @@ import DatePicker from 'react-datepicker';
 
 import Loading from './Loading';
 
-import { retrieveSoldWearableListingsById, erc1155PricesById } from '../util/WearablesUtil';
+import { retrieveSoldWearableListingsById, erc1155PricesById, gotchisWithEquippedWearable } from '../util/WearablesUtil';
 import { formatGhst, wearableRarityLabel, wearablePositionLabel, wearableTraitModifiers } from '../util/AavegotchiMath';
 
 import { withRouter } from 'react-router-dom';
@@ -144,6 +144,22 @@ class WearableDetails extends Component {
           }
         });
       });
+
+    gotchisWithEquippedWearable(this.state.wearableId)
+      .then((gotchisWithWearable) => {
+        let gotchisWithWearableUnits = 0;
+        gotchisWithWearable.map((g) => {
+          g.equippedWearables.map((w) => {
+            if (w == this.state.wearableId) {
+              gotchisWithWearableUnits++;
+            }
+          })
+        });
+
+        console.log('gotchisWithWearable', gotchisWithWearable, gotchisWithWearableUnits);
+
+        this.setState({ gotchisWithWearable, gotchisWithWearableUnits });
+      })
   }
 
   refreshVisualisations() {
@@ -313,8 +329,8 @@ class WearableDetails extends Component {
 
         credits: {
           enabled: true,
-          href: `https://aavegotchistats.com/wearable/${this.state.wearableId}`,
-          text: `aavegotchistats.com/wearable/${this.state.wearableId}`
+          href: `https://aavegotchistats.com/wearables/${this.state.wearableId}`,
+          text: `aavegotchistats.com/wearables/${this.state.wearableId}`
         }
       };
 
@@ -580,15 +596,91 @@ class WearableDetails extends Component {
 
   renderMetadata() {
     return(
-      <div>
-        <p>ID: {this.state.wearableId}</p>
-        <p>Name: {this.state.wearable.name}</p>
-        <p>Quantity: {this.state.wearable.totalQuantity}</p>
-        <p>Rarity: {wearableRarityLabel(wearableItemTypes[this.state.wearableId])}</p>
-        <p>Slot: {wearablePositionLabel(wearableItemTypes[this.state.wearableId])}</p>
-        <p>Trait Modifiers: {wearableTraitModifiers(this.state.wearable.traitModifiers)}</p>
+      <div className="row">
+        <div className="col">
+          <p>ID: {this.state.wearableId}</p>
+          <p>Name: {this.state.wearable.name}</p>
+          <p>Quantity: {this.state.wearable.totalQuantity}</p>
+          <p>Rarity: {wearableRarityLabel(wearableItemTypes[this.state.wearableId])}</p>
+          <p>Slot: {wearablePositionLabel(wearableItemTypes[this.state.wearableId])}</p>
+          <p>Trait Modifiers: {wearableTraitModifiers(this.state.wearable.traitModifiers)}</p>
+        </div>
+        <div className="col">
+          {this.renderWearableUtilisation()}
+        </div>
       </div>
     );
+  }
+
+  renderWearableUtilisation() {
+    if (this.state.gotchisWithWearable && this.state.openListings) {
+      let unlistedUnequippedUnits = this.state.wearable.totalQuantity - this.state.openListings.listedQuantity - this.state.gotchisWithWearableUnits;
+
+      let pieChartData = [];
+
+      pieChartData.push({
+        name: 'Equipped Units',
+        x: this.state.gotchisWithWearableUnits,
+        y: parseFloat(((this.state.gotchisWithWearableUnits/this.state.wearable.totalQuantity)*100).toFixed(2))
+      });
+
+      pieChartData.push({
+        name: 'Listed Units',
+        x: this.state.openListings.listedQuantity,
+        y: parseFloat(((this.state.openListings.listedQuantity/this.state.wearable.totalQuantity)*100).toFixed(2))
+      });
+
+      pieChartData.push({
+        name: 'Unequipped & Unlisted Units',
+        x: unlistedUnequippedUnits,
+        y: parseFloat(((unlistedUnequippedUnits/this.state.wearable.totalQuantity)*100).toFixed(2))
+      });
+
+      console.log('pieChartData', pieChartData);
+
+      let pieChartOptions = {
+        title: { text: `${this.state.wearable.name} Wearable Utilization` },
+        chart: { type: 'pie' },
+        subtitle: { text: '' },
+        series: [{ name: 'Utilization', colorByPoint: true, data: pieChartData }],
+        plotOptions: {
+          pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+              enabled: true,
+              format: '<b>{point.name}</b>: {point.x} ({point.percentage:.2f}%)'
+            }
+          }
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+        },
+        credits: {
+          enabled: true,
+          href: `https://aavegotchistats.com/wearables/${this.state.wearableId}`,
+          text: `aavegotchistats.com/wearables/${this.state.wearableId}`
+        }
+      };
+
+      // <div className="col">
+      //   <p>Units in Total: {this.state.wearable.totalQuantity}</p>
+      //   <p>Units Listed (as Wearable Listings): {this.state.openListings.listedQuantity}</p>
+      //   <p>Units Equipped to Aavegotchis: {this.state.gotchisWithWearableUnits} (across {this.state.gotchisWithWearable.length} Aavegotchis)</p>
+      //   <p>Units Unlisted and Unequipped: {unlistedUnequippedUnits}</p>
+      // </div>
+
+      return(
+        <div className="row">
+          <div className="col">
+            <HighchartsReact
+              highcharts={Highcharts}
+              options={pieChartOptions}
+            />
+          </div>
+        </div>
+      );
+    }
   }
 
   render() {
@@ -604,6 +696,7 @@ class WearableDetails extends Component {
         {this.renderSalesAvgPriceChart()}
         {this.renderTopAddressesTables()}
         {this.renderSalesTable()}
+        <p><a href="/wearables">Back to Wearables List</a></p>
       </div>
     );
   }
