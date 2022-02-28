@@ -641,7 +641,7 @@ class WearableDetails extends Component {
       let pieChartOptions = {
         title: { text: `${this.state.wearable.name} Wearable Utilization` },
         chart: { type: 'pie' },
-        subtitle: { text: '' },
+        subtitle: { text: `Total Units: ${this.state.wearable.totalQuantity}` },
         series: [{ name: 'Utilization', colorByPoint: true, data: pieChartData }],
         plotOptions: {
           pie: {
