@@ -611,39 +611,33 @@ export const retrieveErc721ListingsByTokenIds = async (tokenIds) => {
   return listings.data.data.erc721Listings;
 };
 
-export const retrieveSacrificedGotchis = async (hauntId) => {
-  let h1Query = `{
-    aavegotchis(
-      first: 1000,
+export const retrieveSacrificedGotchis = async () => {
+  let query = `{
+    users(
+      first: 1,
       where: {
-        owner: "0x0000000000000000000000000000000000000000",
-        gotchiId_lt: 10001
-      }
+        id: "0x0000000000000000000000000000000000000000"
+    	}
     ) {
       id
-      hauntId
-      gotchiId
-    }
-  }`;
-
-  let h2Query = `{
-    aavegotchis(
-      first: 1000,
-      where: {
-        owner: "0x0000000000000000000000000000000000000000",
-        gotchiId_gt: 10000
+      h1: portalsOwned(
+        first:1000,
+        where: {
+          hauntId: 1
+        }
+      ){
+        id
       }
-    ) {
-      id
-      hauntId
-      gotchiId
+      h2: portalsOwned(
+        first:1000,
+        where: {
+          hauntId: 2
+        }
+      ){
+        id
+      }
     }
   }`;
-
-  let query = h1Query;
-  if (hauntId == 2) {
-    query = h2Query;
-  }
 
   const gotchis = await axios.post(
     'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
@@ -652,7 +646,9 @@ export const retrieveSacrificedGotchis = async (hauntId) => {
     }
   );
 
-  return gotchis.data.data.aavegotchis;
+  console.log('gotchis', gotchis);
+
+  return gotchis.data.data.users[0];
 };
 
 const soldGotchisListingsGraphQuery = (skip) => {
@@ -897,103 +893,41 @@ export const retrieveSoldTicketListings = async () => {
   return listings;
 };
 
-const bridgedH1PortalGraphQuery = (skip, order) => {
-  let query = `{
-    portals(
-      first: 1000,
-      skip: ${skip},
-      orderBy: id,
-      orderDirection:"asc",
+export const retrieveBridgedPortals = async () => {
+  const query = `{
+    users(
+      first: 1,
       where: {
-        hauntId: "1",
-        owner: "0x86935f11c86623dec8a25696e1c19a8659cbf95d",
-      }
+        id: "0x86935f11c86623dec8a25696e1c19a8659cbf95d"
+    	}
     ) {
       id
-      hauntId
-      boughtAt,
-      openedAt,
-      claimedAt,
-      gotchi {
-        name
-        kinship
-        experience
+      h1: gotchisOwned(
+        first:1000,
+        where: {
+          hauntId: 1
+        }
+      ){
+        id
       }
-      owner {
+      h2: gotchisOwned(
+        first:1000,
+        where: {
+          hauntId: 2
+        }
+      ){
         id
       }
     }
   }`;
 
-  return query;
-}
 
-export const retrieveBridgedH1Portals = async () => {
-  let portals = [];
-  let stop = false;
-  let i = 0;
-
-  while (!stop) {
-    const p = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
-      {
-        query: bridgedH1PortalGraphQuery(i * 1000, 'asc')
-      }
-    );
-    portals.push(...p.data.data.portals);
-
-    if (p.data.data.portals.length != 1000) {
-      stop = true;
-    } else {
-      i++;
-    }
-  }
-
-
-  return portals;
-};
-
-const bridgedH2PortalGraphQuery = (skip) => {
-  let query = `{
-    portals(
-      first: 1000,
-      skip: ${skip},
-      orderBy: id,
-      orderDirection:"asc",
-      where: {
-        hauntId: "2"
-        owner: "0x86935f11c86623dec8a25696e1c19a8659cbf95d",
-      }
-    ) {
-      id
-      hauntId
-      boughtAt,
-      openedAt,
-      claimedAt,
-      gotchi {
-        name
-        kinship
-        experience
-      }
-      owner {
-        id
-      }
-    }
-  }`;
-
-  return query;
-}
-
-export const retrieveBridgedH2Portals = async () => {
-  let portals = [];
-
-  const p = await axios.post(
+  const gotchis = await axios.post(
     'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
     {
-      query: bridgedH2PortalGraphQuery(0)
+      query: query
     }
   );
-  portals.push(...p.data.data.portals);
 
-  return portals;
+  return gotchis.data.data.users[0];
 };

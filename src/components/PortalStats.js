@@ -5,8 +5,7 @@ import HighchartsReact from 'highcharts-react-official';
 
 import { DataGrid } from '@material-ui/data-grid';
 
-import { retrieveH1Portals, retrieveH2Portals, retrieveH1OpenPortals, retrieveH2OpenPortals, retrieveSacrificedGotchis, retrieveErc721ListingsByTokenIds  } from '../util/Graph';
-import { retrieveBridgedH1Portals, retrieveBridgedH2Portals } from '../util/Graph';
+import { retrieveH1Portals, retrieveH2Portals, retrieveH1OpenPortals, retrieveH2OpenPortals, retrieveSacrificedGotchis, retrieveErc721ListingsByTokenIds, retrieveBridgedPortals  } from '../util/Graph';
 
 import { graphAddressToCollateral } from '../util/Collateral';
 import { formatGhst } from '../util/AavegotchiMath';
@@ -50,25 +49,18 @@ class PortalStats extends Component {
         this.setState({ h2Portals, loading: false });
       });
 
-    retrieveSacrificedGotchis(1)
-      .then((h1SacrificedGotchis) => {
-        console.log('h1SacrificedGotchis', h1SacrificedGotchis);
-        this.setState({ h1SacrificedGotchis });
+    retrieveSacrificedGotchis()
+      .then((sacrificedGotchis) => {
+        console.log('sacrificedGotchis', sacrificedGotchis);
+        this.setState({ h1SacrificedGotchis: sacrificedGotchis.h1 });
+        this.setState({ h2SacrificedGotchis: sacrificedGotchis.h2 });
       });
 
-    retrieveSacrificedGotchis(2)
-      .then((h2SacrificedGotchis) => {
-        console.log('h2SacrificedGotchis', h2SacrificedGotchis);
-        this.setState({ h2SacrificedGotchis });
-      });
-
-    retrieveBridgedH1Portals()
-      .then((bridgedH1Portals) => {
-        retrieveBridgedH2Portals()
-          .then((bridgedH2Portals) => {
-            console.log('bridgedPortals', bridgedH1Portals, bridgedH2Portals);
-            this.setState({ bridgedH1Portals, bridgedH2Portals });
-          });
+    retrieveBridgedPortals()
+      .then((bridgedGotchis) => {
+        console.log('bridgedGotchis', bridgedGotchis);
+        this.setState({ bridgedH1Portals: bridgedGotchis.h1 });
+        this.setState({ bridgedH2Portals: bridgedGotchis.h2 });
       });
   }
 
