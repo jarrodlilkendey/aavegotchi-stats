@@ -29,10 +29,7 @@ class NavBar extends Component {
             <a href="https://www.youtube.com/channel/UCg5857-6abSZbk7bgxsvbbg" rel="noopener noreferrer" target="_blank" style={{ padding: '5px' }}>
               <FontAwesomeIcon icon={faYoutube} size="2x" color="#E259FD" />
             </a>
-            <a href="https://aavegotchi.com/realm" style={{ padding: '5px' }}>
-              <img src='/supreme-commander.png' width='45px' title='Read the Gotchiverse Litepaper' />
-            </a>
-            <a href="https://discord.gg/TNneBnhrM2" style={{ padding: '5px' }}>
+            <a href="https://wagmiwarriors.com/join" rel="noopener noreferrer" target="_blank" style={{ padding: '5px' }}>
               <img src='/smug-wagie.png' width='45px' title='Join the WAGMI Warriors Gotchiverse Guild' />
             </a>
           </div>
