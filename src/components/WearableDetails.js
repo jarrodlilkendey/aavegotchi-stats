@@ -114,12 +114,12 @@ class WearableDetails extends Component {
         console.log('openListings', listings);
         let floor = 0;
         let ceiling = 0;
-        let link = 'https://aavegotchi.com/baazaar';
+        let link = 'https://app.aavegotchi.com/baazaar';
         let name = 'No Listings';
         let qty = 0;
         if (listings.length > 0) {
           floor = ethers.utils.formatEther(listings[0].priceInWei);
-          link = `https://aavegotchi.com/baazaar/erc1155/${listings[0].id}`;
+          link = `https://app.aavegotchi.com/baazaar/erc1155/${listings[0].id}`;
           name = wearableItemTypes[listings[0].erc1155TypeId].name;
           qty = parseInt(listings[0].quantity);
           ceiling = ethers.utils.formatEther(listings[listings.length-1].priceInWei);
@@ -355,7 +355,7 @@ class WearableDetails extends Component {
           headerName: 'Listing',
           width: 100,
           renderCell: (params: GridCellParams) => (
-            <a href={`https://aavegotchi.com/baazaar/erc1155/${params.value}`} target="_blank">
+            <a href={`https://app.aavegotchi.com/baazaar/erc1155/${params.value}`} target="_blank">
               {params.value}
             </a>
           )
@@ -559,7 +559,7 @@ class WearableDetails extends Component {
           headerName: 'Listing',
           width: 100,
           renderCell: (params: GridCellParams) => (
-            <a href={`https://aavegotchi.com/baazaar/erc1155/${params.value}`} target="_blank">
+            <a href={`https://app.aavegotchi.com/baazaar/erc1155/${params.value}`} target="_blank">
               {params.value}
             </a>
           )

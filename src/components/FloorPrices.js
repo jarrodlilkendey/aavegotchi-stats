@@ -36,11 +36,11 @@ class FloorPrices extends Component {
       erc721FloorPrice(i, haunts[index])
         .then((listings) => {
           let floor = 0;
-          let link = 'https://aavegotchi.com/baazaar';
+          let link = 'https://app.aavegotchi.com/baazaar';
           let tokenId = '';
           if (listings.length > 0) {
             floor = ethers.utils.formatEther(listings[0].priceInWei);
-            link = `https://aavegotchi.com/baazaar/erc721/${listings[0].id}`;
+            link = `https://app.aavegotchi.com/baazaar/erc721/${listings[0].id}`;
             if (listings[0].portal) {
               tokenId = listings[0].portal.id;
             } else if (listings[0].gotchi) {
@@ -56,11 +56,11 @@ class FloorPrices extends Component {
       erc1155FloorPrice(0, i)
         .then((listings) => {
           let floor = 0;
-          let link = 'https://aavegotchi.com/baazaar';
+          let link = 'https://app.aavegotchi.com/baazaar';
           let name = 'No Listings';
           if (listings.length > 0) {
             floor = ethers.utils.formatEther(listings[0].priceInWei);
-            link = `https://aavegotchi.com/baazaar/erc1155/${listings[0].id}`;
+            link = `https://app.aavegotchi.com/baazaar/erc1155/${listings[0].id}`;
             name = wearableItemTypes[listings[0].erc1155TypeId].name;
           }
           _this.setState({ [erc1155WearableTypes[i]]: { listings, floor, link, name } });
@@ -73,11 +73,11 @@ class FloorPrices extends Component {
       erc1155FloorPrice(3, i)
         .then((listings) => {
           let floor = 0;
-          let link = 'https://aavegotchi.com/baazaar';
+          let link = 'https://app.aavegotchi.com/baazaar';
           let perFren = 0;
           if (listings.length > 0) {
             floor = ethers.utils.formatEther(listings[0].priceInWei);
-            link = `https://aavegotchi.com/baazaar/erc1155/${listings[0].id}`;
+            link = `https://app.aavegotchi.com/baazaar/erc1155/${listings[0].id}`;
             perFren = (parseFloat(floor) / erc1155TicketFren[i]).toFixed(6);
           }
           _this.setState({ [erc1155TicketTypes[i]]: { listings, floor, perFren, link  } });
@@ -93,11 +93,11 @@ class FloorPrices extends Component {
       erc1155FloorPriceById(2, i)
         .then((listings) => {
           let floor = 0;
-          let link = 'https://aavegotchi.com/baazaar';
+          let link = 'https://app.aavegotchi.com/baazaar';
           let unit = '';
           if (listings.length > 0) {
             floor = ethers.utils.formatEther(listings[0].priceInWei);
-            link = `https://aavegotchi.com/baazaar/erc1155/${listings[0].id}`;
+            link = `https://app.aavegotchi.com/baazaar/erc1155/${listings[0].id}`;
             let unitPrice = parseInt(floor) / erc1155PointsPerUnit[index];
             unit = `(${unitPrice} GHST/${erc1155ConsumableUnitLabel[index]})`;
           }
@@ -108,11 +108,11 @@ class FloorPrices extends Component {
     erc721CheapestMythEyes(1)
       .then((listings) => {
         let floor = 0;
-        let link = 'https://aavegotchi.com/baazaar';
+        let link = 'https://app.aavegotchi.com/baazaar';
         let tokenId = '';
         if (listings.length > 0) {
           floor = ethers.utils.formatEther(listings[0].priceInWei);
-          link = `https://aavegotchi.com/baazaar/erc721/${listings[0].id}`;
+          link = `https://app.aavegotchi.com/baazaar/erc721/${listings[0].id}`;
           tokenId = listings[0].gotchi.id;
         }
         _this.setState({ h1MythEyes: { listings, floor, link, tokenId  } });
@@ -121,11 +121,11 @@ class FloorPrices extends Component {
     erc721CheapestMythEyes(2)
       .then((listings) => {
         let floor = 0;
-        let link = 'https://aavegotchi.com/baazaar';
+        let link = 'https://app.aavegotchi.com/baazaar';
         let tokenId = '';
         if (listings.length > 0) {
           floor = ethers.utils.formatEther(listings[0].priceInWei);
-          link = `https://aavegotchi.com/baazaar/erc721/${listings[0].id}`;
+          link = `https://app.aavegotchi.com/baazaar/erc721/${listings[0].id}`;
           tokenId = listings[0].gotchi.id;
         }
         _this.setState({ h2MythEyes: { listings, floor, link, tokenId  } });
@@ -140,9 +140,9 @@ class FloorPrices extends Component {
         let mythicalFloor = 0;
         let legendaryFloor = 0;
 
-        let godlikeLink = 'https://aavegotchi.com/baazaar';
-        let mythicalLink = 'https://aavegotchi.com/baazaar';
-        let legendaryLink = 'https://aavegotchi.com/baazaar';
+        let godlikeLink = 'https://app.aavegotchi.com/baazaar';
+        let mythicalLink = 'https://app.aavegotchi.com/baazaar';
+        let legendaryLink = 'https://app.aavegotchi.com/baazaar';
 
         let godlikeTokenId = 'No Listings';
         let mythicalTokenId = 'No Listings';
@@ -150,19 +150,19 @@ class FloorPrices extends Component {
 
         if (listings.aavegotchiGodlikes.length > 0) {
           godlikeFloor = ethers.utils.formatEther(listings.aavegotchiGodlikes[0].priceInWei);
-          godlikeLink = `https://aavegotchi.com/baazaar/erc721/${listings.aavegotchiGodlikes[0].id}`;
+          godlikeLink = `https://app.aavegotchi.com/baazaar/erc721/${listings.aavegotchiGodlikes[0].id}`;
           godlikeTokenId = `#${listings.aavegotchiGodlikes[0].gotchi.id}`;
         }
 
         if (listings.aavegotchiMythicals.length > 0) {
           mythicalFloor = ethers.utils.formatEther(listings.aavegotchiMythicals[0].priceInWei);
-          mythicalLink = `https://aavegotchi.com/baazaar/erc721/${listings.aavegotchiMythicals[0].id}`;
+          mythicalLink = `https://app.aavegotchi.com/baazaar/erc721/${listings.aavegotchiMythicals[0].id}`;
           mythicalTokenId = `#${listings.aavegotchiMythicals[0].gotchi.id}`;
         }
 
         if (listings.aavegotchiLegendaries.length > 0) {
           legendaryFloor = ethers.utils.formatEther(listings.aavegotchiLegendaries[0].priceInWei);
-          legendaryLink = `https://aavegotchi.com/baazaar/erc721/${listings.aavegotchiLegendaries[0].id}`;
+          legendaryLink = `https://app.aavegotchi.com/baazaar/erc721/${listings.aavegotchiLegendaries[0].id}`;
           legendaryTokenId = `#${listings.aavegotchiLegendaries[0].gotchi.id}`;
         }
 
@@ -187,12 +187,12 @@ class FloorPrices extends Component {
         .then((listings) => {
           console.log('cheapestXP', listings);
           let floor = 0;
-          let link = 'https://aavegotchi.com/baazaar';
+          let link = 'https://app.aavegotchi.com/baazaar';
           let tokenId = 'No Listings';
           let unit = 0;
           if (listings.length > 0) {
             floor = ethers.utils.formatEther(listings[0].priceInWei);
-            link = `https://aavegotchi.com/baazaar/erc721/${listings[0].id}`;
+            link = `https://app.aavegotchi.com/baazaar/erc721/${listings[0].id}`;
             tokenId = `#${listings[0].gotchi.id}`;
             unit = `(${listings[0].ghstPerXp.toFixed(3)} GHST/xp)`;
           }
@@ -203,12 +203,12 @@ class FloorPrices extends Component {
         .then((listings) => {
           console.log('cheapestKIN', listings);
           let floor = 0;
-          let link = 'https://aavegotchi.com/baazaar';
+          let link = 'https://app.aavegotchi.com/baazaar';
           let tokenId = 'No Listings';
           let unit = 0;
           if (listings.length > 0) {
             floor = ethers.utils.formatEther(listings[0].priceInWei);
-            link = `https://aavegotchi.com/baazaar/erc721/${listings[0].id}`;
+            link = `https://app.aavegotchi.com/baazaar/erc721/${listings[0].id}`;
             tokenId = `#${listings[0].gotchi.id}`;
             unit = `(${listings[0].ghstPerKinship.toFixed(3)} GHST/kinship)`;
           }

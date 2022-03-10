@@ -75,7 +75,7 @@ class TDLeaderboard extends Component {
             headerName: 'Account',
             width: 380,
             renderCell: (params: GridCellParams) => (
-              <a href={`https://aavegotchi.com/aavegotchis/${params.value}`} target="_blank">
+              <a href={`https://app.aavegotchi.com/aavegotchis/${params.value}`} target="_blank">
                 {params.value}
               </a>
             )
@@ -106,7 +106,7 @@ class TDLeaderboard extends Component {
             headerName: 'Gotchi Id',
             width: 140,
             renderCell: (params: GridCellParams) => (
-              <a href={`https://aavegotchi.com/gotchi/${params.value}`} target="_blank">
+              <a href={`https://app.aavegotchi.com/gotchi/${params.value}`} target="_blank">
                 {params.value}
               </a>
             )

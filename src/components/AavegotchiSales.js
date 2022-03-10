@@ -392,7 +392,7 @@ class AavegotchiSales extends Component {
           headerName: 'Listing',
           width: 100,
           renderCell: (params: GridCellParams) => (
-            <a href={`https://aavegotchi.com/baazaar/erc721/${params.value}`} target="_blank">
+            <a href={`https://app.aavegotchi.com/baazaar/erc721/${params.value}`} target="_blank">
               {params.value}
             </a>
           )
@@ -402,7 +402,7 @@ class AavegotchiSales extends Component {
           headerName: 'Gotchi',
           width: 100,
           renderCell: (params: GridCellParams) => (
-            <a href={`https://aavegotchi.com/gotchi/${params.value}`} target="_blank">
+            <a href={`https://app.aavegotchi.com/gotchi/${params.value}`} target="_blank">
               {params.value}
             </a>
           )

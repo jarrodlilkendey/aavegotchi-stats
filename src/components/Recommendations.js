@@ -206,7 +206,7 @@ class Recommendations extends Component {
 
         let comparisonWearableScore = 0;
         let comparisonWearableName = 'Empty';
-        let cheapestListing = { text: 'No Listing', link: 'https://aavegotchi.com/baazaar/wearables'};
+        let cheapestListing = { text: 'No Listing', link: 'https://app.aavegotchi.com/baazaar/wearables'};
         if (comparisonWearable !== null) {
           comparisonWearableScore = (scoreWearable(comparisonWearable, aavegotchi)).totalScore;
           comparisonWearableName = comparisonWearable.name;
@@ -215,7 +215,7 @@ class Recommendations extends Component {
         if (wearableListings.length > 0) {
           cheapestListing = {
             text: `${wearableListings[0].price} (${wearableListings.length})`,
-            link: `https://aavegotchi.com/baazaar/erc1155/${wearableListings[0].id}`
+            link: `https://app.aavegotchi.com/baazaar/erc1155/${wearableListings[0].id}`
           }
         }
 

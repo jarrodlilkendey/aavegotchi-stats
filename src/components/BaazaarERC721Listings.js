@@ -176,7 +176,7 @@ class BaazaarERC721Listings extends Component {
             events: {
               click: function(event) {
                 console.log('click', event);
-                window.open(`https://aavegotchi.com/baazaar/erc721/${event.point.name}`, '_blank').focus();
+                window.open(`https://app.aavegotchi.com/baazaar/erc721/${event.point.name}`, '_blank').focus();
               },
             },
           }
@@ -257,7 +257,7 @@ class BaazaarERC721Listings extends Component {
             events: {
               click: function(event) {
                 console.log('click', event);
-                window.open(`https://aavegotchi.com/baazaar/erc721/${event.point.name}`, '_blank').focus();
+                window.open(`https://app.aavegotchi.com/baazaar/erc721/${event.point.name}`, '_blank').focus();
               },
             },
           }
@@ -333,7 +333,7 @@ class BaazaarERC721Listings extends Component {
             events: {
               click: function(event) {
                 console.log('click', event);
-                window.open(`https://aavegotchi.com/baazaar/erc721/${event.point.name}`, '_blank').focus();
+                window.open(`https://app.aavegotchi.com/baazaar/erc721/${event.point.name}`, '_blank').focus();
               },
             },
           }

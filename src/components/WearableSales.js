@@ -353,7 +353,7 @@ class WearableSales extends Component {
           headerName: 'Listing',
           width: 100,
           renderCell: (params: GridCellParams) => (
-            <a href={`https://aavegotchi.com/baazaar/erc1155/${params.value}`} target="_blank">
+            <a href={`https://app.aavegotchi.com/baazaar/erc1155/${params.value}`} target="_blank">
               {params.value}
             </a>
           )

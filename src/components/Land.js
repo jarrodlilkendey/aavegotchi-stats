@@ -87,21 +87,21 @@ class Land extends Component {
           d.listingCount = d.humbleCount + d.reasonableCount + d.spaciousCount;
 
           if (districtListings[district].humbleListings.length > 0) {
-            d.humbleFloor = { link: `https://aavegotchi.com/baazaar/erc721/${districtListings[district].humbleListings[0].id}` , label: `${districtListings[district].humbleListings[0].ghst}`};
+            d.humbleFloor = { link: `https://app.aavegotchi.com/baazaar/erc721/${districtListings[district].humbleListings[0].id}` , label: `${districtListings[district].humbleListings[0].ghst}`};
           } else {
-            d.humbleFloor = { link: 'https://aavegotchi.com/baazaar', label: 'None' };
+            d.humbleFloor = { link: 'https://app.aavegotchi.com/baazaar', label: 'None' };
           }
 
           if (districtListings[district].reasonableListings.length > 0) {
-            d.reasonableFloor = { link: `https://aavegotchi.com/baazaar/erc721/${districtListings[district].reasonableListings[0].id}` , label: `${districtListings[district].reasonableListings[0].ghst}`};
+            d.reasonableFloor = { link: `https://app.aavegotchi.com/baazaar/erc721/${districtListings[district].reasonableListings[0].id}` , label: `${districtListings[district].reasonableListings[0].ghst}`};
           } else {
-            d.reasonableFloor = { link: 'https://aavegotchi.com/baazaar', label: 'None' };
+            d.reasonableFloor = { link: 'https://app.aavegotchi.com/baazaar', label: 'None' };
           }
 
           if (districtListings[district].spaciousListings.length > 0) {
-            d.spaciousFloor = { link: `https://aavegotchi.com/baazaar/erc721/${districtListings[district].spaciousListings[0].id}` , label: `${districtListings[district].spaciousListings[0].ghst}`};
+            d.spaciousFloor = { link: `https://app.aavegotchi.com/baazaar/erc721/${districtListings[district].spaciousListings[0].id}` , label: `${districtListings[district].spaciousListings[0].ghst}`};
           } else {
-            d.spaciousFloor = { link: 'https://aavegotchi.com/baazaar', label: 'None' };
+            d.spaciousFloor = { link: 'https://app.aavegotchi.com/baazaar', label: 'None' };
           }
 
           districtsSummary.push(d)
@@ -190,7 +190,7 @@ class Land extends Component {
           headerName: 'Owner',
           width: 360,
           renderCell: (params: GridCellParams) => (
-            <a href={`https://aavegotchi.com/aavegotchis/${params.value}`} target="_blank">
+            <a href={`https://app.aavegotchi.com/aavegotchis/${params.value}`} target="_blank">
               {params.value}
             </a>
           )

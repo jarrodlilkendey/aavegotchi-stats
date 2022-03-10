@@ -231,7 +231,7 @@ class Leaderboards extends Component {
           headerName: 'Gotchi ID',
           width: 120,
           renderCell: (params: GridCellParams) => (
-            <a href={`https://aavegotchi.com/gotchi/${params.value}`} target="_blank">
+            <a href={`https://app.aavegotchi.com/gotchi/${params.value}`} target="_blank">
               {params.value}
             </a>
           )
@@ -305,7 +305,7 @@ class Leaderboards extends Component {
         headerName: 'Gotchi ID',
         width: 120,
         renderCell: (params: GridCellParams) => (
-          <a href={`https://aavegotchi.com/gotchi/${params.value}`} target="_blank">
+          <a href={`https://app.aavegotchi.com/gotchi/${params.value}`} target="_blank">
             {params.value}
           </a>
         )
@@ -395,7 +395,7 @@ class Leaderboards extends Component {
     return(
       <div>
         <h1>Aavegotchi Leaderboards</h1>
-        <p>NOTE: there are some discrepencies between these leaderboards and the <a href='https://aavegotchi.com/leaderboard'>official SZN2 rarity farming leaderboard</a>. Please treat the official leaderboard as the source of truth.</p>
+        <p>NOTE: there are some discrepencies between these leaderboards and the <a href='https://app.aavegotchi.com/leaderboard'>official SZN2 rarity farming leaderboard</a>. Please treat the official leaderboard as the source of truth.</p>
         <h2>{this.state.modes[this.state.selectedMode]} Leaderboard</h2>
         <div>
           <button style={{margin: "2px"}} className="btn btn-primary btn-sm" onClick={() => this.handleLeaderboardSelect(0)}>Rarity</button>
@@ -412,7 +412,7 @@ class Leaderboards extends Component {
         {this.renderLeaderboard()}
         {this.renderTopGotchis()}
         {this.renderTopOwners()}
-        <p>Important Links: <a href='https://aavegotchi.com/leaderboard'>Official leaderboard</a> <a href='https://aavegotchi.medium.com/rarity-farming-season-2-is-coming-dates-announced-7047896eb3ab'>SZN2 rarity farming rewards structure</a></p>
+        <p>Important Links: <a href='https://app.aavegotchi.com/leaderboard'>Official leaderboard</a> <a href='https://aavegotchi.medium.com/rarity-farming-season-2-is-coming-dates-announced-7047896eb3ab'>SZN2 rarity farming rewards structure</a></p>
       </div>
     );
   }

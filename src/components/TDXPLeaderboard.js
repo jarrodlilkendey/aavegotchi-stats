@@ -126,7 +126,7 @@ class TDXPLeaderboard extends Component {
         headerName: 'ID',
         width: 140,
         renderCell: (params: GridCellParams) => (
-          <a href={`https://aavegotchi.com/gotchi/${params.value}`} target="_blank">
+          <a href={`https://app.aavegotchi.com/gotchi/${params.value}`} target="_blank">
             {params.value}
           </a>
         )

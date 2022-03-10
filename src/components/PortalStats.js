@@ -119,7 +119,7 @@ class PortalStats extends Component {
           <p>Total Aavegotchis Sacrificed: {totalSacrificedGotchis} {`(${((totalSacrificedGotchis/totalPortals) * 100).toFixed(2)}% of Total Portals)`}</p>
           <p>Total Live Aavegotchis: {totalLiveGotchis} {`(${((totalLiveGotchis/totalPortals) * 100).toFixed(2)}% of Total Portals)`}</p>
           <p>Total Unique Owners: <a href='/owners'>{totalUniqueOwners}</a></p>
-          <p>Total Bridged Gotchis: <a href='https://aavegotchi.com/aavegotchis/0x86935f11c86623dec8a25696e1c19a8659cbf95d'>{totalBridged}</a></p>
+          <p>Total Bridged Gotchis: <a href='https://app.aavegotchi.com/aavegotchis/0x86935f11c86623dec8a25696e1c19a8659cbf95d'>{totalBridged}</a></p>
         </div>
       )
     }

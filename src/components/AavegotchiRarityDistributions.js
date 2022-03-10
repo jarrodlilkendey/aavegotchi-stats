@@ -193,12 +193,12 @@ class AavegotchiRarityDistributions extends Component {
         console.log('filtered', listing);
         if (listing.length > 0) {
           row.listing = {
-            link: `https://aavegotchi.com/baazaar/erc721/${listing[0].id}`,
+            link: `https://app.aavegotchi.com/baazaar/erc721/${listing[0].id}`,
             text: `${formatGhst(listing[0].priceInWei)}`,
           };
         } else {
           row.listing = {
-            link: 'https://aavegotchi.com/baazaar/aavegotchis',
+            link: 'https://app.aavegotchi.com/baazaar/aavegotchis',
             text: 'None',
           };
         }

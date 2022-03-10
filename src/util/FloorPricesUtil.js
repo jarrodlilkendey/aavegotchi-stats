@@ -467,13 +467,13 @@ export const floorByBRS = async () => {
       let floor = filtered[0];
       brsFloors[brs.toString()] = {};
       brsFloors[brs.toString()].floor = ethers.utils.formatEther(floor.priceInWei);
-      brsFloors[brs.toString()].link = `https://aavegotchi.com/baazaar/erc721/${floor.id}`;
+      brsFloors[brs.toString()].link = `https://app.aavegotchi.com/baazaar/erc721/${floor.id}`;
       brsFloors[brs.toString()].tokenId = '#' + floor.gotchi.id;
       brsFloors[brs.toString()].brs = floor.baseRarityScoreInteger;
     } else {
       brsFloors[brs.toString()] = {
         floor: 0,
-        link: 'https://aavegotchi.com/baazaar',
+        link: 'https://app.aavegotchi.com/baazaar',
         tokenId: 'No Listings',
         brs: 0
       };
@@ -550,19 +550,19 @@ export const floorParcels = async () => {
   let data = {
     humble: {
       floor: ethers.utils.formatEther(result.data.data.humbleFloor[0].priceInWei),
-      link: `https://aavegotchi.com/baazaar/erc721/${result.data.data.humbleFloor[0].id}`,
+      link: `https://app.aavegotchi.com/baazaar/erc721/${result.data.data.humbleFloor[0].id}`,
       tokenId: result.data.data.humbleFloor[0].tokenId,
       district: result.data.data.humbleFloor[0].district
     },
     reasonable: {
       floor: ethers.utils.formatEther(result.data.data.reasonableFloor[0].priceInWei),
-      link: `https://aavegotchi.com/baazaar/erc721/${result.data.data.reasonableFloor[0].id}`,
+      link: `https://app.aavegotchi.com/baazaar/erc721/${result.data.data.reasonableFloor[0].id}`,
       tokenId: result.data.data.reasonableFloor[0].tokenId,
       district: result.data.data.reasonableFloor[0].district
     },
     spacious: {
       floor: ethers.utils.formatEther(result.data.data.spaciousFloor[0].priceInWei),
-      link: `https://aavegotchi.com/baazaar/erc721/${result.data.data.spaciousFloor[0].id}`,
+      link: `https://app.aavegotchi.com/baazaar/erc721/${result.data.data.spaciousFloor[0].id}`,
       tokenId: result.data.data.spaciousFloor[0].tokenId,
       district: result.data.data.spaciousFloor[0].district
     },

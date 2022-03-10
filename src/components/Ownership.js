@@ -168,7 +168,7 @@ class Ownership extends Component {
           headerName: 'Owner',
           width: 360,
           renderCell: (params: GridCellParams) => (
-            <a href={`https://aavegotchi.com/aavegotchis/${params.value}`} target="_blank">
+            <a href={`https://app.aavegotchi.com/aavegotchis/${params.value}`} target="_blank">
               {params.value}
             </a>
           )

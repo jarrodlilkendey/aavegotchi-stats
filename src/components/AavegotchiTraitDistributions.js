@@ -151,12 +151,12 @@ class AavegotchiTraitDistributions extends Component {
         console.log('filtered', listing);
         if (listing.length > 0) {
           row.listing = {
-            link: `https://aavegotchi.com/baazaar/erc721/${listing[0].id}`,
+            link: `https://app.aavegotchi.com/baazaar/erc721/${listing[0].id}`,
             text: `${Math.round(listing[0].priceInWei / 1000000000000000000)}`,
           };
         } else {
           row.listing = {
-            link: 'https://aavegotchi.com/baazaar/aavegotchis',
+            link: 'https://app.aavegotchi.com/baazaar/aavegotchis',
             text: 'None',
           };
         }

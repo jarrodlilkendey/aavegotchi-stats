@@ -175,7 +175,7 @@ class PromotedListings extends Component {
   selectListing(tokenType, listingId) {
     // submit click
     // then navigate to listing
-    window.location.href = `https://aavegotchi.com/baazaar/${tokenType}/${listingId}`;
+    window.location.href = `https://app.aavegotchi.com/baazaar/${tokenType}/${listingId}`;
   }
 
   render() {
