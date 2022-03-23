@@ -30,6 +30,9 @@ import AavegotchiPortalRarityDistributions from './components/AavegotchiPortalRa
 import Ownership from './components/Ownership';
 // import BaazaarERC721Listings from './components/BaazaarERC721Listings';
 import Land from './components/Land';
+// import RealmSales from './components/RealmSales';
+// import BaazaarActivity from './components/BaazaarActivity';
+// import AssetTracker from './components/AssetTracker';
 
 import PromotedListings from './components/PromotedListings';
 import AddPromotedListing from './components/AddPromotedListing';
@@ -63,6 +66,7 @@ const navBarPages = [
   { path: '/wearablesales', name: 'Wearable Sales' },
   { path: '/gotchisales', name: 'Aavegotchi Sales' },
   { path: '/ticketsales', name: 'Ticket Sales' },
+  { path: '/landsales', name: 'Land Sales' },
   { path: '/floor', name: 'Floor Prices' },
   { path: '/td', name: 'Tower Defense' },
   { path: '/tools', name: 'Recommended Tools' },
@@ -166,14 +170,31 @@ ReactDOM.render(
             <AddPromotedListing />
           </Route>
 
-          <Route path="/owners">
+          {/*<Route path="/owners">
             <Ownership title="Aavegotchi Ownership Statistics" />
-          </Route>
+          </Route>*/}
 
           <Route path="/land">
             <Land title="Aavegotchi Land Statistics" />
           </Route>
 
+          {/*
+          <Route path="/landsales">
+            <RealmSales title="Aavegotchi Land Sales" />
+          </Route>
+
+          <Route path="/activity">
+            <BaazaarActivity title="Aavegotchi Baazaar Activity" />
+          </Route>
+
+          <Route path="/assets/:address">
+            <AssetTracker />
+          </Route>
+          */}
+
+          {/*<Route path="/erc721">
+            <BaazaarERC721Listings title="Baazaar ERC721 Listings" />
+          </Route>*/}
 
 
           <Route path="/">

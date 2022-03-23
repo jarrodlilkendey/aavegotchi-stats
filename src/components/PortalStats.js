@@ -103,14 +103,14 @@ class PortalStats extends Component {
           <p>Total H1 Portals Opened: {this.state.h1SummaryStats.openedCount} {`(${((this.state.h1SummaryStats.openedCount/this.state.h1SummaryStats.portalsCount) * 100).toFixed(2)}% of Total H1 Portals)`}</p>
           <p>Total H1 Portals Claimed: {this.state.h1SummaryStats.claimedCount} {`(${((this.state.h1SummaryStats.claimedCount/this.state.h1SummaryStats.portalsCount) * 100).toFixed(2)}% of Total H1 Portals)`}</p>
           <p>Total H1 Aavegotchis Sacrificed: <a href='https://polygonscan.com/token/0x86935f11c86623dec8a25696e1c19a8659cbf95d?a=0x0000000000000000000000000000000000000000#inventory'>{this.state.h1SacrificedGotchis.length}</a> {`(${(this.state.h1SacrificedGotchis.length/this.state.h1SummaryStats.portalsCount) * 100}% of Total H1 Portals)`}</p>
-          <p>Total H1 Unique Owners: {this.state.h1SummaryStats.uniqueOwners}</p>
+          {/*<p>Total H1 Unique Owners: {this.state.h1SummaryStats.uniqueOwners}</p>*/}
           <p>Total H1 Aavegotchis Bridged: {this.state.bridgedH1Portals.length}</p>
           <h3>Haunt 2 Summary</h3>
           <p>Total H2 Portals: {this.state.h2SummaryStats.portalsCount}</p>
           <p>Total H2 Portals Opened: {this.state.h2SummaryStats.openedCount} {`(${((this.state.h2SummaryStats.openedCount/this.state.h2SummaryStats.portalsCount) * 100).toFixed(2)}% of Total H2 Portals)`}</p>
           <p>Total H2 Portals Claimed: {this.state.h2SummaryStats.claimedCount} {`(${((this.state.h2SummaryStats.claimedCount/this.state.h2SummaryStats.portalsCount) * 100).toFixed(2)}% of Total H2 Portals)`}</p>
           <p>Total H2 Aavegotchis Sacrificed: <a href='https://polygonscan.com/token/0x86935f11c86623dec8a25696e1c19a8659cbf95d?a=0x0000000000000000000000000000000000000000#inventory'>{this.state.h2SacrificedGotchis.length}</a> {`(${((this.state.h2SacrificedGotchis.length/this.state.h2SummaryStats.portalsCount) * 100).toFixed(2)}% of Total H2 Portals)`}</p>
-          <p>Total H2 Unique Owners: {this.state.h2SummaryStats.uniqueOwners}</p>
+          {/*<p>Total H2 Unique Owners: {this.state.h2SummaryStats.uniqueOwners}</p>*/}
           <p>Total H2 Aavegotchis Bridged: {this.state.bridgedH2Portals.length}</p>
           <h3>Overall Summary</h3>
           <p>Total Portals: {totalPortals}</p>
@@ -118,7 +118,7 @@ class PortalStats extends Component {
           <p>Total Portals Claimed: {totalPortalsClaimed} {`(${((totalPortalsClaimed/totalPortals) * 100).toFixed(2)}% of Total Portals)`}</p>
           <p>Total Aavegotchis Sacrificed: {totalSacrificedGotchis} {`(${((totalSacrificedGotchis/totalPortals) * 100).toFixed(2)}% of Total Portals)`}</p>
           <p>Total Live Aavegotchis: {totalLiveGotchis} {`(${((totalLiveGotchis/totalPortals) * 100).toFixed(2)}% of Total Portals)`}</p>
-          <p>Total Unique Owners: <a href='/owners'>{totalUniqueOwners}</a></p>
+          {/*<p>Total Unique Owners: <a href='/owners'>{totalUniqueOwners}</a></p>*/}
           <p>Total Bridged Gotchis: <a href='https://app.aavegotchi.com/aavegotchis/0x86935f11c86623dec8a25696e1c19a8659cbf95d'>{totalBridged}</a></p>
         </div>
       )

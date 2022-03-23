@@ -710,6 +710,7 @@ class AavegotchiSales extends Component {
     return(
       <div>
         <h1>Aavegotchi Sales</h1>
+        <p>Note: this visualization will only display the 5,000 most recent Aavegotchi sales on the Aavegotchi Baazaar</p>
         {this.state.loading &&
           <Loading message="Loading Aavegotchi Sales from TheGraph..." />
         }

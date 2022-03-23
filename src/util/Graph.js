@@ -705,12 +705,14 @@ export const retrieveSoldGotchisListings = async () => {
     }
   }
 
-  listings = _.remove(listings, function(g) {
-    if (g.gotchi.baseRarityScore == 0) {
-      return false;
-    }
-    return true;
-  });
+  // listings = _.remove(listings, function(g) {
+  //   if (g.gotchi.baseRarityScore == 0) {
+  //     return false;
+  //   }
+  //   return true;
+  // });
+
+  console.log('retrieveSoldGotchisListings', listings);
 
   return listings;
 };
