@@ -66,7 +66,7 @@ const navBarPages = [
   { path: '/wearablesales', name: 'Wearable Sales' },
   { path: '/gotchisales', name: 'Aavegotchi Sales' },
   { path: '/ticketsales', name: 'Ticket Sales' },
-  { path: '/landsales', name: 'Land Sales' },
+  // { path: '/landsales', name: 'Land Sales' },
   { path: '/floor', name: 'Floor Prices' },
   { path: '/td', name: 'Tower Defense' },
   { path: '/tools', name: 'Recommended Tools' },
