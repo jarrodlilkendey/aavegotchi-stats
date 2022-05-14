@@ -202,7 +202,8 @@ class Ownership extends Component {
         {this.state.loading &&
           <Loading message="Loading Portals from TheGraph..." />
         }
-        {this.renderOwners()}
+        <p>These numbers need to be be corrected. I will get them updated SOON TM</p>
+        {/*this.renderOwners()*/}
       </div>
     )
   }

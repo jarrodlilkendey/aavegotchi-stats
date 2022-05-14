@@ -250,8 +250,9 @@ class AavegotchiTraitDistributions extends Component {
         {this.state.loading &&
           <Loading message="Loading Aavegotchis from TheGraph..." />
         }
-        {this.renderTraitsDistribution()}
-        {this.renderGotchis()}
+        <p>These numbers need to be be corrected. I will get them updated SOON TM</p>
+        {/*this.renderTraitsDistribution()*/}
+        {/*this.renderGotchis()*/}
       </div>
     );
   }

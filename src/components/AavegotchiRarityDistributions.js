@@ -290,8 +290,9 @@ class AavegotchiRarityDistributions extends Component {
         {this.state.loading &&
           <Loading message="Loading Aavegotchis from TheGraph..." />
         }
-        {this.renderRarityDistribution()}
-        {this.renderGotchis()}
+        <p>These numbers need to be be corrected. I will get them updated SOON TM</p>
+        {/*this.renderRarityDistribution()*/}
+        {/*this.renderGotchis()*/}
       </div>
     );
   }
