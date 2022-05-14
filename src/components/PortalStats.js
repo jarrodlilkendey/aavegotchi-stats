@@ -132,7 +132,8 @@ class PortalStats extends Component {
         {this.state.loading &&
           <Loading message="Loading Portals from TheGraph..." />
         }
-        {this.renderSummary()}
+        {/*this.renderSummary()*/}
+        <p>These numbers need to be be corrected. I will get them updated SOON TM</p>
       </div>
     )
   }
