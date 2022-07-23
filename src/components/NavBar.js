@@ -61,7 +61,7 @@ class NavBar extends Component {
       <div className="row">
       <div class="alert alert-primary d-flex align-items-center" role="alert">
         <div>
-          <img src="/wagmi-warriors-avatar.png" width={48} height={48} className="rounded" /> The WAGMI Warriors Guild is recruiting Aavegotchi Scholars to play with the guild in the Gotchiverse. <a href="https://discord.gg/3VRqsJ6qsR">Sign up today via Discord</a>. 
+          <img src="/wagmi-warriors-avatar.png" width={48} height={48} className="rounded" /> The WAGMI Warriors Guild is recruiting Aavegotchi Scholars to play with the guild in the Gotchiverse. <a href="https://discord.gg/3VRqsJ6qsR">Sign up today via Discord</a>.
         </div>
       </div>
       </div>
@@ -88,7 +88,7 @@ class NavBar extends Component {
           </div>
         </nav>
 
-        {this.renderSiteMessage()}
+        {/*this.renderSiteMessage()*/}
 
         </div>
       );
