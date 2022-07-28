@@ -508,7 +508,8 @@ export const floorParcels = async () => {
       	category: 4
         cancelled: false
         timePurchased: 0,
-  			size: 1
+  			size: 1,
+        id_not_in: [232582]
     	}
       orderBy:priceInWei
       orderDirection: asc
