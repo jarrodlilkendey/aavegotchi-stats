@@ -81,6 +81,9 @@ ReactDOM.render(
       <div className="container">
         <NavBar pages={navBarPages} />
 
+        { /* top of page ad placement */ }
+        <div id="ezoic-pub-ad-placeholder-102"> </div>
+
         {/*<PromotedListings />*/}
 
         <Switch>
@@ -202,6 +205,9 @@ ReactDOM.render(
           </Route>
 
          </Switch>
+
+         { /* bottom of page ad placement */ }
+         <div id="ezoic-pub-ad-placeholder-101"> </div>
 
          <Credits />
       </div>
