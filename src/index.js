@@ -75,6 +75,7 @@ const navBarPages = [
   // { path: '/petall', name: 'Pet All' },
 ];
 
+
 ReactDOM.render(
   <React.StrictMode>
     <Router>
