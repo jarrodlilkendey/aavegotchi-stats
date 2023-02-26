@@ -32,7 +32,19 @@ const retrieveWearables = async (aavegotchiContract) => {
     wearableIds.push(i.toString());
   }
 
-  let slices = [_.slice(wearableIds, 0, 50), _.slice(wearableIds, 50, 100), _.slice(wearableIds, 100, 125), _.slice(wearableIds, 125, 161)];
+  for (var i = 199; i < 264; i++) {
+    wearableIds.push(i.toString());
+  }
+
+  for (var i = 292; i < 316; i++) {
+    wearableIds.push(i.toString());
+  }
+
+  for (var i = 350; i < 370; i++) {
+    wearableIds.push(i.toString());
+  }
+
+  let slices = [_.slice(wearableIds, 0, 50), _.slice(wearableIds, 50, 100), _.slice(wearableIds, 100, 125), _.slice(wearableIds, 125, 161), _.slice(wearableIds, 161, wearableIds.length)];
 
 
   for (var s = 0; s < slices.length; s++) {
