@@ -29,9 +29,9 @@ class NavBar extends Component {
             <a href="https://www.youtube.com/channel/UCg5857-6abSZbk7bgxsvbbg" rel="noopener noreferrer" target="_blank" style={{ padding: '5px' }}>
               <FontAwesomeIcon icon={faYoutube} size="2x" color="#E259FD" />
             </a>
-            <a href="https://wagmiwarriors.com/join" rel="noopener noreferrer" target="_blank" style={{ padding: '5px' }}>
+            {/*<a href="https://wagmiwarriors.com/join" rel="noopener noreferrer" target="_blank" style={{ padding: '5px' }}>
               <img src='/smug-wagie.png' width='45px' title='Join the WAGMI Warriors Gotchiverse Guild' />
-            </a>
+            </a>*/}
           </div>
         </div>
     );

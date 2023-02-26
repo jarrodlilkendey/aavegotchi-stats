@@ -1,3 +1,5 @@
+const config = require('../Config');
+
 const axios = require('axios');
 const _ = require('lodash');
 
@@ -100,7 +102,7 @@ export const retrieveH1Gotchis = async () => {
 
   for (let i = 0; i < 5; i++) {
     const g = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: h1AavegotchiGraphQuery(i * 1000, 'asc')
       }
@@ -116,7 +118,7 @@ export const retrieveH1Gotchis = async () => {
 
   for (let i = 0; i < 5 && !stop; i++) {
     const g = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: h1AavegotchiGraphQuery(i * 1000, 'desc')
       }
@@ -149,7 +151,7 @@ export const retrieveH2Gotchis = async () => {
   for (let a = 0; a < 3; a++) {
     for (let i = 0; i < 5; i++) {
       const g = await axios.post(
-        'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+        config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
         {
           query: h2AavegotchiGraphQuery(i * 1000, 'asc', id_gtes[a])
         }
@@ -181,7 +183,7 @@ export const retrieveAllGotchisAtBlock = async (block) => {
 
   for (let i = 0; i < 5; i++) {
     const g = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: aavegotchiGraphQueryAtBlock(i * 1000, 'asc', block)
       }
@@ -195,7 +197,7 @@ export const retrieveAllGotchisAtBlock = async (block) => {
 
   for (let i = 0; i < 5 && !stop; i++) {
     const g = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: aavegotchiGraphQueryAtBlock(i * 1000, 'desc', block)
       }
@@ -251,7 +253,7 @@ export const retrieveH1Portals = async () => {
 
   for (let i = 0; i < 5; i++) {
     const p = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: h1PortalGraphQuery(i * 1000, 'asc')
       }
@@ -261,7 +263,7 @@ export const retrieveH1Portals = async () => {
 
   for (let i = 0; i < 5; i++) {
     const p = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: h1PortalGraphQuery(i * 1000, 'desc')
       }
@@ -305,7 +307,7 @@ export const retrieveH1PortalOptions = async () => {
 
   for (let i = 0; i < 5; i++) {
     const portals = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: h1PortalOptionsGraphQuery(i * 1000, 'asc')
       }
@@ -323,7 +325,7 @@ export const retrieveH1PortalOptions = async () => {
 
   for (let i = 0; i < 5; i++) {
     const portals = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: h1PortalOptionsGraphQuery(i * 1000, 'desc')
       }
@@ -380,7 +382,7 @@ export const retrieveH2Portals = async () => {
   for (let a = 0; a < 3; a++) {
     for (let i = 0; i < 5; i++) {
       const p = await axios.post(
-        'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+        config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
         {
           query: h2PortalGraphQuery(i * 1000, 'asc', id_ltes[a])
         }
@@ -428,7 +430,7 @@ export const retrieveH2PortalOptions = async () => {
   for (let a = 0; a < 3; a++) {
     for (let i = 0; i < 5; i++) {
       const portals = await axios.post(
-        'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+        config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
         {
           query: h2PortalOptionsGraphQuery(i * 1000, 'asc', id_ltes[a])
         }
@@ -477,7 +479,7 @@ export const retrieveH1OpenPortals = async () => {
 
   for (let i = 0; i < 5 && morePortals; i++) {
     const p = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: h1OpenPortalGraphQuery(i * 1000)
       }
@@ -522,7 +524,7 @@ export const retrieveH2OpenPortals = async () => {
 
   for (let i = 0; i < 5 && morePortals; i++) {
     const p = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: h2OpenPortalGraphQuery(i * 1000)
       }
@@ -567,7 +569,7 @@ export const retrieveGraphWearableListings = async () => {
 
   for (let i = 0; i < 5 && moreListings; i++) {
     const w = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: wearablesListingsGraphQuery(i * 1000)
       }
@@ -602,7 +604,7 @@ const erc721ListingsByTokenIdsGraphQuery = (tokenIds) => {
 
 export const retrieveErc721ListingsByTokenIds = async (tokenIds) => {
   const listings = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
     {
       query: erc721ListingsByTokenIdsGraphQuery(tokenIds)
     }
@@ -640,7 +642,7 @@ export const retrieveSacrificedGotchis = async () => {
   }`;
 
   const gotchis = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
     {
       query: query
     }
@@ -692,7 +694,7 @@ export const retrieveSoldGotchisListings = async () => {
 
   for (let i = 0; i < 5 && moreListings; i++) {
     const gotchis = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: soldGotchisListingsGraphQuery(i * 1000)
       }
@@ -750,7 +752,7 @@ export const retrieveSoldWearableListings = async () => {
 
   for (let i = 0; i < 5 && moreListings; i++) {
     const wearables = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: soldWearablesListingsGraphQuery(i * 1000)
       }
@@ -768,7 +770,7 @@ export const retrieveSoldWearableListings = async () => {
 
 export const retrieveWearableSets = async () => {
   const wearableSets = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
     {
       query: `{
         wearableSets(first: 1000) {
@@ -787,7 +789,7 @@ export const retrieveWearableSets = async () => {
 
 export const retrieveUserAssets = async (address) => {
   const user = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
     {
       query: `{
         users(where: { id: "${address.toLowerCase()}" }) {
@@ -816,7 +818,7 @@ export const retrieveUserAssets = async (address) => {
 
 export const retrieveTicketListings = async () => {
   const ticketListings = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
     {
       query: `{
         erc1155Listings(
@@ -879,7 +881,7 @@ export const retrieveSoldTicketListings = async () => {
 
   for (let i = 0; i < 5 && moreListings; i++) {
     const tickets = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: soldTicketListingsGraphQuery(i * 1000)
       }
@@ -925,7 +927,7 @@ export const retrieveBridgedPortals = async () => {
 
 
   const gotchis = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
     {
       query: query
     }

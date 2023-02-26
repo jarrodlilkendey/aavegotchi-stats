@@ -9,6 +9,8 @@ import { retrieveAllGotchis, retrieveH1Gotchis, retrieveH2Gotchis } from '../uti
 
 import Loading from './Loading';
 
+const config = require('../Config');
+
 const _ = require('lodash');
 const axios = require('axios');
 
@@ -79,7 +81,7 @@ class AavegotchiTraitDistributions extends Component {
     console.log('query', query);
 
     const listings = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: query
       }

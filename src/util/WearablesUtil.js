@@ -1,3 +1,5 @@
+const config = require('../Config');
+
 const axios = require('axios');
 const _ = require('lodash');
 
@@ -34,7 +36,7 @@ export const retrieveSoldWearableListingsById = async (wearableId) => {
 
   for (let i = 0; i < 5 && moreListings; i++) {
     const wearables = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: soldWearablesListingsById(i * 1000, wearableId)
       }
@@ -78,7 +80,7 @@ const erc1155PricesByIdQuery = (category, id) => {
 
 export const erc1155PricesById = async (category, id) => {
   const result = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
     {
       query: erc1155PricesByIdQuery(category, id)
     }
@@ -88,7 +90,7 @@ export const erc1155PricesById = async (category, id) => {
 
 export const gotchisWithEquippedWearable = async (id) => {
   const result = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
     {
       query: `{
         aavegotchis(

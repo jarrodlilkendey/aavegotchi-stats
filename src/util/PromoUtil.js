@@ -1,5 +1,7 @@
 import { ethers } from "ethers";
 
+const config = require('../Config');
+
 const axios = require('axios');
 const _ = require('lodash');
 
@@ -80,7 +82,7 @@ export const retrievePromoListings = async (erc721ListingIds, erc1155ListingIds)
   let listings = [];
 
   const l = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
     {
       query: listingQuery(erc721ListingIds, erc1155ListingIds)
     }

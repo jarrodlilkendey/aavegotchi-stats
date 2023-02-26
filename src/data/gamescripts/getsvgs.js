@@ -1,6 +1,7 @@
 const aavegotchiContractAbi = require('../../abi/diamond.json');
 const contract = require('../../config/aavegotchiContract.json');
 const apiKeys = require('../../config/apiKeys.json');
+const config = require('../../Config');
 
 const AsyncSema = require('async-sema');
 
@@ -149,7 +150,7 @@ async function retrieveAllGotchis() {
 
   for (let i = 0; i < 5; i++) {
     const g = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: aavegotchiGraphQuery(i * 1000, 'asc')
       }
@@ -163,7 +164,7 @@ async function retrieveAllGotchis() {
 
   for (let i = 0; i < 5 && !stop; i++) {
     const g = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: aavegotchiGraphQuery(i * 1000, 'desc')
       }

@@ -1,5 +1,7 @@
 import parcelTokens from '../data/parcels/tokens.json';
 
+const config = require('../Config');
+
 const axios = require('axios');
 const _ = require('lodash');
 
@@ -62,7 +64,7 @@ export const retrieveParcels = async () => {
 
   for (let i = 0; i < 30; i+=5) {
     const result = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: parcelQuery(
           parcelChunks[i],

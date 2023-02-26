@@ -2,6 +2,8 @@ import wearableItemTypes from '../data/wearables/wearables.json';
 
 import { ethers } from "ethers";
 
+const config = require('../Config');
+
 const axios = require('axios');
 const _ = require('lodash');
 
@@ -89,7 +91,7 @@ const erc1155FloorPricesByIdQuery = (category, id) => {
 
 export const erc721FloorPrice = async (category, hauntId) => {
   const result = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
     {
       query: erc721FloorPricesQuery(category, hauntId)
     }
@@ -102,7 +104,7 @@ export const erc721FloorPrice = async (category, hauntId) => {
 
 export const erc1155FloorPrice = async (category, rarity) => {
   const result = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
     {
       query: erc1155FloorPricesQuery(category, rarity)
     }
@@ -112,7 +114,7 @@ export const erc1155FloorPrice = async (category, rarity) => {
 
 export const erc1155FloorPriceById = async (category, id) => {
   const result = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
     {
       query: erc1155FloorPricesByIdQuery(category, id)
     }
@@ -140,7 +142,7 @@ export const erc721CheapestMythEyes = async (hauntId) => {
   }`;
 
   const result = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
     {
       query: query
     }
@@ -163,7 +165,7 @@ export const erc721CheapestByWearableRarity = async () => {
 
   for (var i = 0; i < 3; i++) {
     const result = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: `{
           erc721Listings(
@@ -238,7 +240,7 @@ export const portalOptionCheapestMythEyes = async (hauntId) => {
   }`;
 
   const result = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
     {
       query: query
     }
@@ -296,7 +298,7 @@ export const cheapestXP = async () => {
     let query = getXPQuery(i);
 
     const result = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: query
       }
@@ -355,7 +357,7 @@ export const cheapestKIN = async () => {
     let query = getKinshipQuery(i);
 
     const result = await axios.post(
-      'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+      config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
       {
         query: query
       }
@@ -412,21 +414,21 @@ const listedAavegotchisQuery = (skip) => {
 
 const retrieveListedAavegotchis = async () => {
   const result = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
     {
       query: listedAavegotchisQuery(0)
     }
   );
 
   const result2 = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
     {
       query: listedAavegotchisQuery(1000)
     }
   );
 
   const result3 = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
     {
       query: listedAavegotchisQuery(2000)
     }
@@ -540,7 +542,7 @@ export const floorParcels = async () => {
   }`;
 
   const result = await axios.post(
-    'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic',
+    config.AAVEGOTCHI_CORE_SUBGRAPH_URL,
     {
       query: query
     }
