@@ -58,16 +58,17 @@ firebase.initializeApp(JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG));
 console.log('firebase initialize', firebase);
 
 const navBarPages = [
-  { path: '/recommendations', name: 'Wearable Recommendations' },
+  { path: '/floor', name: 'Floor Prices' },
+  { path: '/wearables', name: 'Wearable Analytics' },
   // { path: '/leaderboards', name: 'Rarity Leaderboards' },
   // { path: '/traits', name: 'Traits Distribution' },
   // { path: '/rarity', name: 'Rarity Distribution' },
   // { path: '/portals', name: 'Portal Stats' },
-  { path: '/wearablesales', name: 'Wearable Sales' },
   { path: '/gotchisales', name: 'Aavegotchi Sales' },
+  { path: '/wearablesales', name: 'Wearable Sales' },
   { path: '/ticketsales', name: 'Ticket Sales' },
   // { path: '/landsales', name: 'Land Sales' },
-  { path: '/floor', name: 'Floor Prices' },
+  { path: '/recommendations', name: 'Wearable Recommendations' },
   { path: '/td', name: 'Tower Defense' },
   // { path: '/tools', name: 'Recommended Tools' },
   // { path: '/timeline', name: 'Timeline' },
