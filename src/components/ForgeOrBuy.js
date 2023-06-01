@@ -7,6 +7,7 @@ import {
 import {
     alloyPurchaseCostToForge,
     alloyFloorPrices,
+    getForgeAlloyRequirements,
     coreFloorPrice,
     schematicFloorPrice
 } from '../util/ForgeUtil';
@@ -129,7 +130,15 @@ export default class ForgeOrBuy extends Component {
         });
 
         let alloyFloorListings = await alloyFloorPrices(this.state.rarity)
+        let alloyFloorPrice = 0;
+        let alloyFloorLink = 'https://dapp.aavegotchi.com/baazaar/forge';
+        if (alloyFloorListings.length > 0) {
+          alloyFloorPrice = ethers.utils.formatEther(alloyFloorListings[0].priceInWei);
+          alloyFloorLink = `https://dapp.aavegotchi.com/baazaar/forge?id=${alloyFloorListings[0].id}`;
+        }
+
         let alloyCost = await alloyPurchaseCostToForge(alloyFloorListings, this.state.rarity)
+        let alloyQuantity = getForgeAlloyRequirements(this.state.rarity).quantity;
         let coreCost = await coreFloorPrice(this.state.rarity, this.state.slot)
 
         this.setState({
@@ -137,6 +146,9 @@ export default class ForgeOrBuy extends Component {
             filteredWearableIds,
             alloyFloorListings,
             alloyCost,
+            alloyQuantity,
+            alloyFloorPrice,
+            alloyFloorLink,
             coreCost,
             loading: false,
         });
@@ -179,6 +191,19 @@ export default class ForgeOrBuy extends Component {
                 // { field: 'baazaarSpot', headerName: 'Baazaar Spot Price', width: 180 },
                 // { field: 'baazaarLastSale', headerName: 'Baazaar Last Sale', width: 180 },
                 { field: 'alloyCost', headerName: 'Alloy Cost', width: 160 },
+                {
+                  field: 'alloyRequired',
+                  headerName: 'Alloy Required',
+                  width: 160,
+                  renderCell: (params: GridCellParams) => (
+                    params.value && params.value.link && params.value.text && (
+                      <a href={(params.value.link)} target="_blank">
+                        {(params.value.text)}
+                      </a>
+                    )
+                  )
+              },
+
                 { field: 'coreCost', headerName: 'Core Cost', width: 160 },
                 {
                     field: 'coreLink',
@@ -218,7 +243,13 @@ export default class ForgeOrBuy extends Component {
                       link: this.state[w.id].link,
                       text: w.name
                     };
+
                     r.alloyCost = parseFloat(parseFloat(this.state.alloyCost).toFixed(3));
+                    r.alloyRequired = {
+                      link: this.state.alloyFloorLink,
+                      text: this.state.alloyQuantity
+                    };
+
                     r.coreCost = parseFloat(parseFloat(this.state.coreCost.floor).toFixed(3));
                     r.coreLink = {
                       link: this.state.coreCost.link,
