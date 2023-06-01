@@ -163,41 +163,47 @@ export default class ForgeOrBuy extends Component {
                 // { field: 'traitModifiers', headerName: 'Trait Modifiers', width: 240 },
                 { field: 'floor', headerName: 'Baazaar Floor', width: 180 },
                 { field: 'totalForgeCost', headerName: 'Forge Cost', width: 160 },
-                { field: 'forgingSavings', headerName: 'Forging Savings', width: 160 },
-                { field: 'baazaarSpot', headerName: 'Baazaar Spot Price', width: 180 },
-                { field: 'baazaarSale', headerName: 'Baazaar Last Sale', width: 180 },
+                { field: 'forgingSavings', headerName: 'Forging Savings %', width: 180 },
                 {
-                    field: 'link',
-                    headerName: 'Baazaar Link',
-                    width: 160,
-                    renderCell: (params: GridCellParams) => (
-                      <a href={params.value} target="_blank">
-                        Buy
+                  field: 'link',
+                  headerName: 'Buy Wearable',
+                  width: 160,
+                  renderCell: (params: GridCellParams) => (
+                    params.value && params.value.link && params.value.text && (
+                      <a href={(params.value.link)} target="_blank">
+                        {(params.value.text)}
                       </a>
                     )
+                  )
                 },
+                // { field: 'baazaarSpot', headerName: 'Baazaar Spot Price', width: 180 },
+                // { field: 'baazaarLastSale', headerName: 'Baazaar Last Sale', width: 180 },
                 { field: 'alloyCost', headerName: 'Alloy Cost', width: 160 },
                 { field: 'coreCost', headerName: 'Core Cost', width: 160 },
                 {
                     field: 'coreLink',
-                    headerName: 'Baazaar Link',
+                    headerName: 'Buy Core',
                     width: 160,
                     renderCell: (params: GridCellParams) => (
-                      <a href={params.value} target="_blank">
-                        Buy
-                      </a>
+                      params.value && params.value.link && params.value.text && (
+                        <a href={(params.value.link)} target="_blank">
+                          {(params.value.text)}
+                        </a>
+                      )
                     )
                 },
 
                 { field: 'schematicCost', headerName: 'Schematic Cost', width: 160 },
                 {
                     field: 'schematicLink',
-                    headerName: 'Baazaar Link',
+                    headerName: 'Buy Schematic',
                     width: 160,
                     renderCell: (params: GridCellParams) => (
-                      <a href={params.value} target="_blank">
-                        Buy
-                      </a>
+                      params.value && params.value.link && params.value.text && (
+                        <a href={(params.value.link)} target="_blank">
+                          {(params.value.text)}
+                        </a>
+                      )
                     )
                 },
             ];
@@ -207,21 +213,34 @@ export default class ForgeOrBuy extends Component {
             this.state.filteredWearables.map((w, index) => {
                 let r = w;
                 if (this.state[w.id]) {
-                    r.floor = parseFloat(this.state[w.id].floor);
-                    r.link = this.state[w.id].link;
-                    r.alloyCost = parseFloat(this.state.alloyCost);
-                    r.coreCost = parseFloat(this.state.coreCost.floor);
-                    r.coreLink = this.state.coreCost.link;
-                    r.schematicCost = parseFloat(this.state[w.id].schematicFloor);
-                    r.schematicLink = this.state[w.id].schematicLink;
+                    r.floor = parseFloat(parseFloat(this.state[w.id].floor).toFixed(3));
+                    r.link = {
+                      link: this.state[w.id].link,
+                      text: w.name
+                    };
+                    r.alloyCost = parseFloat(parseFloat(this.state.alloyCost).toFixed(3));
+                    r.coreCost = parseFloat(parseFloat(this.state.coreCost.floor).toFixed(3));
+                    r.coreLink = {
+                      link: this.state.coreCost.link,
+                      text: `${this.state.rarity} ${this.state.slot} Core`
+                    }
+
+                    r.schematicCost = parseFloat(parseFloat(this.state[w.id].schematicFloor).toFixed(3));
+                    r.schematicLink = {
+                      link: this.state[w.id].schematicLink,
+                      text: w.name
+                    }
 
                     if (r.alloyCost == 0 || r.coreCost == 0 || r.schematicCost == 0) {
                         r.totalForgeCost = 0;
                         r.forgingSavings = 0;
                     } else {
                         r.totalForgeCost = r.alloyCost+r.coreCost+r.schematicCost;
-                        r.forgingSavings = 100.0 * ((r.floor - r.totalForgeCost) / r.floor);
+                        r.forgingSavings = parseFloat((100.0 * ((r.floor - r.totalForgeCost) / r.floor)).toFixed(3));
                     }
+
+                    r.baazaarSpot = "todo";
+                    r.baazaarLastSale = "todo";
                 }
                 rows.push(r);
             });
@@ -229,7 +248,16 @@ export default class ForgeOrBuy extends Component {
             return(
               <div>
                 <h2>Wearables Forge vs Buy Costs</h2>
-                <p>Note that 0 for the Alloy Costs means there is insufficient alloy available on the Baazaar to forge your item and you will need to source the Alloy through smelting or other means</p>
+                <p>Please note the following:</p>
+                <ul>
+                  <li>0 for the Alloy Costs means there is insufficient alloy available on the Baazaar to forge your item and you will need to source the Alloy through smelting or other means</li>
+                  <li>0 for the Schematic / Core means there is no Schematic / Core available on the Baazaar.</li>
+                  <li>If there is insufficient Alloy on the Baazaar or there is no Schematic or Core available on the Baazaar the Forge cost will be set to 0</li>
+                  <li>Essence costs for forging Godlikes/Pets are not yet factored in</li>
+                  <li>GLTR costs for speeding up forging are not yet factored in</li>
+                  <li>A negative Forging Savings means it's cheaper to acquire a wearable by purchasing it from the Baazaar rather than forging it using materials listed on the Baazaar</li>
+                  <li>Wearables up for auction are not considered</li>
+                </ul>
                 <div style={{ height: '1080px', width: '100%' }}>
                   <DataGrid rows={rows} columns={columns} pageSize={100} density="compact" disableSelectionOnClick="true" />
                 </div>
