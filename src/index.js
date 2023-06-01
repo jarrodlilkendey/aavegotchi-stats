@@ -13,38 +13,21 @@ import AavegotchiRarityDistributions from './components/AavegotchiRarityDistribu
 import PortalStats from './components/PortalStats';
 import WearableSales from './components/WearableSales';
 import AavegotchiSales from './components/AavegotchiSales';
-import AavegotchiVotingPower from './components/AavegotchiVotingPower';
-import PetAll from './components/PetAll';
-import GotchiTowerDefence from './tdgame/GotchiTowerDefence';
-import TDLeaderboard from './components/TDLeaderboard';
-import TDXPLeaderboard from './components/TDXPLeaderboard';
-import GotchiTDRules from './components/GotchiTDRules';
+
+// import GotchiTowerDefence from './tdgame/GotchiTowerDefence';
+
 import TicketSales from './components/TicketSales';
 import FloorPrices from './components/FloorPrices';
-import GHSTOnAave from './components/GHSTOnAave';
 import WearableDetails from './components/WearableDetails';
 import WearablesList from './components/WearablesList';
-// import Frens from './components/Frens';
-import Tools from './components/Tools';
 import AavegotchiPortalRarityDistributions from './components/AavegotchiPortalRarityDistributions';
 import Ownership from './components/Ownership';
-// import BaazaarERC721Listings from './components/BaazaarERC721Listings';
 import Land from './components/Land';
-// import RealmSales from './components/RealmSales';
-// import BaazaarActivity from './components/BaazaarActivity';
-// import AssetTracker from './components/AssetTracker';
 
 import PromotedListings from './components/PromotedListings';
 import AddPromotedListing from './components/AddPromotedListing';
 
 import ForgeOrBuy from './components/ForgeOrBuy';
-
-// import Timeline from './components/Timeline';
-// import AavegotchiNetworth from './components/AavegotchiNetworth';
-// import CheapestSets from './components/CheapestSets';
-// import Consumables from './components/Consumables';
-// import Kinship from './components/Kinship';
-// import DollarCostAverageTickets from './components/DollarCostAverageTickets';
 
 import firebase from 'firebase/app';
 
@@ -86,9 +69,6 @@ ReactDOM.render(
       <div className="container">
         <NavBar pages={navBarPages} />
 
-        { /* top of page ad placement */ }
-        <div id="ezoic-pub-ad-placeholder-102"> </div>
-
         {/*<PromotedListings />*/}
 
         <Switch>
@@ -129,38 +109,15 @@ ReactDOM.render(
             <TicketSales title="Ticket Sales" />
           </Route>
 
-          <Route path="/voting">
-            <AavegotchiVotingPower title="Aavegotchi Voting Power" />
-          </Route>
-
-          <Route path="/td">
+          {/*
+                    <Route path="/td">
             <GotchiTowerDefence title="Gotchi Tower Defense" />
           </Route>
-
-          <Route path="/tdleaderboard">
-            <TDLeaderboard title="Gotchi Tower Defense Leaderboard" />
-          </Route>
-
-          <Route path="/tdxpleaderboard">
-            <TDXPLeaderboard title="Gotchi Tower Defense XP Event Leaderboard" />
-          </Route>
-
-          <Route path="/tdhelp">
-            <GotchiTDRules title="How to Play Gotchi Tower Defense" />
-          </Route>
-
-          <Route path="/petall">
-            <PetAll title="Pet All Aavegotchis" />
-          </Route>
+          */}
 
           <Route path="/floor">
             <FloorPrices title="Aavegotchi Floor Prices" />
           </Route>
-
-          <Route path="/ghstonaave">
-            <GHSTOnAave title="Get GHST on Aave" />
-          </Route>
-
 
           <Route path="/wearables/:id">
             <WearableDetails />
@@ -168,10 +125,6 @@ ReactDOM.render(
 
           <Route exact path="/wearables">
             <WearablesList title='Aavegotchi Wearables' />
-          </Route>
-
-          <Route path="/tools">
-            <Tools title="Recommended Tools" />
           </Route>
 
           <Route path="/promote">
