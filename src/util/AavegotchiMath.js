@@ -297,3 +297,37 @@ export const formatGhst = (ghstInWeiUnits) => {
   let ghstInEtherUnits = ethers.utils.formatEther(ghstInWeiUnits);
   return parseFloat(ghstInEtherUnits);
 }
+
+export const getSlotLabel = (sp, areAllHandsHands) => {
+  if (sp[0]) {
+    return 'Body';
+  }
+
+  if (sp[3]) {
+    return 'Head';
+  }
+
+  if (sp[4] && sp[5]) {
+    return 'Hands';
+  }
+
+  if (sp[4] && areAllHandsHands) {
+    return 'Hands';
+  } else if (sp[4]) {
+    return 'Left Hand';
+  }
+
+  if (sp[1]) {
+    return 'Face';
+  }
+
+  if (sp[2]) {
+    return 'Eyes';
+  }
+
+  if (sp[6]) {
+    return 'Pet';
+  }
+
+  return 'Background';
+}

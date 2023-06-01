@@ -37,6 +37,8 @@ import Land from './components/Land';
 import PromotedListings from './components/PromotedListings';
 import AddPromotedListing from './components/AddPromotedListing';
 
+import ForgeOrBuy from './components/ForgeOrBuy';
+
 // import Timeline from './components/Timeline';
 // import AavegotchiNetworth from './components/AavegotchiNetworth';
 // import CheapestSets from './components/CheapestSets';
@@ -69,6 +71,7 @@ const navBarPages = [
   { path: '/ticketsales', name: 'Ticket Sales' },
   // { path: '/landsales', name: 'Land Sales' },
   { path: '/recommendations', name: 'Wearable Recommendations' },
+  { path: '/forge', name: 'Forge Calculator' },
   { path: '/td', name: 'Tower Defense' },
   // { path: '/tools', name: 'Recommended Tools' },
   // { path: '/timeline', name: 'Timeline' },
@@ -201,15 +204,16 @@ ReactDOM.render(
             <BaazaarERC721Listings title="Baazaar ERC721 Listings" />
           </Route>*/}
 
+          <Route path="/forge">
+            <ForgeOrBuy title="Forge or Buy Calculator" />
+          </Route>
+
 
           <Route path="/">
             <Home title="What is AavegotchiStats?" />
           </Route>
 
          </Switch>
-
-         { /* bottom of page ad placement */ }
-         <div id="ezoic-pub-ad-placeholder-101"> </div>
 
          <Credits />
       </div>
