@@ -193,7 +193,7 @@ export default class ForgeOrBuy extends Component {
                 { field: 'alloyCost', headerName: 'Alloy Cost', width: 160 },
                 {
                   field: 'alloyRequired',
-                  headerName: 'Alloy Required',
+                  headerName: 'Buy Alloy',
                   width: 160,
                   renderCell: (params: GridCellParams) => (
                     params.value && params.value.link && params.value.text && (
