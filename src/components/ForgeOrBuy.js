@@ -270,6 +270,10 @@ export default class ForgeOrBuy extends Component {
                         r.forgingSavings = parseFloat((100.0 * ((r.floor - r.totalForgeCost) / r.floor)).toFixed(3));
                     }
 
+                    if (r.floor == 0) {
+                      r.forgingSavings = 0;
+                    }
+
                     r.baazaarSpot = "todo";
                     r.baazaarLastSale = "todo";
                 }
